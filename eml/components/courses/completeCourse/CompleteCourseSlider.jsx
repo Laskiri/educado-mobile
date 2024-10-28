@@ -27,9 +27,7 @@ const CompleteCourseSlider = forwardRef(({ onIndexChanged, courseObject }, ref) 
 	const statsOverviewRef = useRef(null);
 
 	const screens = [
-		<Congratulation key={0}/>,
-		<StatsOverview ref={statsOverviewRef} courseObject={courseObject} key={1}/>,
-		<Certification courseObject={courseObject} key={2}/>,
+		<Congratulation key={0}/>
 	];
 
 	const scrollBy = (number) => {
