@@ -49,7 +49,7 @@ export default function CertificateCard({ certificate }) {
 			fileName
 		);
 		const uri = file.uri;
-
+		// a
 		if (Platform.OS === "android") {
 			const permissions = await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
 
