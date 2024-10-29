@@ -2,6 +2,7 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import CourseScreen from '../../screens/courses/CourseScreen';
 import Explore from '../../screens/explore/Explore';
+import Edu from '../../screens/eduChatbot/EduScreen';
 import ProfileComponent from '../../screens/profile/Profile';
 import { Icon } from '@rneui/themed';
 import { Platform } from 'react-native';
@@ -55,7 +56,7 @@ export default function NavBar() {
 				},
 				tabBarItemStyle: {
 					borderRadius: 15,
-					marginHorizontal: '2%', // Adjust the margin for spacing
+					marginHorizontal: '0%', // Adjust the margin for spacing
 					paddingBottom: '2%', // Vertical padding for the icon
 					paddingTop: '1%', // Vertical padding for the icon
 				},
@@ -89,6 +90,24 @@ export default function NavBar() {
 						<Icon
 							size={25}
 							name="compass-outline"
+							type="material-community"
+							color={color} // Use the color parameter here
+						/>
+					),
+					tabBarActiveTintColor: 'white', // Set the active text color to white
+					tabBarInactiveTintColor: 'grey', // Set the inactive text color to grey
+				}}
+			/>
+			<Tab.Screen
+				name="Edu"
+				component={Edu}
+				options={{
+					tabBarActiveBackgroundColor: tailwindConfig.theme.colors.cyanBlue,
+					headerShown: false,
+					tabBarIcon: ({ color }) => ( // Pass the color as a parameter to the icon component
+						<Icon
+							size={25}
+							name="robot-outline"
 							type="material-community"
 							color={color} // Use the color parameter here
 						/>
