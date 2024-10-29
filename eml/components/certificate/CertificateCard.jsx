@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity} from 'react-native';
+import { Platform, View, Text, TouchableOpacity} from 'react-native';
 
 import * as Utility from '../../services/utilityFunctions';
 import PropTypes from 'prop-types';
@@ -9,6 +9,8 @@ import CertificateTemplate from './CertificateTemplate';
 import CertificatePopup from './CertificatePopup';
 import CertificateOverlay from './CertificateOverlay';
 import CardLabel from '../explore/CardLabel';
+import { FileSystem, shareAsync } from 'expo';
+import { certificateUrl } from '../../api/api';
 
 /**
  * This component is used to display a certificate card.
@@ -40,9 +42,32 @@ export default function CertificateCard({ certificate }) {
 		setPopupVisible(false);
 	};
 
-	/* const handleDownloadClick = () => {
-		// Add your PDF download logic here
-	} */
+	const handleDownloadClick = async () => {
+		const fileName = "Educado Certificate " + certificate.courseName + ".pdf";
+		const file = await FileSystem.downloadAsync(
+			certificateUrl,
+			fileName
+		);
+		const uri = file.uri;
+
+		if (Platform.OS === "android") {
+			const permissions = await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
+
+			if (permissions.granted) {
+				const base64 = await FileSystem.readAsStringAsync(uri, { encoding: FileSystem.EncodingType.Base64 });
+
+				await FileSystem.StorageAccessFramework.createFileAsync(permissions.directoryUri, fileName, "application/pdf")
+					.then(async (uri) => {
+						await FileSystem.writeAsStringAsync(uri, base64, { encoding: FileSystem.EncodingType.Base64 });
+					})
+					.catch(e => console.log(e));
+			} else {
+				shareAsync(uri);
+			}
+		} else {
+			shareAsync(uri);
+  		}	
+	} 
 	return (
 		<View className='relative max-h-[33%] min-h-[260px]  m-2 flex items-center rounded-lg border-[3px] border-lightGray'>
 			<CertificateTemplate
@@ -96,10 +121,7 @@ export default function CertificateCard({ certificate }) {
 					<View >
 						<TouchableOpacity
 							
-							onPress={() => {
-
-								// Add your PDF download logic here
-							}}>
+							onPress={handleDownloadClick}>
 							<View className='flex flex-row justify-center items-end bg-primary_custom py-4 px-10 rounded-lg opacity-50'>
 								<MaterialCommunityIcons name={'download'} size={24} color={'white'}/>
 								<Text className='text-projectWhite text-lg font-montserrat-bold ml-2 text-center'>Baixar PDF</Text>

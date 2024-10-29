@@ -7,7 +7,7 @@ const timeoutInMs = 1200;
 
 // move these to .env file next sprint
 const url = URL; // Change this to your LOCAL IP address when testing.
-const certificateUrl = CERTIFICATE_URL;
+export const certificateUrl = CERTIFICATE_URL;
 
 /* Commented out for avoiding linting errors :))
  * TODO: move IP address to .env file !!!
@@ -245,8 +245,6 @@ export const generateCertificate = async (courseId, studentId) => {
 		throw error;
 	}
 };
-
-
 
 //CREATED BY VIDEO STREAM TEAM
 /*This will be improved in next pull request to handle getting different resolutions properly 

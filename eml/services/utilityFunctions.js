@@ -3,6 +3,7 @@ import * as StorageService from '../services/StorageService.js';
 import * as userApi from '../api/userApi.js';
 import 'intl';
 import 'intl/locale-data/jsonp/en-GB'; // Import the locale you need
+import { generateCertificate } from '../api/api.js';
 /**
  * Converts a numeric difficulty level to a human-readable label.
  * @param {number} lvl - The difficulty level of the course.
@@ -178,6 +179,8 @@ export async function completeComponent(comp, courseId, isComplete) {
 	}
 
 	StorageService.updateStudentInfo(updatedStudent);
+
+	generateCertificate(courseId, userInfo.id);
 
 	return { points, updatedStudent };
 }
