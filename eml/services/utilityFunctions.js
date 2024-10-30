@@ -180,8 +180,6 @@ export async function completeComponent(comp, courseId, isComplete) {
 
 	StorageService.updateStudentInfo(updatedStudent);
 
-	generateCertificate(courseId, userInfo.id);
-
 	return { points, updatedStudent };
 }
 
@@ -308,6 +306,10 @@ export function findIndexOfUncompletedComp(student, courseId, sectionId) {
 }
 
 export async function handleLastComponent(comp, course, navigation) {
+	// Generate certificate
+	const courseId = course.courseId;
+	const userId = await StorageService.getUserId();
+	generateCertificate(courseId, userId);
 
 	// For future reference 
 	// const student = await StorageService.getStudentInfo();

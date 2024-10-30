@@ -44,8 +44,9 @@ export default function CertificateCard({ certificate }) {
 
 	const handleDownloadClick = async () => {
 		const fileName = "Educado Certificate " + certificate.courseName + ".pdf";
+		const url = certificateUrl + "/api/student-certificates/download?courseId=" + certificate.courseId + "&studentId=" + certificate.studentId;
 		const file = await FileSystem.downloadAsync(
-			certificateUrl,
+			url,
 			fileName
 		);
 		const uri = file.uri;
