@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { View, TextInput, ScrollView, Button, RefreshControl, Pressable } from 'react-native';
+import { View, TextInput, ScrollView, Button, Text, Platform } from 'react-native';
 import BaseScreen from '../../components/general/BaseScreen';
 import IconHeader from '../../components/general/IconHeader';
 import NetworkStatusObserver from '../../hooks/NetworkStatusObserver';
@@ -17,26 +17,28 @@ export default function Explore() {
 
 	
 	const sendMessageToChatbot = async () => {
-		if (userMessage.trim() === '') return;
+		if (!userMessage) { return; }
 
 		setChatMessages([...chatMessages, { sender: 'User', text: userMessage }]);
 
 		try {
-			const response = await fetch('/api/chat', {
+			const response = await fetch('http://localhost:8888/api/ai', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				body: JSON.stringify({ message: userMessage }),
+				body: JSON.stringify({ userInput: userMessage, currentPage: 'Explore' }),
 			});
 
 			if (response.ok) {
 				const data = await response.json();
 				setChatMessages(prevMessages => [...prevMessages, { sender: 'Chatbot', text: data.reply }]);
 			} else {
+				console.log(response.ok)
 				setChatMessages(prevMessages => [...prevMessages, { sender: 'Chatbot', text: 'Error: Try again.' }]);
 			}
 		} catch (error) {
+			console.log(response.ok)
 			setChatMessages(prevMessages => [...prevMessages, { sender: 'Chatbot', text: 'Error: Try again.' }]);
 		}
 
@@ -77,8 +79,11 @@ export default function Explore() {
 						</ScrollView>
 
 						<TextInput
+							value={userMessage}
+							onChangeText={setUserMessage}
                             placeholder={'Pesquise aqui...'}
                             className="flex bg-blue border-2 rounded-3xl m-4 py-2 px-4"
+							onSubmitEditing={sendMessageToChatbot}
                         />
 						<Button title="Send" onPress={sendMessageToChatbot} />
 					</View>
