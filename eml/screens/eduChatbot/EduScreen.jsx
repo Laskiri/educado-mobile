@@ -32,7 +32,7 @@ const sendMessageToChatbot = async () => {
         if (response.status === 200) {
             setChatMessages(prevMessages => [
                 ...prevMessages,
-                { sender: 'Chatbot', text: response.data.reply }
+                { sender: 'Chatbot', text: response.data.message }
             ]);
         } else {
             setChatMessages(prevMessages => [
