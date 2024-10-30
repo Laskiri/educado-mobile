@@ -1,6 +1,8 @@
 import axios from 'axios';
 import { Buffer } from 'buffer';
 import { URL, CERTIFICATE_URL } from '@env';
+import { getStudentInfo } from './userApi';
+import { getUserInfo } from '../services/StorageService';
 
 const timeoutInMs = 1200;
 
@@ -208,17 +210,13 @@ export const fetchCertificates = async (userId) => {
 export const generateCertificate = async (courseId, studentId) => {
 	try {
 		// Fetch course data
-		const courseResponse = await axios.get(url + `/api/courses/${courseId}`);
-		const courseData = courseResponse.data;
+		const courseData = await this.getCourse(courseId);
 
 		// Fetch student data and user data concurrently
-		const [studentResponse, userResponse] = await Promise.all([
-			axios.get(url + `/api/students/${studentId}/info`),
-			axios.get(url + `/api/users/${studentId}`)
+		const [studentData, userData] = await Promise.all([
+			getStudentInfo(studentId),
+			getUserInfo()
 		]);
-
-		const studentData = studentResponse.data;
-		const userData = userResponse.data;
 
 		// Ensure data is loaded
 		if (!courseData || !studentData || !userData) {
