@@ -225,13 +225,13 @@ export const generateCertificate = async (courseId, studentId) => {
 
 		// Call the endpoint to generate the certificate
 		const response = await axios.put(certificateUrl + '/api/student-certificates', {
-			courseName: courseData.name,
+			courseName: courseData.title,
 			courseId: courseData._id,
 			studentId: studentData._id,
 			studentFirstName: userData.firstName,
 			studentLastName: userData.lastName,
 			courseCreator: courseData.creator,
-			estimatedCourseDuration: courseData.estimatedDuration,
+			estimatedCourseDuration: courseData.estimatedHours,
 			dateOfCompletion: new Date().toISOString().split('T')[0], // current date
 			courseCategory: courseData.category,
 		});
