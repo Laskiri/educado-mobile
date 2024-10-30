@@ -210,7 +210,7 @@ export const fetchCertificates = async (userId) => {
 export const generateCertificate = async (courseId, studentId) => {
 	try {
 		// Fetch course data
-		const courseData = await this.getCourse(courseId);
+		const courseData = await getCourse(courseId);
 
 		// Fetch student data and user data concurrently
 		const [studentData, userData] = await Promise.all([
