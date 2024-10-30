@@ -12,7 +12,7 @@ import CertificateCard from '../../components/certificate/CertificateCard';
 import CertificateEmptyState from '../../components/certificate/CertifateEmptyState';
 import { determineCategory } from '../../services/utilityFunctions';
 import { fetchCertificates } from '../../api/api';
-import { getUserInfo } from '../../services/StorageService';
+import { getStudentInfo } from '../../services/StorageService';
 
 
 /**
@@ -29,9 +29,9 @@ export default function CertificateScreen() {
 
 	const getProfile = async () => {
 		try {
-			const fetchedProfile = await getUserInfo();
-			if (fetchedProfile !== null) {
-				const fetchedCertificates = await fetchCertificates(fetchedProfile.id);
+			const fetchedStudent = await getStudentInfo();
+			if (fetchedStudent !== null) {
+				const fetchedCertificates = await fetchCertificates(fetchedStudent._id);
 				setCertificates(fetchedCertificates);
 			}
 		} catch (e) {
