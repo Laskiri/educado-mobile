@@ -207,14 +207,14 @@ export const fetchCertificates = async (userId) => {
  * @param {string} studentId - The ID of the student.
  * @returns {Promise<Object>} - The response from the server.
  */
-export const generateCertificate = async (courseId, studentId) => {
+export const generateCertificate = async (courseId, userId) => {
 	try {
 		// Fetch course data
 		const courseData = await getCourse(courseId);
 
 		// Fetch student data and user data concurrently
 		const [studentData, userData] = await Promise.all([
-			getStudentInfo(studentId),
+			getStudentInfo(userId),
 			getUserInfo()
 		]);
 
