@@ -4,6 +4,7 @@ import { View, TextInput, ScrollView, Button, Text, Platform } from 'react-nativ
 import BaseScreen from '../../components/general/BaseScreen';
 import IconHeader from '../../components/general/IconHeader';
 import NetworkStatusObserver from '../../hooks/NetworkStatusObserver';
+import axios from 'axios';
 
 /**
  * Explore screen displays all courses and allows the user to filter them by category or search text.
@@ -16,34 +17,42 @@ export default function Explore() {
 	const [chatMessages, setChatMessages] = useState([]);
 
 	
-	const sendMessageToChatbot = async () => {
-		if (!userMessage) { return; }
 
-		setChatMessages([...chatMessages, { sender: 'User', text: userMessage }]);
+const sendMessageToChatbot = async () => {
+    if (!userMessage) return;
 
-		try {
-			const response = await fetch('http://localhost:8888/api/ai', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({ userInput: userMessage, currentPage: 'Explore' }),
-			});
+    setChatMessages([...chatMessages, { sender: 'User', text: userMessage }]);
 
-			if (response.ok) {
-				const data = await response.json();
-				setChatMessages(prevMessages => [...prevMessages, { sender: 'Chatbot', text: data.reply }]);
-			} else {
-				console.log(response.ok)
-				setChatMessages(prevMessages => [...prevMessages, { sender: 'Chatbot', text: 'Error: Try again.' }]);
-			}
-		} catch (error) {
-			console.log(response.ok)
-			setChatMessages(prevMessages => [...prevMessages, { sender: 'Chatbot', text: 'Error: Try again.' }]);
-		}
+    try {
+        const response = await axios.post(`http://172.30.252.126:8888/api/ai`, {
+            userInput: userMessage,
+            currentPage: 'Explore'
+        });
 
-		setUserMessage('');
-	};
+        if (response.status === 200) {
+            setChatMessages(prevMessages => [
+                ...prevMessages,
+                { sender: 'Chatbot', text: response.data.reply }
+            ]);
+        } else {
+            setChatMessages(prevMessages => [
+                ...prevMessages,
+                { sender: 'Chatbot', text: 'Error: Try again.' }
+            ]);
+        }
+    } catch (error) {
+        console.warn('Axios error:', error);
+        setChatMessages(prevMessages => [
+            ...prevMessages,
+            { sender: 'Chatbot', text: 'Error: Try again.' }
+        ]);
+    }
+
+    setUserMessage('');
+};
+
+	
+	
 	
 
 
