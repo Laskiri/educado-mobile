@@ -1,10 +1,12 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { View, TouchableOpacity, SafeAreaView } from 'react-native';
 import { BgLinearGradient } from '../../constants/BgLinearGradient';
 import CompleteCourseSlider from '../../components/courses/completeCourse/CompleteCourseSlider';
 import Text from '../../components/general/Text.js';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import PropTypes from 'prop-types';
+import { generateCertificate } from '../../api/api';
+import { getStudentInfo, getUserInfo } from '../../services/StorageService';
 
 /* 
 Description: 	This screen is displayed when the student completes a course.
@@ -23,6 +25,23 @@ export default function CompleteCourseScreen() {
 	const navigation = useNavigation();
 	const route = useRoute();
 	const { course } = route.params;
+
+	
+	// Generate certificate for the student, Uncomment this when course completion is properly handled or to test certificates
+	/* useEffect(() => {
+		const CreateCertificate = async () => {
+			const student = await getStudentInfo();
+			const user = await getUserInfo();
+			try {
+				await generateCertificate(course.courseId, student, user);
+				
+			} catch (error) {
+				console.log(error);
+			}
+		};
+
+		CreateCertificate();
+	}, []); */
 
 	const handleIndexChange = (index) => {
 		currentSlide = index;
