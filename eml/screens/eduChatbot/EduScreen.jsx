@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { View, TextInput, ScrollView, RefreshControl, Pressable } from 'react-native';
+import { View, TextInput, ScrollView, Button, RefreshControl, Pressable } from 'react-native';
 import BaseScreen from '../../components/general/BaseScreen';
 import IconHeader from '../../components/general/IconHeader';
 import NetworkStatusObserver from '../../hooks/NetworkStatusObserver';
