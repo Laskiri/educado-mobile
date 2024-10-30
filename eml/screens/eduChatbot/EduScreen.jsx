@@ -80,6 +80,7 @@ export default function Explore() {
                             placeholder={'Pesquise aqui...'}
                             className="flex bg-blue border-2 rounded-3xl m-4 py-2 px-4"
                         />
+						<Button title="Send" onPress={sendMessageToChatbot} />
 					</View>
 				}
 			</BaseScreen>
