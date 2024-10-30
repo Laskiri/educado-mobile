@@ -223,6 +223,20 @@ export const generateCertificate = async (courseId, studentId) => {
 			throw new Error('Course, student, or user data not loaded');
 		}
 
+		const object = {
+			courseName: courseData.title,
+			courseId: courseData._id,
+			studentId: studentData._id,
+			studentFirstName: userData.firstName,
+			studentLastName: userData.lastName,
+			courseCreator: courseData.creator,
+			estimatedCourseDuration: courseData.estimatedHours,
+			dateOfCompletion: new Date().toISOString().split('T')[0], // current date
+			courseCategory: courseData.category,
+		};
+
+		console.log(object);
+
 		// Call the endpoint to generate the certificate
 		const response = await axios.put(certificateUrl + '/api/student-certificates', {
 			courseName: courseData.title,

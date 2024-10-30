@@ -309,6 +309,7 @@ export async function handleLastComponent(comp, course, navigation) {
 	// Generate certificate
 	const courseId = course.courseId;
 	const userId = await StorageService.getUserId();
+	console.log(courseId, userId);
 	generateCertificate(courseId, userId);
 
 	// For future reference 
