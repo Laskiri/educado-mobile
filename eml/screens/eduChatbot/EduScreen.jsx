@@ -15,12 +15,12 @@ export default function EduScreen() {
 		setChatMessages([...chatMessages, { sender: 'User', text: userMessage }]);
 
 		try {
-			const response = await fetch('/api/chat', {
+			const response = await fetch('/api/ai', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				body: JSON.stringify({ message: userMessage }),
+				body: JSON.stringify({ userInput: userMessage, currentPage: 'Home' }),
 			});
 
 			if (response.ok) {
