@@ -724,6 +724,7 @@ export const deleteLocallyStoredCourse = async (courseID) => {
 		}
 	} catch (error) {
 		success = false;
+		console.log(error);
 		if (error?.response?.data != null) {
 			throw new Error(error.response.data);
 		} else {
