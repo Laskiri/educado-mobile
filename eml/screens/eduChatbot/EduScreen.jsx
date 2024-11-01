@@ -6,6 +6,7 @@ import IconHeader from '../../components/general/IconHeader';
 import NetworkStatusObserver from '../../hooks/NetworkStatusObserver';
 import axios from 'axios';
 import { Icon } from '@rneui/themed';
+import Markdown from 'react-native-markdown-display';
 
 /**
  * Explore screen displays all courses and allows the user to filter them by category or search text.
@@ -27,6 +28,7 @@ export default function Explore() {
 
 		setChatMessages([...chatMessages, { sender: 'User', text: userMessage }]);
 		setLoading(true);
+		setUserMessage('');
 
 		try {
 			const response = await axios.post(`http://192.168.0.165:8888/api/ai`, {
@@ -52,7 +54,6 @@ export default function Explore() {
 			]);
 		}
 
-		setUserMessage('');
 		setLoading(false);
 	};
 
@@ -80,10 +81,13 @@ export default function Explore() {
 		<>
 			<NetworkStatusObserver setIsOnline={setIsOnline} />
 			<BaseScreen className="h-screen flex flex-col ">
-				<IconHeader
-					title={'Edu, ur ai assistant'}
-					description={'My name is Edu, and im here to help u bozos nagivgating this shit app'}
-				/>
+				<View className="">
+					<IconHeader
+						title={'Edu'}
+						description={'My name is Edu, and I am your friendly neighborhood AI assistant. Ask me anything!'}
+					/>
+				</View>
+				
 				{!isOnline ?
 					<View>
 						
@@ -96,26 +100,35 @@ export default function Explore() {
 							className="pr-2.5"
 							>
 								{chatMessages.map((message, index) => (
-									<View key={index} 
-										
-										className=" p-2.5 mb-1 mx-4 flex-row flex-end rounded-t-3xl rounded-bl-3xl max-w-[80%]" style={{
-										alignSelf: message.sender === 'User' ? 'flex-end' : 'flex-start',
-										backgroundColor: message.sender === 'User' ? '#A1ACB2' : '',
-										
-									}}>
-										{message.sender === 'Chatbot' && (
-											<View className ="px-2">
-												<Icon
-												name="robot-outline"
-												type="material-community"
-												color="primary_custom"
-												size={20}
-												/>
+									message.sender === 'User' ? (
+										<View key={index} style={{ alignSelf: 'flex-end' }}>
+											<View
+												className="p-2.5 pl-3 mb-1 flex-row rounded-t-3xl rounded-bl-3xl max-w-[80%] bg-[#166276]"
+											>
+												<Text className="text-projectLightGray">{message.text}</Text>
 											</View>
-										)}
-										<Text >{message.text}</Text>
-									</View>
+										</View>
+									) : (
+										<View key={index} style={{ alignSelf: 'flex-start' }}>
+											<View
+												className="p-2.5 pl-3 mb-1 flex-row rounded-t-3xl rounded-br-3xl max-w-[80%]"
+
+											>
+												<View className="px-2">
+													<Icon
+														name="robot-outline"
+														type="material-community"
+														color="primary_custom"
+														size={20} 
+													/>
+												</View>
+												<Markdown>{message.text}</Markdown> 
+
+											</View>
+										</View>
+									)
 								))}
+
 
 								
 								{/* Display loading indicator if loading */}

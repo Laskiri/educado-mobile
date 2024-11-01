@@ -1,11 +1,12 @@
-import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import CourseScreen from '../../screens/courses/CourseScreen';
 import Explore from '../../screens/explore/Explore';
 import Edu from '../../screens/eduChatbot/EduScreen';
 import ProfileComponent from '../../screens/profile/Profile';
 import { Icon } from '@rneui/themed';
-import { Platform } from 'react-native';
+import { Platform, Keyboard, Text, TextInput, StyleSheet } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {SafeAreaView, SafeAreaProvider} from 'react-native-safe-area-context';
 import tailwindConfig from '../../tailwind.config';
 
 const Tab = createBottomTabNavigator();
@@ -15,6 +16,31 @@ const Tab = createBottomTabNavigator();
  * @returns {JSX.Element} - Returns a JSX element.
  */
 export default function NavBar() {
+	const [keyboardStatus, setKeyboardStatus] = useState(0);
+	
+	useEffect(() => {
+		const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
+			if (keyboardStatus === 0) {
+				setKeyboardStatus(1);
+				console.log("Keyboard opened, status set to 1");
+			}
+			console.log("Keyboard status2:", keyboardStatus);
+		});
+		
+		const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
+			if (keyboardStatus === 1) {
+				setKeyboardStatus(0);
+				console.log("Keyboard closed, status set to 0");
+			}
+			console.log("Keyboard status1:", keyboardStatus);
+		});
+	
+		return () => {
+			showSubscription.remove();
+			hideSubscription.remove();
+		};
+	}, [keyboardStatus]);
+	
 
 	return (
 		<Tab.Navigator
