@@ -52,7 +52,7 @@ export default function CourseCard({ course, isOnline}) {
 					<Text className="text-[18px] text-projectBlack flex-1 self-center font-montserrat-semi-bold">
 						{course.title ? course.title : 'Título do curso'}
 					</Text>
-					<View className="flex-2 pr-6">
+					<View className="flex-row items-center">
 						<DownloadCourseButton course={course} disabled={isDisabled}/>
 					</View>
 				</View>
@@ -69,7 +69,7 @@ export default function CourseCard({ course, isOnline}) {
 				</View>
 				<View className="flex-row items-center">
 					<CustomProgressBar width={56} progress={studentProgress} height={1} />
-					<Pressable className="z-[1]"
+					<Pressable className="z-[1] ml-4"
 						onPress={() => {layout === enabledUI ?
 							navigation.navigate('Section', {
 								course: course,

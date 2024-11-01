@@ -111,12 +111,16 @@ export default function Download() {
             <>
                 <NetworkStatusObserver setIsOnline={setIsOnline}/>
                 <SafeAreaView className='bg-secondary'>
-                <BackButton onPress={() => navigation.navigate('Perfil')} />
                 {courseLoaded ?
-					<View height="100%">
-                    <IconHeader
-                        title={'Bem Vindo!'}
-                        description={'Aqui você encontra todos os cursos em que você está inscrito!'}/>
+				<View height="100%">
+                    <View className="flex-row items-center">
+                        <View className="flex-1">
+                        <BackButton onPress={() => navigation.navigate('Perfil')}/>
+                        </View>
+                        <View className="flex-1">
+                        <IconHeader title="Downloads"/>
+                        </View>
+                    </View>
                     <ScrollView showsVerticalScrollIndicator={false}
                         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}>
                         {downloadedCourses.map((course, index) => (
