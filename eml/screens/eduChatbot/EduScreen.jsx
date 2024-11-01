@@ -31,7 +31,7 @@ export default function Explore() {
 		setUserMessage('');
 
 		try {
-			const response = await axios.post(`http://172.26.176.1:8888/api/ai`, {
+			const response = await axios.post(`http://192.168.0.165:8888/api/ai`, {
 				userInput: userMessage
 			});
 
