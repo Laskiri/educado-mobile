@@ -6,6 +6,7 @@ import IconHeader from '../../components/general/IconHeader';
 import NetworkStatusObserver from '../../hooks/NetworkStatusObserver';
 import axios from 'axios';
 import { Icon } from '@rneui/themed';
+import Markdown from 'react-native-markdown-display';
 
 /**
  * Explore screen displays all courses and allows the user to filter them by category or search text.
@@ -29,7 +30,7 @@ export default function Explore() {
 		setLoading(true);
 
 		try {
-			const response = await axios.post(`http://192.168.0.165:8888/api/ai`, {
+			const response = await axios.post(`http://172.26.176.1:8888/api/ai`, {
 				userInput: userMessage
 			});
 
@@ -113,7 +114,9 @@ export default function Explore() {
 												/>
 											</View>
 										)}
-										<Text >{message.text}</Text>
+										<Text>
+										{<Markdown>{message.text}</Markdown>}
+										</Text>{/* markdown forsøg */}
 									</View>
 								))}
 
