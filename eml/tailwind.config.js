@@ -59,7 +59,10 @@ module.exports = {
         small: 4,
         medium: 8,
         large: 16,
-      }
+      },
+      opacity: {
+        95: '0.95',
+      },
     },
   },
   exports: {
