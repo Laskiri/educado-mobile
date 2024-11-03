@@ -237,7 +237,9 @@ export const generateCertificate = async (courseId, userId) => {
 
 		console.log(object);
 
-		// Call the endpoint to generate the certificate
+	// Call the endpoint to generate the certificate
+
+	try {
 		const response = await axios.put(certificateUrl + '/api/student-certificates', {
 			courseName: courseData.title,
 			courseId: courseData._id,
@@ -249,8 +251,6 @@ export const generateCertificate = async (courseId, userId) => {
 			dateOfCompletion: new Date().toISOString().split('T')[0], // current date
 			courseCategory: courseData.category,
 		});
-
-		console.log('Certificate generated:', response.data);
 		return response.data;
 	} catch (error) {
 		console.error('Error generating certificate:', error.response?.data || error.message);
@@ -264,7 +264,6 @@ with our new video streaming service in go.
 */
 
 export const getVideoStreamUrl = (fileName, resolution) => {
-
 	let resolutionPostfix;
 	switch (resolution) {
 	case '360':
