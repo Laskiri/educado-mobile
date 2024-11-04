@@ -81,8 +81,8 @@ export default function Explore() {
 		<>
 			<NetworkStatusObserver setIsOnline={setIsOnline} />
 			<BaseScreen className="h-screen flex flex-col ">
-				<View className="">
-					<IconHeader
+				<View className="border-b " style={{ borderBottomWidth: 1, borderBottomColor: 'rgba(0, 0, 0, 0.2)' }}>
+					<IconHeader 
 						title={'Edu'}
 						description={'My name is Edu, and I am your friendly neighborhood AI assistant. Ask me anything!'}
 					/>
@@ -103,7 +103,7 @@ export default function Explore() {
 									message.sender === 'User' ? (
 										<View key={index} style={{ alignSelf: 'flex-end' }}>
 											<View
-												className="p-2.5 pl-3 mb-1 flex-row rounded-t-3xl rounded-bl-3xl max-w-[80%] bg-[#166276]"
+												className="p-2.5 pl-3 mb-1 mt-2 flex-row rounded-t-3xl rounded-bl-3xl max-w-[80%] bg-bgprimary_custom"
 											>
 												<Text className="text-projectLightGray">{message.text}</Text>
 											</View>
