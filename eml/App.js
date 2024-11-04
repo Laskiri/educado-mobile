@@ -26,7 +26,7 @@ import CompleteCourseScreen from './screens/courses/CompleteCourse';
 import CameraScreen from './screens/camera/CameraScreen';
 import BaseScreen from './components/general/BaseScreen';
 import SubscribedToCourseScreen from './screens/courses/SubscribedToCourseScreen';
-import { IconProvider } from './services/DownloadService';
+import { DownloadProvider } from './services/DownloadService';
 
 const Stack = createNativeStackNavigator();
 
@@ -180,7 +180,7 @@ export default function App() {
 			<BaseScreen>
 				<IconRegistry icons={EvaIconsPack} />
 				<ApplicationProvider {...eva} theme={eva.light}>
-					<IconProvider>
+					<DownloadProvider>
 					<NavigationContainer>
 						<Stack.Navigator initialRouteName={initialRoute}>
 							<Stack.Screen
@@ -262,7 +262,7 @@ export default function App() {
 							/>
 						</Stack.Navigator>
 					</NavigationContainer>
-					</IconProvider>
+					</DownloadProvider>
 				</ApplicationProvider>
 			</BaseScreen>
 		</TailwindProvider>

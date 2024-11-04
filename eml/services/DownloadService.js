@@ -1,9 +1,9 @@
-// IconContext.js
+// This file is to update download icon dynamically in main menu and download page
 import React, { createContext, useState } from 'react';
 
 export const IconContext = createContext();
 
-export const IconProvider = ({ children }) => {
+export const DownloadProvider = ({ children }) => {
   const [iconState, setIconState] = useState({}); // Store icons for each course or card
 
   const updateIcon = (courseId, icon) => {
