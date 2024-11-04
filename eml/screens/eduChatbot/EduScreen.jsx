@@ -59,9 +59,10 @@ export default function Explore() {
 			<NetworkStatusObserver setIsOnline={setIsOnline} />
 			<BaseScreen className="h-screen flex flex-col ">
 				<View className="border-b " style={{ borderBottomWidth: 1, borderBottomColor: 'rgba(0, 0, 0, 0.2)' }}>
+					
 					<IconHeader 
 						title={'Edu'}
-						description={'My name is Edu, and I am your friendly neighborhood AI assistant. Ask me anything!'}
+						description={'Meu nome é Edu, e estou aqui para ajudá-lo a navegar neste aplicativo.'}
 					/>
 				</View>
 				
