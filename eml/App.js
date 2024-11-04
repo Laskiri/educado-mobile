@@ -19,9 +19,12 @@ import CompSwipeScreen from './screens/lectures/CompSwipeScreen';
 import ErrorScreen from './screens/errors/ErrorScreen';
 import CourseScreen from './screens/courses/CourseScreen';
 import EditProfileScreen from './screens/profile/EditProfile';
+import EditPasswordScreen from './screens/profile/EditPassword';
 import CertificateScreen from './screens/certificate/CertificateScreen';
 import CompleteCourseScreen from './screens/courses/CompleteCourse';
 import CameraScreen from './screens/camera/CameraScreen';
+import BaseScreen from './components/general/BaseScreen';
+import SubscribedToCourseScreen from './screens/courses/SubscribedToCourseScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -35,19 +38,11 @@ function WelcomeStack() {
 					headerShown: false,
 				}}
 			/>
-			<Stack.Screen
-				name="Register"
-				component={RegisterScreen}
-				options={{
-					headerShown: false,
-				}}
-			/>
 		</Stack.Navigator>
 	);
 }
 
 function LoginStack() {
-	// const initialRoute = route.params?.initialRoute || 'Login';
 	return (
 		<Stack.Navigator initialRouteName={'Login'}>
 			<Stack.Screen
@@ -67,7 +62,6 @@ function LoginStack() {
 		</Stack.Navigator>
 	);
 }
-
 function CertificateStack() {
 	return (
 		<Stack.Navigator initialRouteName={'Certificate'}>
@@ -81,7 +75,6 @@ function CertificateStack() {
 		</Stack.Navigator>
 	);
 }
-
 
 function CourseStack() {
 	return (
@@ -124,6 +117,8 @@ function CourseStack() {
 	);
 }
 
+
+
 export function useWelcomeScreenLogic(loadingTime, onResult) {
 
 	setTimeout(() => {
@@ -153,6 +148,7 @@ export function useWelcomeScreenLogic(loadingTime, onResult) {
 }
 
 
+
 export default function App() {
 	const fontsLoaded = isFontsLoaded();
 	const [initialRoute, setInitialRoute] = useState('');
@@ -179,7 +175,7 @@ export default function App() {
 
 	return (
 		<TailwindProvider>
-			<>
+			<BaseScreen>
 				<IconRegistry icons={EvaIconsPack} />
 				<ApplicationProvider {...eva} theme={eva.light}>
 					<NavigationContainer>
@@ -221,25 +217,24 @@ export default function App() {
 								options={{ headerShown: false }}
 							/>
 							<Stack.Screen
+								name="EditPassword"
+								component={EditPasswordScreen}
+								options={{ headerShown: false }}
+							/>
+							<Stack.Screen
 								name="Exercise"
 								component={ExerciseScreen}
-								options={{
-									headerShown: false,
-								}}
+								options={{ headerShown: false }}
 							/>
 							<Stack.Screen
 								name="Components"
 								component={CompSwipeScreen}
-								options={{
-									headerShown: false,
-								}}
+								options={{ headerShown: false }}
 							/>
 							<Stack.Screen
 								name="CertificateStack"
 								component={CertificateStack}
-								options={{
-									headerShown: false,
-								}}
+								options={{ headerShown: false }}
 							/>
 							<Stack.Screen
 								name="CompleteCourse"
@@ -251,10 +246,16 @@ export default function App() {
 								component={CameraScreen}
 								options={{ headerShown: false }}
 							/>
+							<Stack.Screen
+								name="Subscribed"
+								component={SubscribedToCourseScreen}
+								initialParams={{course_id: ''}}
+								options={{headerShown: false}}
+							/>
 						</Stack.Navigator>
 					</NavigationContainer>
 				</ApplicationProvider>
-			</>
+			</BaseScreen>
 		</TailwindProvider>
 	);
 }
