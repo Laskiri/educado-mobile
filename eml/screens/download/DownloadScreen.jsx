@@ -115,10 +115,10 @@ export default function Download() {
 				<View height="100%">
                     <View className="flex-row items-center">
                         <View className="flex-1">
-                        <BackButton onPress={() => navigation.navigate('Perfil')}/>
+                            <BackButton onPress={() => navigation.navigate('ProfileHome')} />
                         </View>
                         <View className="flex-1">
-                        <IconHeader title="Downloads"/>
+                            <IconHeader title="Downloads"/>
                         </View>
                     </View>
                     <ScrollView showsVerticalScrollIndicator={false}

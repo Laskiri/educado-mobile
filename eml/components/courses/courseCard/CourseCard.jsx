@@ -69,7 +69,7 @@ export default function CourseCard({ course, isOnline}) {
 				</View>
 				<View className="flex-row items-center">
 					<CustomProgressBar width={56} progress={studentProgress} height={1} />
-					<Pressable className="z-[1] ml-4"
+					<Pressable className="z-[1]"
 						onPress={() => {layout === enabledUI ?
 							navigation.navigate('Section', {
 								course: course,
