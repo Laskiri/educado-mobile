@@ -8,10 +8,9 @@ import axios from 'axios';
 import { Icon } from '@rneui/themed';
 import Markdown from 'react-native-markdown-display';
 
-/**
- * Explore screen displays all courses and allows the user to filter them by category or search text.
- * @returns {JSX.Element} - Rendered component
- */
+import { sendMessageToChatbot as fetchChatbotResponse } from '../../api/api.js';
+
+
 export default function Explore() {
 
 	const [isOnline, setIsOnline] = useState(false);
@@ -20,61 +19,39 @@ export default function Explore() {
 	const scrollViewRef = useRef(null);
 	const [loading, setLoading] = useState(false);
 	const [loadingDots, setLoadingDots] = useState('');
-
-	
-
-	const sendMessageToChatbot = async () => {
-		if (!userMessage) return;
-
-		setChatMessages([...chatMessages, { sender: 'User', text: userMessage }]);
-		setLoading(true);
-		setUserMessage('');
-
-		try {
-			const response = await axios.post(`http://192.168.0.165:8888/api/ai`, {
-				userInput: userMessage
-			});
-
-			if (response.status === 200) {
-				setChatMessages(prevMessages => [
-					...prevMessages,
-					{ sender: 'Chatbot', text: response.data.message }
-				]);
-			} else {
-				setChatMessages(prevMessages => [
-					...prevMessages,
-					{ sender: 'Chatbot', text: 'Error: Try again.' }
-				]);
-			}
-		} catch (error) {
-			console.warn('Axios error:', error);
-			setChatMessages(prevMessages => [
-				...prevMessages,
-				{ sender: 'Chatbot', text: 'Error: Try again.' }
-			]);
-		}
-
-		setLoading(false);
+  
+	const handleSendMessage = async () => {
+	  if (!userMessage) return;
+  
+	  setChatMessages([...chatMessages, { sender: 'User', text: userMessage }]);
+	  setLoading(true);
+	  setUserMessage('');
+  
+	  const chatbotResponse = await fetchChatbotResponse(userMessage);
+  
+	  setChatMessages(prevMessages => [
+		...prevMessages,
+		{ sender: 'Chatbot', text: chatbotResponse }
+	  ]);
+  
+	  setLoading(false);
 	};
-
+  
 	useEffect(() => {
-		if (scrollViewRef.current) {
-			scrollViewRef.current.scrollToEnd({ animated: true });
-		}
+	  if (scrollViewRef.current) {
+		scrollViewRef.current.scrollToEnd({ animated: true });
+	  }
 	}, [chatMessages]);
-	
-	
-	
+  
 	useEffect(() => {
-		if (loading){
-			const interval = setInterval(() => {
-				setLoadingDots((prev) => (prev.length < 3 ? prev + '.' : ''));
-
-			}, 500);
-			return () => clearInterval(interval);
-		} else {
-			setLoadingDots('');
-		}	
+	  if (loading){
+		const interval = setInterval(() => {
+		  setLoadingDots((prev) => (prev.length < 3 ? prev + '.' : ''));
+		}, 500);
+		return () => clearInterval(interval);
+	  } else {
+		setLoadingDots('');
+	  }
 	}, [loading]);
 
 	return (
@@ -156,19 +133,20 @@ export default function Explore() {
 								onChangeText={setUserMessage}
 								placeholder={'Pesquise aqui...'}
 								className="flex-1"
-								onSubmitEditing={sendMessageToChatbot}
+								onSubmitEditing={handleSendMessage} // Updated here
 							/>
 							<TouchableOpacity
 								className="rounded-full w-7 h-7 bg-primary_custom ml-2 flex items-center justify-center"
-								onPress={sendMessageToChatbot}
+								onPress={handleSendMessage} // Updated here
 							>
 								<Icon
-								name="arrow-up"
-								type="material-community"  // or any other icon library type, like 'font-awesome'
-								color="white"    // set icon color
-								size={20}        // set icon size
+									name="arrow-up"
+									type="material-community"
+									color="white"
+									size={20}
 								/>
 							</TouchableOpacity>
+
 						</View>
 					</View>
 				}
