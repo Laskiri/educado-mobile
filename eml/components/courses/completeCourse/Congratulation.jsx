@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { View } from 'react-native';
+import { View, TouchableOpacity } from 'react-native';
 import Text from '../../general/Text';
 import LottieView from 'lottie-react-native';
 import { getUserInfo } from '../../../services/StorageService';
+import { useNavigation } from '@react-navigation/native';
 
 /* Check the CompleteCourseSlider file in the screens folder for more info */
 
 export default function Congratulation() {
 	const [name, setName] = useState('');
+	const navigation = useNavigation();
 
 	const getName = async () => {
 		const userInfo = await getUserInfo();
@@ -38,6 +40,12 @@ export default function Congratulation() {
           		Bom trabalho, {name}! Você pode ver suas estatísticas, placar educado e certificação antes de continuar.
 				</Text>
 			</View>
+
+			<TouchableOpacity onPress={() => navigation.navigate('CertificateStack')}>
+				<Text className="text-center text-lg text-primary_custom underline mt-4">
+					Ver Certificado
+				</Text>
+			</TouchableOpacity>
 		</View>
 	);
 }
