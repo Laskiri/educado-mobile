@@ -1,14 +1,12 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { View, ScrollView, RefreshControl, Pressable } from 'react-native';
+import { View, ScrollView, RefreshControl } from 'react-native';
 import FilterNavBar from '../../components/explore/FilterNavBar';
 import ExploreCard from '../../components/explore/ExploreCard';
 import * as StorageService from '../../services/StorageService';
 import { useNavigation } from '@react-navigation/native';
 import IconHeader from '../../components/general/IconHeader';
 import { shouldUpdate, determineCategory } from '../../services/utilityFunctions';
-import Text from '../../components/general/Text';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import NetworkStatusObserver from '../../hooks/NetworkStatusObserver';
 
 /**
@@ -124,24 +122,21 @@ export default function Explore() {
 				title={'Explorar cursos'}
 				description={'Inscreva-se nos cursos do seu interesse e comece sua jornada'}
 			/>
-				<View height="77%">
-					<FilterNavBar
-						onChangeText={(text) => handleFilter(text)}
-						onCategoryChange={handleCategoryFilter}
-					/>
-					<ScrollView showsVerticalScrollIndicator={false} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-						<View className="overflow-y-auto">
-							{courses && filteredCourses && filteredCourses.map((course, index) => (
-								<ExploreCard
-									key={index}
-									isPublished={course.status === 'published'}
-									subscribed={/*isSubscribed[index]*/checkIfSubscribed(course, subCourses)}
-									course={course}
-								></ExploreCard>
-							))}
-						</View>
-					</ScrollView>
-				</View>
+			<View height="77%">
+				<FilterNavBar onChangeText={(text) => handleFilter(text)} onCategoryChange={handleCategoryFilter}/>
+				<ScrollView showsVerticalScrollIndicator={false} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+					<View className="overflow-y-auto">
+						{courses && filteredCourses && filteredCourses.map((course, index) => (
+							<ExploreCard
+								key={index}
+								isPublished={course.status === 'published'}
+								subscribed={/*isSubscribed[index]*/checkIfSubscribed(course, subCourses)}
+								course={course}
+							></ExploreCard>
+						))}
+					</View>
+				</ScrollView>
+			</View>
 		</>
 	);
 }
