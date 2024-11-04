@@ -40,12 +40,6 @@ export default function Congratulation() {
           		Bom trabalho, {name}! Você pode ver suas estatísticas, placar educado e certificação antes de continuar.
 				</Text>
 			</View>
-
-			<TouchableOpacity onPress={() => navigation.navigate('CertificateStack')}>
-				<Text className="text-center text-lg text-primary_custom underline mt-4">
-					Ver Certificado
-				</Text>
-			</TouchableOpacity>
 		</View>
 	);
 }
