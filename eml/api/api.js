@@ -4,7 +4,7 @@ import { Buffer } from 'buffer';
 const timeoutInMs = 1200;
 
 
-const url = 'https://educado-backend-staging-x7rgvjso4a-ew.a.run.app/:8888'; // Change this to your LOCAL IP address when testing.
+const url = 'http://192.168.0.165:8888'; // Change this to your LOCAL IP address when testing.
 const certificateUrl = 'https://educado-certificate-service-staging-x7rgvjso4a-ew.a.run.app/';
 
 /* Commented out for avoiding linting errors :))
@@ -271,7 +271,7 @@ export const getBucketImage = async (fileName) => {
 
 export const sendMessageToChatbot = async (userMessage) => {
 	try {
-	  const response = await axios.post(`http://192.168.0.205:8888/api/ai`, {
+	  const response = await axios.post(url + `/api/ai`, {
 		userInput: userMessage
 	  });
   
