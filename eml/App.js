@@ -181,87 +181,87 @@ export default function App() {
 				<IconRegistry icons={EvaIconsPack} />
 				<ApplicationProvider {...eva} theme={eva.light}>
 					<DownloadProvider>
-					<NavigationContainer>
-						<Stack.Navigator initialRouteName={initialRoute}>
-							<Stack.Screen
-								name="WelcomeStack"
-								component={WelcomeStack}
-								options={{ headerShown: false }}
-							/>
-							<Stack.Screen
-								name="LoginStack"
-								component={LoginStack}
-								options={{ headerShown: false }}
-							/>
-							<Stack.Screen
-								name="HomeStack"
-								component={NavBar}
-								options={{ headerShown: false }}
-							/>
-							<Stack.Screen
-								name={'CourseStack'}
-								component={CourseStack}
-								options={{ headerShown: false }}
-							/>
-							<Stack.Screen
-								name={'Section'}
-								component={SectionScreen}
-								initialParams={{ course_id: '' }}
-								options={{ headerShown: false }}
-							/>
-							<Stack.Screen
-								name={'CompleteSection'}
-								component={CompleteSectionScreen}
-								options={{ headerShown: false }}
-							/>
-							<Stack.Screen
-								name={'Download'}
-								component={DownloadScreen}
-								options={{ headerShown: false }}
-							/>
-							<Stack.Screen
-								name="EditProfile"
-								component={EditProfileScreen}
-								options={{ headerShown: false }}
-							/>
-							<Stack.Screen
-								name="EditPassword"
-								component={EditPasswordScreen}
-								options={{ headerShown: false }}
-							/>
-							<Stack.Screen
-								name="Exercise"
-								component={ExerciseScreen}
-								options={{ headerShown: false }}
-							/>
-							<Stack.Screen
-								name="Components"
-								component={CompSwipeScreen}
-								options={{ headerShown: false }}
-							/>
-							<Stack.Screen
-								name="CertificateStack"
-								component={CertificateStack}
-								options={{ headerShown: false }}
-							/>
-							<Stack.Screen
-								name="CompleteCourse"
-								component={CompleteCourseScreen}
-								options={{ headerShown: false }}
-							/>
-							<Stack.Screen
-								name="Camera"
-								component={CameraScreen}
-								options={{ headerShown: false }}
-							/>
-							<Stack.Screen
-								name="Subscribed"
-								component={SubscribedToCourseScreen}
-								initialParams={{course_id: ''}}
-								options={{headerShown: false}}
-							/>
-						</Stack.Navigator>
-					</NavigationContainer>
+						<NavigationContainer>
+							<Stack.Navigator initialRouteName={initialRoute}>
+								<Stack.Screen
+									name="WelcomeStack"
+									component={WelcomeStack}
+									options={{ headerShown: false }}
+								/>
+								<Stack.Screen
+									name="LoginStack"
+									component={LoginStack}
+									options={{ headerShown: false }}
+								/>
+								<Stack.Screen
+									name="HomeStack"
+									component={NavBar}
+									options={{ headerShown: false }}
+								/>
+								<Stack.Screen
+									name={'CourseStack'}
+									component={CourseStack}
+									options={{ headerShown: false }}
+								/>
+								<Stack.Screen
+									name={'Section'}
+									component={SectionScreen}
+									initialParams={{ course_id: '' }}
+									options={{ headerShown: false }}
+								/>
+								<Stack.Screen
+									name={'CompleteSection'}
+									component={CompleteSectionScreen}
+									options={{ headerShown: false }}
+								/>
+								<Stack.Screen
+									name={'Download'}
+									component={DownloadScreen}
+									options={{ headerShown: false }}
+								/>
+								<Stack.Screen
+									name="EditProfile"
+									component={EditProfileScreen}
+									options={{ headerShown: false }}
+								/>
+								<Stack.Screen
+									name="EditPassword"
+									component={EditPasswordScreen}
+									options={{ headerShown: false }}
+								/>
+								<Stack.Screen
+									name="Exercise"
+									component={ExerciseScreen}
+									options={{ headerShown: false }}
+								/>
+								<Stack.Screen
+									name="Components"
+									component={CompSwipeScreen}
+									options={{ headerShown: false }}
+								/>
+								<Stack.Screen
+									name="CertificateStack"
+									component={CertificateStack}
+									options={{ headerShown: false }}
+								/>
+								<Stack.Screen
+									name="CompleteCourse"
+									component={CompleteCourseScreen}
+									options={{ headerShown: false }}
+								/>
+								<Stack.Screen
+									name="Camera"
+									component={CameraScreen}
+									options={{ headerShown: false }}
+								/>
+								<Stack.Screen
+									name="Subscribed"
+									component={SubscribedToCourseScreen}
+									initialParams={{course_id: ''}}
+									options={{headerShown: false}}
+								/>
+							</Stack.Navigator>
+						</NavigationContainer>
 					</DownloadProvider>
 				</ApplicationProvider>
 			</BaseScreen>
