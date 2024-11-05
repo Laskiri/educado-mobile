@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { Buffer } from 'buffer';
 import { URL, CERTIFICATE_URL } from '@env';
+URL; CERTIFICATE_URL; // Forcing the module to evaluate and load the environment variables.
 
 const timeoutInMs = 1200;
 
@@ -284,7 +285,7 @@ export const getLectureById = async (lectureId) => {
 };
 
 
-export const getBucketImage = async (fileName) => {
+export const getBucketImage = async (fileName, fileType) => {
 	try {
 		const res = await axios.get(
 			`${url}/api/bucket/${fileName}`,
@@ -293,13 +294,18 @@ export const getBucketImage = async (fileName) => {
 				accept: 'image/jpeg',
 			});
 
-		let fileType = fileName.split('.').pop();
-
-		if (fileType === 'jpg') {
-			fileType = 'jpeg';
-		} else if (!fileType) { // Default to png
-			fileType = 'png';
+		if (!fileType) {
+			fileType = fileName.split('.').pop();
+			
+			if (fileType === 'jpg') {
+				fileType = 'jpeg';
+			} else if (!fileType) { // Default to png
+				fileType = 'png';
+			}
 		}
+
+
+		console.log('fileType:', fileType);
 
 		// Convert the image to base64
 		const image = `data:image/${fileType};base64,${Buffer.from(res.data, 'binary').toString('base64')}`;

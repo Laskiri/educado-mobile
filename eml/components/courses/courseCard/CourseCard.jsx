@@ -5,10 +5,11 @@ import Text from '../../../components/general/Text';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import CustomProgressBar from '../../exercise/Progressbar';
 import tailwindConfig from '../../../tailwind.config';
-import { determineIcon, determineCategory, formatHours, checkProgressCourse} from '../../../services/utilityFunctions';
+import { determineIcon, determineCategory, formatHours, checkProgressCourse } from '../../../services/utilityFunctions';
 import DownloadCourseButton from './DownloadCourseButton';
 import PropTypes from 'prop-types';
 import { checkCourseStoredLocally } from '../../../services/StorageService';
+import { getBucketImage } from '../../../api/api';
 
 /**
  * CourseCard component displays a card for a course with its details
@@ -32,13 +33,18 @@ export default function CourseCard({ course, isOnline }) {
 	};
 	checkProgress();
 
+	const getCourseImage = async () => {
+		course.image = await getBucketImage('6718e87502cf294ae4e8dd4b_c', 'jpeg');
+	};
+	getCourseImage();
+
 	const enabledUI = 'rounded-lg overflow-hidden m-[3%] elevation-[2] mx-[5%] relative';
 	const disabledUI = 'rounded-lg overflow-hidden opacity-50 m-[3%] elevation-[2] mx-[5%]';
 
 	const layout = downloaded || isOnline ? enabledUI : disabledUI;
 
 	let isDisabled = layout === disabledUI;
-	course.image = require('../../../assets/images/sectionThumbnail.png'); // Temporary image
+	console.log(course);
 
 	return (
 		<Pressable testID="courseCard"
@@ -53,7 +59,7 @@ export default function CourseCard({ course, isOnline }) {
 			<View className={`relative ${course.image ? 'h-[250px]' : 'w-auto h-auto'}`}>
 				{course.image &&
 					<Image
-						source={course.image}
+						source={{ uri: course.image }}
 						resizeMode={'cover'}
 						className="absolute top-0 left-0 right-0 w-full h-full rounded-t-lg"
 					/>
