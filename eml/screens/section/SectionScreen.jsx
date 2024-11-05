@@ -21,12 +21,8 @@ export default function SectionScreen({ route }) {
 	const navigation = useNavigation();
 	const [sections, setSections] = useState(null);
 	const [studentProgress, setStudentProgress] = useState(0);
-<<<<<<< HEAD
-	const [completedComponents, setCompletedComponents] = useState([]);
-=======
 	const [sectionProgress, setSectionProgress] = useState({});
 	const [currentSection, setCurrentSection] = useState(null);
->>>>>>> origin/dev
 
 	async function loadSections(id) {
 		const sectionData = await StorageService.getSectionList(id);
@@ -38,38 +34,6 @@ export default function SectionScreen({ route }) {
 		setStudentProgress(progress);
 	};
 
-<<<<<<< HEAD
-	/**
-	 * Fetch and set progress for each section in bulk to avoid re-renders
-	 */
-	const loadAllSectionProgress = async () => {
-		if (sections) {
-			// Map over each section ID and fetch their progress
-			const progressArray = await Promise.all(
-				sections.map(section => checkProgressSection(section.sectionId))
-			);
-			setCompletedComponents(progressArray);
-		}
-	};
-
-	useEffect(() => {
-		// this makes sure checkProgress is called when the screen is focused
-		const update = navigation.addListener('focus', () => {
-			checkProgress();
-		});
-		return update;
-	}, [navigation]);
-
-	// Fetch sections from backend and progress for each section
-	useEffect(() => {
-		const loadData = async () => {
-			await loadSections(course.courseId);
-			checkProgress();  // Load total course progress
-			await loadAllSectionProgress();  // Load progress for each section
-		};
-		loadData();
-	}, [sections]);
-=======
 	const checkProgressInSection = async (sectionId) => {
 		const completed = await checkProgressSection(sectionId);
 		setSectionProgress(prevProgress => ({
@@ -93,7 +57,6 @@ export default function SectionScreen({ route }) {
 			componentIsMounted = false;
 		};
 	}, []);
->>>>>>> origin/dev
 
 	useEffect(() => {
 		if (sections) {
@@ -161,16 +124,10 @@ export default function SectionScreen({ route }) {
 						<CustomProgressBar width={60} progress={studentProgress} height={3}></CustomProgressBar>
 						{/* Section Cards */}
 						<ScrollView className="mt-[5%]" showsVerticalScrollIndicator={false}>
-<<<<<<< HEAD
-							{sections.map((section, i) => (
-								<SectionCard key={i} section={section} course={course} progress={completedComponents[i] || 0}></SectionCard>
-							))}
-=======
 							{sections.map((section, i) => {
 								const completedComponents = sectionProgress[section.sectionId] || 0;
 								return <SectionCard key={i} section={section} course={course} progress={completedComponents}></SectionCard>;
 							})}
->>>>>>> origin/dev
 						</ScrollView>
 						{/* Unsubscribe Button */}
 						<SubscriptionCancel onPress={unsubAlert} />
@@ -179,10 +136,6 @@ export default function SectionScreen({ route }) {
 					</View>
 				)
 			) : null}
-<<<<<<< HEAD
-		</BaseScreen>
-=======
 		</>
->>>>>>> origin/dev
 	);
 }
