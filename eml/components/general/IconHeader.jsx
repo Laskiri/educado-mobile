@@ -18,7 +18,6 @@ export default function IconHeader({ title, description }) {
 	};
 	return (
 		<>
-			<NetworkStatusObserver setIsOnline={setIsOnline} />
 			<View className='flex flex-row items-center pl-6 pb-2 pt-[20%]'>
 				<Image
 					source={require('../../assets/images/singleIcon.png')}
