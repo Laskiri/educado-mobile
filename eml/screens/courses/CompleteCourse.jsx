@@ -1,10 +1,11 @@
-import React, { useRef } from 'react';
-import { View, TouchableOpacity, SafeAreaView } from 'react-native';
-import { BgLinearGradient } from '../../constants/BgLinearGradient';
+import React, { useRef, useState } from 'react';
+import { View, TouchableOpacity, SafeAreaView, Alert } from 'react-native';
 import CompleteCourseSlider from '../../components/courses/completeCourse/CompleteCourseSlider';
 import Text from '../../components/general/Text.js';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import PropTypes from 'prop-types';
+import { giveFeedback } from '../../api/api';
+
 
 
 /* 
@@ -18,12 +19,18 @@ Dependencies: 	The student must have the course in their course list.
 */
 
 export default function CompleteCourseScreen() {
+	const [currentSlide, setCurrentSlide] = useState(0);
 	const completeCourseSliderRef = useRef(null);
-	let currentSlide = 0;
+	const [feedbackData, setFeedbackData] = useState({});
+	const [feedbackError, setFeedbackError] = useState(false);
+	
 
 	const navigation = useNavigation();
 	const route = useRoute();
 	const { course } = route.params;
+	const isFeedbackScreen = currentSlide === 1;
+	const rating = feedbackData.rating ? feedbackData.rating : 0;
+	const onFBScreenNoStars = isFeedbackScreen && rating === 0;
 
 	
 	// Generate certificate for the student, Uncomment this when course completion is properly handled or to test certificates
@@ -43,12 +50,24 @@ export default function CompleteCourseScreen() {
 	}, []); */
 
 	const handleIndexChange = (index) => {
-		currentSlide = index;
+		setCurrentSlide(index);
+	};
+	const handleSubmitFeedback = async () => {
+		try {
+			await giveFeedback(course.courseId, feedbackData);
+		}
+		catch (e) {
+			if (e.response.status === 404) {
+				setFeedbackError(true);
+			}
+		}
 	};
 
-	const handleNextSlide = () => {
+	const handleNextSlide =  async () => {
 		if (!completeCourseSliderRef.current) { return; }
-		if (currentSlide === 0) {
+
+		if (isFeedbackScreen) {
+			await handleSubmitFeedback();
 			navigation.reset({
 				index: 0,
 				routes: [{ name: 'HomeStack' }],
@@ -58,29 +77,32 @@ export default function CompleteCourseScreen() {
 		}
 	};
 
-	return (
-		<BgLinearGradient>
-			<SafeAreaView >
-				<View className="justify-around items-center flex flex-col h-full w-full">
-					<View className="flex w-screen h-5/6 justify-center items-center">
-						<CompleteCourseSlider 
-							onIndexChanged={handleIndexChange}
-							ref={completeCourseSliderRef}  
-							courseObject={course}
-						/>
-					</View>
-
-					<View className="px-6 w-screen">
-						<TouchableOpacity className="bg-primary_custom px-10 py-4 rounded-medium"
-							onPress={() => {handleNextSlide();}}
-						>
-							<Text className="text-center font-sans-bold text-body text-projectWhite">Continuar</Text>
-						</TouchableOpacity>
-					</View>
-
+	return (	
+		<SafeAreaView className="bg-secondary" >
+			{feedbackError && Alert.alert('Não foi possível encontrar o curso sobre o qual você deu feedback.')}
+			<View className="justify-around items-center flex flex-col h-full w-full">
+				<View className="flex w-screen h-5/6 justify-center items-center">
+					<CompleteCourseSlider
+						setFeedbackData={setFeedbackData} 
+						onIndexChanged={handleIndexChange}
+						ref={completeCourseSliderRef}  
+						courseObject={course}
+					/>
 				</View>
-			</SafeAreaView>
-		</BgLinearGradient>
+
+				<View className="px-6 w-screen">
+					<TouchableOpacity 
+						className={`bg-primary_custom px-10 py-4 rounded-medium ${onFBScreenNoStars ? 'opacity-50' : ''}`}
+						onPress={() => {
+							!(onFBScreenNoStars) && handleNextSlide();
+						}}
+						disabled={onFBScreenNoStars}
+					>
+						<Text className="text-center font-sans-bold text-body text-projectWhite">{isFeedbackScreen ? 'Enviar e concluir' : 'Continuar'}</Text>
+					</TouchableOpacity>
+				</View>
+			</View>
+		</SafeAreaView>		
 	);
 }
 
