@@ -1,10 +1,9 @@
 import React from 'react';
 import { useState, useEffect, useRef } from 'react';
-import { View, TextInput, ScrollView, Text, TouchableOpacity, Animated } from 'react-native';
+import { View, TextInput, ScrollView, Text, TouchableOpacity} from 'react-native';
 import BaseScreen from '../../components/general/BaseScreen';
 import IconHeader from '../../components/general/IconHeader';
 import NetworkStatusObserver from '../../hooks/NetworkStatusObserver';
-import axios from 'axios';
 import { Icon } from '@rneui/themed';
 import Markdown from 'react-native-markdown-display';
 
@@ -21,37 +20,37 @@ export default function Explore() {
 	const [loadingDots, setLoadingDots] = useState('');
   
 	const handleSendMessage = async () => {
-	  if (!userMessage) return;
-  
-	  setChatMessages([...chatMessages, { sender: 'User', text: userMessage }]);
-	  setLoading(true);
-	  setUserMessage('');
-  
-	  const chatbotResponse = await fetchChatbotResponse(userMessage);
-  
-	  setChatMessages(prevMessages => [
-		...prevMessages,
-		{ sender: 'Chatbot', text: chatbotResponse }
-	  ]);
-  
-	  setLoading(false);
+		if (!userMessage) return;
+	
+		setChatMessages([...chatMessages, { sender: 'User', text: userMessage }]);
+		setLoading(true);
+		setUserMessage('');
+	
+		const chatbotResponse = await fetchChatbotResponse(userMessage);
+	
+		setChatMessages(prevMessages => [
+			...prevMessages,
+			{ sender: 'Chatbot', text: chatbotResponse }
+		]);
+	
+		setLoading(false);
 	};
   
 	useEffect(() => {
-	  if (scrollViewRef.current) {
-		scrollViewRef.current.scrollToEnd({ animated: true });
-	  }
+		if (scrollViewRef.current) {
+			scrollViewRef.current.scrollToEnd({ animated: true });
+		}
 	}, [chatMessages]);
-  
+	
 	useEffect(() => {
-	  if (loading){
-		const interval = setInterval(() => {
-		  setLoadingDots((prev) => (prev.length < 3 ? prev + '.' : ''));
-		}, 500);
-		return () => clearInterval(interval);
-	  } else {
-		setLoadingDots('');
-	  }
+		if (loading){
+			const interval = setInterval(() => {
+				setLoadingDots((prev) => (prev.length < 3 ? prev + '.' : ''));
+			}, 500);
+			return () => clearInterval(interval);
+		} else {
+			setLoadingDots('');
+		}
 	}, [loading]);
 
 	return (
@@ -76,58 +75,58 @@ export default function Explore() {
 							ref={scrollViewRef}
 							style={'flex-1'}
 							className="pr-2.5"
-							>
-								{chatMessages.map((message, index) => (
-									message.sender === 'User' ? (
-										<View key={index} style={{ alignSelf: 'flex-end' }}>
-											<View
-												className="p-2.5 pl-3 mb-1 mt-2 flex-row rounded-t-3xl rounded-bl-3xl max-w-[80%] bg-bgprimary_custom"
-											>
-												<Text className="text-projectLightGray">{message.text}</Text>
-											</View>
+						>
+							{chatMessages.map((message, index) => (
+								message.sender === 'User' ? (
+									<View key={index} style={{ alignSelf: 'flex-end' }}>
+										<View
+											className="p-2.5 pl-3 mb-1 mt-2 flex-row rounded-t-3xl rounded-bl-3xl max-w-[80%] bg-bgprimary_custom"
+										>
+											<Text className="text-projectLightGray">{message.text}</Text>
 										</View>
-									) : (
-										<View key={index} style={{ alignSelf: 'flex-start' }}>
-											<View
-												className="p-2.5 pl-3 mb-1 flex-row rounded-t-3xl rounded-br-3xl max-w-[80%]"
+									</View>
+								) : (
+									<View key={index} style={{ alignSelf: 'flex-start' }}>
+										<View
+											className="p-2.5 pl-3 mb-1 flex-row rounded-t-3xl rounded-br-3xl max-w-[80%]"
 
-											>
-												<View className="px-2">
-													<Icon
-														name="robot-outline"
-														type="material-community"
-														color="primary_custom"
-														size={20} 
-													/>
-												</View>
-												<Markdown>{message.text}</Markdown> 
-
+										>
+											<View className="px-2">
+												<Icon
+													name="robot-outline"
+													type="material-community"
+													color="primary_custom"
+													size={20} 
+												/>
 											</View>
+											<Markdown>{message.text}</Markdown> 
+
 										</View>
-									)
-								))}
+									</View>
+								)
+							))}
 
 
 								
-								{/* Display loading indicator if loading */}
-								{loading && (
-									<View
-										style={{
-											alignSelf: 'flex-start',
-											padding: 10,
-											marginBottom: 5,
-										}}
-									>
-										<Icon
-											name="robot-outline"
-											type="material-community"
-											color="primary_custom"
-											size={20}
-										/>
-										<Text>Edu is thinking{loadingDots}</Text>
-									</View>
-								)}
-							</ScrollView>
+							{/* Display loading indicator if loading */}
+							{loading && (
+								<View
+									style={{
+										alignSelf: 'flex-start',
+										padding: 10,
+										marginBottom: 5,
+									}}
+								>
+									<Icon
+										name="robot-outline"
+										type="material-community"
+										color="primary_custom"
+										size={20}
+									/>
+									<Text>Edu is thinking{loadingDots}</Text>
+								</View>
+							)}
+						</ScrollView>
 						<View className="flex-row border rounded-3xl m-4 p-1 pl-4">
 							<TextInput
 								value={userMessage}
