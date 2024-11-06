@@ -9,7 +9,7 @@ import CertificateTemplate from './CertificateTemplate';
 import CertificatePopup from './CertificatePopup';
 import CertificateOverlay from './CertificateOverlay';
 import CardLabel from '../explore/CardLabel';
-import { shareAsync } from 'expo';
+import * as Sharing from 'expo-sharing';
 import * as FileSystem from 'expo-file-system';
 import { certificateUrl } from '../../api/api';
 import PropTypes from 'prop-types';
@@ -56,12 +56,12 @@ export default function CertificateCard({ certificate }) {
 						})
 						.catch(e => console.log(e));
 				} else {
-					await shareAsync(uri);
+					await Sharing.shareAsync(uri);
 					ToastNotification('success', 'Certificado baixado com sucesso!');
 					handleClosePopup();
 				}
 			} else {
-				await shareAsync(uri);
+				await Sharing.shareAsync(uri);
 				ToastNotification('success', 'Certificado baixado com sucesso!');
 				handleClosePopup();
 			}	
