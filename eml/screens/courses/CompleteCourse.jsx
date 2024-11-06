@@ -5,7 +5,6 @@ import Text from '../../components/general/Text.js';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import PropTypes from 'prop-types';
 import { giveFeedback } from '../../api/api';
-// import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 
 
