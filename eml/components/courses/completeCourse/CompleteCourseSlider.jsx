@@ -1,31 +1,34 @@
 import React, { useRef, forwardRef, useImperativeHandle } from 'react';
-import { View } from 'react-native';
+import { KeyboardAvoidingView, View, ScrollView } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import Slick from 'react-native-slick';
 import Congratulation from './Congratulation';
 import PropTypes from 'prop-types'; 
+import Feedback from './Feedback';
 
 /* Check the CompleteCourse file in the screens folder for more info
 props: 			onIndexChanged: function that is called when the index of which slide the student are currently on changes
 				courseObject: the course object
 */
 
-const CompleteCourseSlider = forwardRef(({ onIndexChanged }, ref) => {
+const CompleteCourseSlider = forwardRef(({ onIndexChanged, setFeedbackData }, ref) => {
 
 	CompleteCourseSlider.propTypes = {
 		courseObject: PropTypes.object.isRequired,
 		onIndexChanged: PropTypes.func.isRequired,
+		setFeedbackData: PropTypes.func.isRequired,
 	};
 
 	CompleteCourseSlider.displayName = 'CompleteCourseSlider';
 
 	const slick = useRef(null);
+
 	const tailwindConfig = require('../../../tailwind.config.js');
 	const projectColors = tailwindConfig.theme.colors;
-	const statsOverviewRef = useRef(null);
 
 	const screens = [
-		<Congratulation key={0}/>
+		<Congratulation key={0}/>,
+		<Feedback setFeedbackData={setFeedbackData} key={1}/>,
 	];
 
 	const scrollBy = (number) => {
@@ -48,13 +51,11 @@ const CompleteCourseSlider = forwardRef(({ onIndexChanged }, ref) => {
 			dotStyle={{ width: 10, height: 10 }}
 			activeDotColor={projectColors.primary_custom}
 			activeDotStyle={{ width: 10, height: 10 }}
-			height={265}
+			height={700}
 			showsButtons={true}
+			paginationStyle={{bottom: -15}}
 			onIndexChanged={(index) => {
 				onIndexChanged(index);
-				if (index === 1) {
-					statsOverviewRef.current.startAnimation();
-				}
 			}}
 			autoplayTimeout={10}
 			autoplay={true}
@@ -75,10 +76,20 @@ const CompleteCourseSlider = forwardRef(({ onIndexChanged }, ref) => {
 				</Svg>
 			}
 		>
+
 			{screens.map((screen, index) => (
-				<View key={index}>
-					{screen}
-				</View>
+				<KeyboardAvoidingView 
+					style={{ flex: 1 }}
+					behavior='height'
+					keyboardVerticalOffset={80}
+					key={index}
+				>
+					<ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+						<View style={{ flex: 1 }}>
+							{screen}
+						</View>
+					</ScrollView>
+				</KeyboardAvoidingView>
 			))}
 		</Slick>
 	);
