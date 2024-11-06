@@ -11,7 +11,7 @@ import FilterNavBar from '../../components/explore/FilterNavBar';
 import CertificateCard from '../../components/certificate/CertificateCard';
 import CertificateEmptyState from '../../components/certificate/CertifateEmptyState';
 import { determineCategory } from '../../services/utilityFunctions';
-import { fetchCertificates } from '../../api/api';
+import { fetchCertificates } from '../../services/CertificateService';
 import { getStudentInfo } from '../../services/StorageService';
 
 
