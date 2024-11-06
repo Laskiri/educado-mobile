@@ -246,7 +246,7 @@ export const generateCertificate = async (courseId, userId) => {
 			studentFirstName: userData.firstName,
 			studentLastName: userData.lastName,
 			courseCreator: courseData.creator,
-			estimatedCourseDuration: courseData.estimatedHours,
+			estimatedCourseDuration: courseData.estimatedHours || 0,
 			dateOfCompletion: new Date().toISOString().split('T')[0], // current date
 			courseCategory: courseData.category,
 		});
