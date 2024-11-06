@@ -257,6 +257,31 @@ export const generateCertificate = async (courseId, userId) => {
 	}
 };
 
+export const giveFeedback = async (courseId, feedbackData) => {
+	const { rating, feedbackText, feedbackOptions } = feedbackData;
+	try {
+		const response = await axios.post(url + '/api/feedback/' + courseId, {
+			rating: rating,
+			feedbackText: feedbackText,
+			feedbackOptions: feedbackOptions,
+		});
+		return response.data;
+	} catch (error) {
+		console.error('Error giving feedback:', error.response?.data || error.message);
+		throw error;
+	}
+};
+
+export const getAllFeedbackOptions = async () => {
+	try {
+		const response = await axios.get(`${url}/api/feedback/options`);
+		return response.data;
+	} catch (error) {
+		console.error('Error getting feedback options:', error.response?.data.error || error.message);
+		throw error;
+	}
+};
+
 //CREATED BY VIDEO STREAM TEAM
 /*This will be improved in next pull request to handle getting different resolutions properly 
 with our new video streaming service in go.
