@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useContext } from 'react';
 import ToastNotification from '../../components/general/ToastNotification';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
@@ -10,12 +10,14 @@ import ProfileNavigationButton from '../../components/profile/ProfileNavigationB
 
 import UserInfo from '../../components/profile/UserInfo';
 import { useNavigation } from '@react-navigation/native';
-import { getUserInfo } from '../../services/StorageService';
+import { getUserInfo, getStudentInfo } from '../../services/StorageService';
 import errorSwitch from '../../components/general/errorSwitch';
 import ShowAlert from '../../components/general/ShowAlert';
-import { getStudentInfo } from '../../services/StorageService';
 import ProfileStatsBox from '../../components/profile/ProfileStatsBox';
 import { useFocusEffect } from '@react-navigation/native';
+import { set } from 'react-native-reanimated';
+
+import { UserContext } from '../../contexts/UserContext';
 
 /**
  * Profile screen
@@ -27,28 +29,23 @@ export default function ProfileComponent() {
 	const [email, setEmail] = useState('');
 	const [photo, setPhoto] = useState('');
 	const navigation = useNavigation();
-	const [studentLevel, setStudentLevel] = useState(0);
+	/* const [studentLevel, setStudentLevel] = useState(0);
 	const [levelProgress, setLevelProgress] = useState(0);
-	const [totalPoints, setTotalPoints] = useState(0);
+	const [totalPoints, setTotalPoints] = useState(0); */
 
-	useEffect(() => {
+	const { profile, student, fetchUser } = useContext(UserContext);
+
+	/* useEffect(() => {
 		const getInfo = navigation.addListener('focus', () => {
 			getProfile();
 		});
 		return getInfo;
-	}, [navigation]);
-
-	const getLevelProgress = (student) => {
-		const pointsForPreviousLevel = (student.level - 1) * 100;
-		const pointsForNextLevel = student.level * 100;
-
-		return ((student.points - pointsForPreviousLevel) / (pointsForNextLevel - pointsForPreviousLevel)) * 100;
-	};
+	}, [navigation]); */
 
 	/**
   * Fetches the user's profile from local storage
   */
-	const getProfile = async () => {
+	/* const getProfile = async () => {
 		try {
 			const fetchedProfile = await getUserInfo();
 			const fetchedStudent = await getStudentInfo();
@@ -56,16 +53,22 @@ export default function ProfileComponent() {
 				setFirstName(fetchedProfile.firstName);
 				setLastName(fetchedProfile.lastName);
 				setEmail(fetchedProfile.email);
-				if (fetchedStudent !== null) setPhoto(fetchedStudent.photo);
-			} else if (fetchedStudent !== null) {
+				if (fetchedStudent !== null) 
+					setPhoto(fetchedStudent.photo);
+			} 
+			if (fetchedStudent !== null) {
 				setStudentLevel(fetchedStudent.level);
 				setTotalPoints(fetchedStudent.points);
-				setLevelProgress(getLevelProgress(fetchedStudent));
+				setLevelProgress(getLevelProgressPercentage(fetchedStudent.points));
 			}
+
+			// TODO: remove when done!
+			console.log('fetchedStudent: ', fetchedStudent);
+
 		} catch (error) {
 			ShowAlert(errorSwitch(error));
 		}
-	};
+	}; */
 
 	useFocusEffect(
 		useCallback(() => {
@@ -73,8 +76,8 @@ export default function ProfileComponent() {
 			const runAsyncFunction = async () => {
 				try {
 					// Load profile data and check for password reset status
-					await getProfile();
-					await fetchStudentProfile();
+					//await getProfile();
+					//await fetchUser();
 					await checkPasswordReset();
 				} catch (error) {
 					console.error('Error fetching profile:', error);
@@ -85,14 +88,6 @@ export default function ProfileComponent() {
 			runAsyncFunction();
 		}, [])
 	);
-
-
-	const fetchStudentProfile = async () => {
-		const studentInfo = await getStudentInfo();
-		setStudentLevel(studentInfo.level);
-		setTotalPoints(studentInfo.points);
-		setLevelProgress(getLevelProgress(studentInfo));
-	};
 
 	const checkPasswordReset = async () => {
 		try {
@@ -108,10 +103,16 @@ export default function ProfileComponent() {
 	};
 
 	return (
-		<ScrollView className='flex flex-col'>
-			<View className="flex-1 justify-start pt-[20%] h-screen">
-				<UserInfo firstName={firstName} lastName={lastName} email={email} points={totalPoints} photo={photo}></UserInfo>
-				<ProfileStatsBox studentLevel={studentLevel} levelProgress={levelProgress} />
+		<ScrollView className='flex flex-col pt-[80px] px-[24px] pb-[24px]'>
+			<View className="flex-1 justify-start h-screen">
+				<UserInfo firstName={profile?.firstName} lastName={profile?.lastName} email={profile?.email} photo={student?.photo}></UserInfo>
+				<ProfileStatsBox 
+					points={student?.points || 0} 
+					studentLevel={student?.level || 0} 
+					leaderboardPosition={1337}	// Placeholder
+					numberOfDaysInRow={42} 		// Placeholder
+					drawProgressBarOnly={false} 
+				/>
 				<ProfileNavigationButton label='Editar perfil' testId={'editProfileNav'} onPress={() => navigation.navigate('EditProfile')}></ProfileNavigationButton>
 				<ProfileNavigationButton label='Alterar senha' testId={'editPasswordNav'} onPress={() => navigation.navigate('EditPassword')}></ProfileNavigationButton>
 				<ProfileNavigationButton label='Certificados' onPress={() => navigation.navigate('Certificate')}></ProfileNavigationButton>

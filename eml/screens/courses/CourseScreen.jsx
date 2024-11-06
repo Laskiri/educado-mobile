@@ -1,5 +1,5 @@
 import {useNavigation} from '@react-navigation/native';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useContext} from 'react';
 import {Image, Pressable, RefreshControl, ScrollView, View} from 'react-native';
 import Text from '../../components/general/Text';
 import * as StorageService from '../../services/StorageService';
@@ -13,6 +13,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import errorSwitch from '../../components/general/errorSwitch';
 import ShowAlert from '../../components/general/ShowAlert';
 
+import { UserContext } from '../../contexts/UserContext';
+import ProfileStatsBox from '../../components/profile/ProfileStatsBox';
+
 /**
  * Course screen component that displays a list of courses.
  * @component
@@ -25,6 +28,9 @@ export default function CourseScreen() {
 	const [isOnline, setIsOnline] = useState(false);
 	const [loading, setLoading] = useState(true);
 	const navigation = useNavigation();
+
+	// Student context
+	const { student } = useContext(UserContext);
 
 	/**
     * Asynchronous function that loads the courses from storage and updates the state.
@@ -84,7 +90,18 @@ export default function CourseScreen() {
 					<View height="100%">
 						<IconHeader
 							title={'Bem Vindo!'}
-							description={'Aqui você encontra todos os cursos em que você está inscrito!'}/>
+							description={'Aqui você encontra todos os cursos em que você está inscrito!'}
+						/>
+						
+						{/* Render box with level and progress bar */}
+						<View className='px-5'>
+							<ProfileStatsBox 
+								points={student?.points || 0} 
+								studentLevel={student?.level || 0} 
+								drawProgressBarOnly={true} 
+							/>
+						</View>
+
 						<ScrollView showsVerticalScrollIndicator={false}
 							refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}>
 							{courses.map((course, index) => (

@@ -14,7 +14,7 @@ module.exports = {
       projectWhite: '#FFFFFF',
       projectBlack: '#383838',
       projectGray: '#A1ACB2',
-      lightGray: '#E5E5E5',
+      lightGray: '#E4E4E4',   // Now aligned with Figna, but used to be #E5E5E5
       error: '#FF4949',
       success: '#4AA04A',
       disable: '#DDD',
@@ -32,7 +32,7 @@ module.exports = {
       profileCircle: '#166276',
       pointsText: '#C1A146',
       pointsCoin: '#AD872D',
-      progressBar: '#5ECCDD',
+      progressBar: '#166276',
       progressBarUnFilled: '#E4F2F5',
       badgesGreen: '#8CC43B',
       badgesPurple: '#C383F7',
