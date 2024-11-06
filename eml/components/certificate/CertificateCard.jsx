@@ -3,7 +3,6 @@ import { Platform, View, Text, TouchableOpacity, ActivityIndicator } from 'react
 import ToastNotification from '../general/ToastNotification';
 
 import * as Utility from '../../services/utilityFunctions';
-import PropTypes from 'prop-types';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
 import CertificateTemplate from './CertificateTemplate';
@@ -13,6 +12,7 @@ import CardLabel from '../explore/CardLabel';
 import { shareAsync } from 'expo';
 import * as FileSystem from 'expo-file-system';
 import { certificateUrl } from '../../api/api';
+// import PropTypes from 'prop-types';
 
 /**
  * This component is used to display a certificate card.

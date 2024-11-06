@@ -3,7 +3,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { View, Text, TouchableOpacity} from 'react-native';
 import CardLabel from '../explore/CardLabel';
 import React from 'react';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 
 const CertificateOverlay = ({ certificate, handleVisualizarClick}) => {
 	// CertificateOverlay.propTypes = {

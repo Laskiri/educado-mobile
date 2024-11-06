@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, Image } from 'react-native';
 import logo from '../../assets/images/logo.png';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 
 const CertificateTemplate = ({
 	studentName,
