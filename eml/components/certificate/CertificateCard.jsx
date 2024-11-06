@@ -48,19 +48,19 @@ export default function CertificateCard({ certificate }) {
 	const handleDownloadClick = async () => {
 		try {
 			setLoading(true);
-			const fileName = "Educado Certificate " + certificate.courseName + ".pdf";
-			const url = certificateUrl + "/api/student-certificates/download?courseId=" + certificate.courseId + "&studentId=" + certificate.studentId;
+			const fileName = 'Educado Certificate ' + certificate.courseName + '.pdf';
+			const url = certificateUrl + '/api/student-certificates/download?courseId=' + certificate.courseId + '&studentId=' + certificate.studentId;
 			const fileUri = FileSystem.documentDirectory + fileName;
 			const file = await FileSystem.downloadAsync(url, fileUri);
 			const uri = file.uri;
 
-			if (Platform.OS === "android") {
+			if (Platform.OS === 'android') {
 				const permissions = await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
 
 				if (permissions.granted) {
 					const base64 = await FileSystem.readAsStringAsync(uri, { encoding: FileSystem.EncodingType.Base64 });
 
-					await FileSystem.StorageAccessFramework.createFileAsync(permissions.directoryUri, fileName, "application/pdf")
+					await FileSystem.StorageAccessFramework.createFileAsync(permissions.directoryUri, fileName, 'application/pdf')
 						.then(async (uri) => {
 							await FileSystem.writeAsStringAsync(uri, base64, { encoding: FileSystem.EncodingType.Base64 });
 							ToastNotification('success', 'Certificado baixado com sucesso!');
@@ -83,7 +83,7 @@ export default function CertificateCard({ certificate }) {
 		} finally {
 			setLoading(false);
 		}
-	} 
+	}; 
 	return (
 		<View className='relative max-h-[33%] min-h-[260px]  m-2 flex items-center rounded-lg border-[3px] border-lightGray'>
 			<CertificateTemplate
