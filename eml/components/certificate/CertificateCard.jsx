@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Platform, View, Text, TouchableOpacity} from 'react-native';
+import { Platform, View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
+import ToastNotification from '../general/ToastNotification';
 
 import * as Utility from '../../services/utilityFunctions';
 import PropTypes from 'prop-types';
@@ -20,6 +21,7 @@ import { certificateUrl } from '../../api/api';
  * @returns {JSX.Element|null} - Returns a JSX element.
  */
 export default function CertificateCard({ certificate }) {
+	const [loading, setLoading] = useState(false);
 	// CertificateCard.propTypes = {
 	// 	certificate: PropTypes.shape({
 	// 		studentFirstName: PropTypes.string.isRequired,
@@ -45,6 +47,7 @@ export default function CertificateCard({ certificate }) {
 
 	const handleDownloadClick = async () => {
 		try {
+			setLoading(true);
 			const fileName = "Educado Certificate " + certificate.courseName + ".pdf";
 			const url = certificateUrl + "/api/student-certificates/download?courseId=" + certificate.courseId + "&studentId=" + certificate.studentId;
 			const fileUri = FileSystem.documentDirectory + fileName;
@@ -60,17 +63,25 @@ export default function CertificateCard({ certificate }) {
 					await FileSystem.StorageAccessFramework.createFileAsync(permissions.directoryUri, fileName, "application/pdf")
 						.then(async (uri) => {
 							await FileSystem.writeAsStringAsync(uri, base64, { encoding: FileSystem.EncodingType.Base64 });
+							ToastNotification('success', 'Certificado baixado com sucesso!');
+							handleClosePopup();
 						})
 						.catch(e => console.log(e));
 				} else {
-					shareAsync(uri);
+					await shareAsync(uri);
+					ToastNotification('success', 'Certificado baixado com sucesso!');
+					handleClosePopup();
 				}
 			} else {
-				shareAsync(uri);
+				await shareAsync(uri);
+				ToastNotification('success', 'Certificado baixado com sucesso!');
+				handleClosePopup();
 			}	
 		} catch (e) {
 			console.log('Error downloading certificate', e);
 			throw e;
+		} finally {
+			setLoading(false);
 		}
 	} 
 	return (
@@ -124,12 +135,23 @@ export default function CertificateCard({ certificate }) {
 						/>
 					</View>
 					<View >
-						<TouchableOpacity
-							
-							onPress={handleDownloadClick}>
+						<TouchableOpacity 
+							onPress={handleDownloadClick}
+							disabled={loading}>
 							<View className='flex flex-row justify-center items-end bg-primary_custom py-4 px-10 rounded-lg'>
-								<MaterialCommunityIcons name={'download'} size={24} color={'white'}/>
-								<Text className='text-projectWhite text-lg font-montserrat-bold ml-2 text-center'>Baixar PDF</Text>
+								{loading ? (
+									<ActivityIndicator
+										size="small"
+										color="white"
+									/>
+								) : (
+									<>
+										<MaterialCommunityIcons name={'download'} size={24} color={'white'}/>
+										<Text className='text-projectWhite text-lg font-montserrat-bold ml-2 text-center'>
+											Baixar PDF
+										</Text>
+									</>
+								)}
 							</View>
 						</TouchableOpacity>
 					</View>
