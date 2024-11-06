@@ -45,6 +45,7 @@ export default function CompSwipeScreen({ route }) {
 	const [scrollEnabled, setScrollEnabled] = useState(true);
 	const [combinedLecturesAndExercises, setCombinedLecturesAndExercises] = useState([]);
 	const swiperRef = useRef(null);
+	const [resetKey, setResetKey] = useState(0);
 
 	useEffect(() => {
 		async function fetchData() {
@@ -75,9 +76,6 @@ export default function CompSwipeScreen({ route }) {
 	}, [section, parsedCourse]);
 
 
-	/*
-	###### Never used ######
-	
 	const handleExerciseContinue = (isCorrect) => {
 		if (!isCorrect) {
 			// Update the section component list to move the incorrect exercise to the end
@@ -97,7 +95,7 @@ export default function CompSwipeScreen({ route }) {
 		}
 
 		return index === combinedLecturesAndExercises.length - 1; //True if this is last lecture/exercise
-	};*/
+	};
 
 	const handleIndexChange = async (_index) => {
 		const currentSlide = combinedLecturesAndExercises[_index];
@@ -147,7 +145,7 @@ export default function CompSwipeScreen({ route }) {
 							comp.type === ComponentType.LECTURE ?
 								<LectureScreen key={_index} currentIndex={index} indexCount={combinedLecturesAndExercises.length} lectureObject={comp.component} courseObject={parsedCourse} />
 								:
-								<ExerciseScreen key={0} componentList={combinedLecturesAndExercises} exerciseObject={comp.component} sectionObject={section} courseObject={parsedCourse} />
+								<ExerciseScreen key={resetKey} componentList={combinedLecturesAndExercises} exerciseObject={comp.component} sectionObject={section} courseObject={parsedCourse} onContinue={(isCorrect) => handleExerciseContinue(isCorrect)} />
 						))}
 					</Swiper>
 				)}

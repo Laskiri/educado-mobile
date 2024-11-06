@@ -7,8 +7,9 @@ import ProfileComponent from '../../screens/profile/Profile';
 import EditProfile from '../../screens/profile/EditProfile';
 import CertificateScreen from '../../screens/certificate/CertificateScreen';
 import { Icon } from '@rneui/themed';
-import { Platform, Keyboard} from 'react-native';
+import { Platform, Keyboard, Text, TextInput, StyleSheet } from 'react-native';
 import React, {useState, useEffect} from 'react';
+import {SafeAreaView, SafeAreaProvider} from 'react-native-safe-area-context';
 import tailwindConfig from '../../tailwind.config';
 
 const Tab = createBottomTabNavigator();
@@ -54,7 +55,7 @@ export default function NavBar() {
 	const [keyboardStatus, setKeyboardStatus] = useState(0);
 
 	useEffect(() => {
-		console.log('Setting up keyboard listeners');
+		console.log("Setting up keyboard listeners");
 
 		const toggleSubscription = Keyboard.addListener('keyboardDidShow', () => {
 			setKeyboardStatus((prevStatus) => {
@@ -65,7 +66,7 @@ export default function NavBar() {
 		});
 
 		return () => {
-			console.log('Cleaning up keyboard listeners');
+			console.log("Cleaning up keyboard listeners");
 			toggleSubscription.remove();
 		};
 	}, []);
