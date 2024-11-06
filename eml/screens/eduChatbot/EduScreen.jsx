@@ -127,7 +127,7 @@ export default function Explore() {
 								</View>
 							)}
 						</ScrollView>
-						<View className="flex-row border border-projectGray rounded-3xl m-4 p-1 pl-4">
+						<View className="flex-row border rounded-3xl m-4 p-1 pl-4">
 							<TextInput
 								value={userMessage}
 								onChangeText={setUserMessage}
