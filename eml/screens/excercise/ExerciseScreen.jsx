@@ -28,7 +28,7 @@ Props:			- exerciseObject: The exercise object, which contains the question and 
 				when the exercise is completed and it is the last component in the section, the student is taken to the section complete screen
 */
 
-export default function ExerciseScreen({ componentList, exerciseObject, sectionObject, courseObject}) {
+export default function ExerciseScreen({ componentList, exerciseObject, sectionObject, courseObject, onContinue }) {
 	const tailwindConfig = require('../../tailwind.config.js');
 	const projectColors = tailwindConfig.theme.colors;
 	const navigation = useNavigation();
@@ -175,5 +175,6 @@ ExerciseScreen.propTypes = {
 	exerciseObject: PropTypes.object,
 	sectionObject: PropTypes.object,
 	courseObject: PropTypes.object,
+	onContinue: PropTypes.func,
 	componentList: PropTypes.object,
 };

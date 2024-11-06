@@ -75,8 +75,8 @@ export default function CompSwipeScreen({ route }) {
 	}, [section, parsedCourse]);
 
 
-	/*
-	###### Never used ######
+	
+	/*###### Never used ######*/
 	
 	const handleExerciseContinue = (isCorrect) => {
 		if (!isCorrect) {
@@ -97,7 +97,7 @@ export default function CompSwipeScreen({ route }) {
 		}
 
 		return index === combinedLecturesAndExercises.length - 1; //True if this is last lecture/exercise
-	};*/
+	};
 
 	const handleIndexChange = async (_index) => {
 		const currentSlide = combinedLecturesAndExercises[_index];
@@ -147,7 +147,7 @@ export default function CompSwipeScreen({ route }) {
 							comp.type === ComponentType.LECTURE ?
 								<LectureScreen key={_index} currentIndex={index} indexCount={combinedLecturesAndExercises.length} lectureObject={comp.component} courseObject={parsedCourse} />
 								:
-								<ExerciseScreen key={0} componentList={combinedLecturesAndExercises} exerciseObject={comp.component} sectionObject={section} courseObject={parsedCourse} />
+								<ExerciseScreen key={0} componentList={combinedLecturesAndExercises} exerciseObject={comp.component} sectionObject={section} courseObject={parsedCourse} onContinue={(isCorrect) => handleExerciseContinue(isCorrect)} />
 						))}
 					</Swiper>
 				)}
