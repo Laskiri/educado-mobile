@@ -41,7 +41,6 @@ export default function CompleteSectionScreen() {
 
 		return phrases[randomIndex];
 	};
-	
 
 	function animation(state, setState, finalValue) {
 		return new Promise((resolve) => {

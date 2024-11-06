@@ -47,14 +47,15 @@ export default function CompleteCourseScreen() {
 	};
 
 	const handleNextSlide = () => {
-		if (!completeCourseSliderRef.current) { return; }
-		if (currentSlide === 0) {
-			navigation.reset({
-				index: 0,
-				routes: [{ name: 'HomeStack' }],
-			});
-		} else {
-			completeCourseSliderRef.current.scrollBy(1);
+		if (completeCourseSliderRef.current) {
+			if (currentSlide === 2) {
+				navigation.reset({
+					index: 0,
+					routes: [{ name: 'HomeStack' }],
+				});
+			} else {
+				completeCourseSliderRef.current.scrollBy(1);
+			}
 		}
 	};
 

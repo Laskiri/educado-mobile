@@ -3,6 +3,8 @@ import { View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import Slick from 'react-native-slick';
 import Congratulation from './Congratulation';
+import StatsOverview from './StatsOverview';
+import Certification from './Certification';
 import PropTypes from 'prop-types'; 
 
 /* Check the CompleteCourse file in the screens folder for more info
@@ -10,7 +12,7 @@ props: 			onIndexChanged: function that is called when the index of which slide 
 				courseObject: the course object
 */
 
-const CompleteCourseSlider = forwardRef(({ onIndexChanged }, ref) => {
+const CompleteCourseSlider = forwardRef(({ onIndexChanged, courseObject }, ref) => {
 
 	CompleteCourseSlider.propTypes = {
 		courseObject: PropTypes.object.isRequired,
@@ -25,7 +27,9 @@ const CompleteCourseSlider = forwardRef(({ onIndexChanged }, ref) => {
 	const statsOverviewRef = useRef(null);
 
 	const screens = [
-		<Congratulation key={0}/>
+		<Congratulation key={0}/>,
+		<StatsOverview ref={statsOverviewRef} courseObject={courseObject} key={1}/>,
+		<Certification courseObject={courseObject} key={2}/>,
 	];
 
 	const scrollBy = (number) => {
