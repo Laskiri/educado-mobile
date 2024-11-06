@@ -9,7 +9,8 @@ import CertificateTemplate from './CertificateTemplate';
 import CertificatePopup from './CertificatePopup';
 import CertificateOverlay from './CertificateOverlay';
 import CardLabel from '../explore/CardLabel';
-import { FileSystem, shareAsync } from 'expo';
+import { shareAsync } from 'expo';
+import * as FileSystem from 'expo-file-system';
 import { certificateUrl } from '../../api/api';
 
 /**
@@ -19,17 +20,17 @@ import { certificateUrl } from '../../api/api';
  * @returns {JSX.Element|null} - Returns a JSX element.
  */
 export default function CertificateCard({ certificate }) {
-	CertificateCard.propTypes = {
-		certificate: PropTypes.shape({
-			studentFirstName: PropTypes.string.isRequired,
-			studentLastName: PropTypes.string.isRequired,
-			courseCategory: PropTypes.string.isRequired,
-			estimatedCourseDuration: PropTypes.number.isRequired,
-			courseName: PropTypes.string.isRequired,
-			dateOfCompletion: PropTypes.instanceOf(Date).isRequired,
-			courseCreator: PropTypes.string.isRequired,
-		}).isRequired,
-	};
+	// CertificateCard.propTypes = {
+	// 	certificate: PropTypes.shape({
+	// 		studentFirstName: PropTypes.string.isRequired,
+	// 		studentLastName: PropTypes.string.isRequired,
+	// 		courseCategory: PropTypes.string.isRequired,
+	// 		estimatedCourseDuration: PropTypes.number.isRequired,
+	// 		courseName: PropTypes.string.isRequired,
+	// 		dateOfCompletion: PropTypes.instanceOf(Date).isRequired,
+	// 		courseCreator: PropTypes.string.isRequired,
+	// 	}).isRequired,
+	// };
 	const [popupVisible, setPopupVisible] = useState(false);
 	
 	
@@ -43,31 +44,34 @@ export default function CertificateCard({ certificate }) {
 	};
 
 	const handleDownloadClick = async () => {
-		const fileName = "Educado Certificate " + certificate.courseName + ".pdf";
-		const url = certificateUrl + "/api/student-certificates/download?courseId=" + certificate.courseId + "&studentId=" + certificate.studentId;
-		const file = await FileSystem.downloadAsync(
-			url,
-			fileName
-		);
-		const uri = file.uri;
-		
-		if (Platform.OS === "android") {
-			const permissions = await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
+		try {
+			const fileName = "Educado Certificate " + certificate.courseName + ".pdf";
+			const url = certificateUrl + "/api/student-certificates/download?courseId=" + certificate.courseId + "&studentId=" + certificate.studentId;
+			const fileUri = FileSystem.documentDirectory + fileName;
+			const file = await FileSystem.downloadAsync(url, fileUri);
+			const uri = file.uri;
 
-			if (permissions.granted) {
-				const base64 = await FileSystem.readAsStringAsync(uri, { encoding: FileSystem.EncodingType.Base64 });
+			if (Platform.OS === "android") {
+				const permissions = await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
 
-				await FileSystem.StorageAccessFramework.createFileAsync(permissions.directoryUri, fileName, "application/pdf")
-					.then(async (uri) => {
-						await FileSystem.writeAsStringAsync(uri, base64, { encoding: FileSystem.EncodingType.Base64 });
-					})
-					.catch(e => console.log(e));
+				if (permissions.granted) {
+					const base64 = await FileSystem.readAsStringAsync(uri, { encoding: FileSystem.EncodingType.Base64 });
+
+					await FileSystem.StorageAccessFramework.createFileAsync(permissions.directoryUri, fileName, "application/pdf")
+						.then(async (uri) => {
+							await FileSystem.writeAsStringAsync(uri, base64, { encoding: FileSystem.EncodingType.Base64 });
+						})
+						.catch(e => console.log(e));
+				} else {
+					shareAsync(uri);
+				}
 			} else {
 				shareAsync(uri);
-			}
-		} else {
-			shareAsync(uri);
-  		}	
+			}	
+		} catch (e) {
+			console.log('Error downloading certificate', e);
+			throw e;
+		}
 	} 
 	return (
 		<View className='relative max-h-[33%] min-h-[260px]  m-2 flex items-center rounded-lg border-[3px] border-lightGray'>
@@ -123,7 +127,7 @@ export default function CertificateCard({ certificate }) {
 						<TouchableOpacity
 							
 							onPress={handleDownloadClick}>
-							<View className='flex flex-row justify-center items-end bg-primary_custom py-4 px-10 rounded-lg opacity-50'>
+							<View className='flex flex-row justify-center items-end bg-primary_custom py-4 px-10 rounded-lg'>
 								<MaterialCommunityIcons name={'download'} size={24} color={'white'}/>
 								<Text className='text-projectWhite text-lg font-montserrat-bold ml-2 text-center'>Baixar PDF</Text>
 							</View>
@@ -133,4 +137,4 @@ export default function CertificateCard({ certificate }) {
 			</CertificatePopup>
 		</View>
 	);
-}	
+}

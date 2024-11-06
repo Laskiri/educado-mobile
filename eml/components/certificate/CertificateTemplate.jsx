@@ -11,13 +11,13 @@ const CertificateTemplate = ({
 	creatorName
 }) => {
 
-	CertificateTemplate.propTypes = {
-		studentName: PropTypes.string.isRequired,
-		estimatedCourseDuration: PropTypes.string.isRequired,
-		courseName: PropTypes.string.isRequired,
-		dateOfCompletion: PropTypes.string.isRequired,
-		creatorName: PropTypes.string.isRequired,
-	};
+	// CertificateTemplate.propTypes = {
+	// 	studentName: PropTypes.string.isRequired,
+	// 	estimatedCourseDuration: PropTypes.string.isRequired,
+	// 	courseName: PropTypes.string.isRequired,
+	// 	dateOfCompletion: PropTypes.string.isRequired,
+	// 	creatorName: PropTypes.string.isRequired,
+	// };
 	return (
 		<View className={'p-2 bg-projectWhite rounded-sm flex items-center'}>
 			<View className={'  border-2'}/* style={styles.outerBleed} */>

@@ -13,7 +13,6 @@ import CertificateEmptyState from '../../components/certificate/CertifateEmptySt
 import { determineCategory } from '../../services/utilityFunctions';
 import { fetchCertificates } from '../../api/api';
 import { getStudentInfo } from '../../services/StorageService';
-import { getStudentInfo } from '../../services/StorageService';
 
 
 /**

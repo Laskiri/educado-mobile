@@ -6,15 +6,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const CertificateOverlay = ({ certificate, handleVisualizarClick}) => {
-	CertificateOverlay.propTypes = {
-		certificate: PropTypes.shape({
-			courseName: PropTypes.string.isRequired,
-			courseCategory: PropTypes.string.isRequired,
-			estimatedCourseDuration: PropTypes.number.isRequired,
-			dateOfCompletion: PropTypes.instanceOf(Date).isRequired,
-		}).isRequired,
-		handleVisualizarClick: PropTypes.func.isRequired,
-	};
+	// CertificateOverlay.propTypes = {
+	// 	certificate: PropTypes.shape({
+	// 		courseName: PropTypes.string.isRequired,
+	// 		courseCategory: PropTypes.string.isRequired,
+	// 		estimatedCourseDuration: PropTypes.number.isRequired,
+	// 		dateOfCompletion: PropTypes.instanceOf(Date).isRequired,
+	// 	}).isRequired,
+	// 	handleVisualizarClick: PropTypes.func.isRequired,
+	// };
 
 	const { courseName, courseCategory, estimatedCourseDuration, dateOfCompletion } = certificate;
 	return (
