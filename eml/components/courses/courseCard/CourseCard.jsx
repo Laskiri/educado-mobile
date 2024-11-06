@@ -34,6 +34,13 @@ export default function CourseCard({ course, isOnline }) {
 	checkProgress();
 
 	const getCourseImage = async () => {
+		// Should be something like this:
+		// const courseInfo = await getCourse(course.courseId);
+
+		// if (courseInfo.coverImg === null) {
+		// 	return;
+		// }
+		// course.image = await getBucketImage(courseInfo.coverImg, 'jpeg');
 		course.image = await getBucketImage('6718e87502cf294ae4e8dd4b_c', 'jpeg');
 	};
 	getCourseImage();
