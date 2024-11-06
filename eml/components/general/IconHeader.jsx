@@ -1,9 +1,7 @@
 import React from 'react';
-import { useState } from 'react';
 import { View, Image } from 'react-native';
 import Text from './Text';
 import PropTypes from 'prop-types';
-import NetworkStatusObserver from '../../hooks/NetworkStatusObserver';
 
 /**
  * Custom header component with an icon and title.
@@ -11,7 +9,6 @@ import NetworkStatusObserver from '../../hooks/NetworkStatusObserver';
  * @returns {JSX.Element} The IconHeader component.
  */
 export default function IconHeader({ title, description }) {
-	const [setIsOnline] = useState(false);
 	IconHeader.propTypes = {
 		title: PropTypes.string,
 		description: PropTypes.string,
