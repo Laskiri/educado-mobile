@@ -35,7 +35,7 @@ export default function CertificateScreen() {
 				setCertificates(fetchedCertificates);
 			}
 		} catch (e) {
-			console.log('error', e);
+			console.log('errors', e);
 		}
 	};
 

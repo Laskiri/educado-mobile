@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState} from 'react';
 import { Platform, View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
 import ToastNotification from '../general/ToastNotification';
 
@@ -12,7 +12,7 @@ import CardLabel from '../explore/CardLabel';
 import { shareAsync } from 'expo';
 import * as FileSystem from 'expo-file-system';
 import { certificateUrl } from '../../api/api';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 
 /**
  * This component is used to display a certificate card.
@@ -22,21 +22,9 @@ import { certificateUrl } from '../../api/api';
  */
 export default function CertificateCard({ certificate }) {
 	const [loading, setLoading] = useState(false);
-	// CertificateCard.propTypes = {
-	// 	certificate: PropTypes.shape({
-	// 		studentFirstName: PropTypes.string.isRequired,
-	// 		studentLastName: PropTypes.string.isRequired,
-	// 		courseCategory: PropTypes.string.isRequired,
-	// 		estimatedCourseDuration: PropTypes.number.isRequired,
-	// 		courseName: PropTypes.string.isRequired,
-	// 		dateOfCompletion: PropTypes.instanceOf(Date).isRequired,
-	// 		courseCreator: PropTypes.string.isRequired,
-	// 	}).isRequired,
-	// };
+	
 	const [popupVisible, setPopupVisible] = useState(false);
 	
-	
-  
 	const handleVisualizarClick = () => {
 		setPopupVisible(true);
 	};
@@ -90,7 +78,7 @@ export default function CertificateCard({ certificate }) {
 				studentName={certificate.studentFirstName + '' + certificate.studentLastName}
 				estimatedCourseDuration={certificate.estimatedCourseDuration}
 				courseName={certificate.courseName}
-				dateOfCompletion={Utility.formatDate(certificate.dateOfCompletion)}
+				dateOfCompletion={certificate.dateOfCompletion}
 				creatorName={certificate.courseCreator}
 			/>
 			<CertificateOverlay certificate={certificate} handleVisualizarClick={handleVisualizarClick}/>
@@ -130,7 +118,7 @@ export default function CertificateCard({ certificate }) {
 							studentName={certificate.studentFirstName + ' ' + certificate.studentLastName}
 							estimatedCourseDuration={certificate.estimatedCourseDuration}
 							courseName={certificate.courseName}
-							dateOfCompletion={Utility.formatDate(certificate.dateOfCompletion)}
+							dateOfCompletion={certificate.dateOfCompletion}
 							creatorName={certificate.courseCreator}
 						/>
 					</View>
@@ -160,3 +148,17 @@ export default function CertificateCard({ certificate }) {
 		</View>
 	);
 }
+
+CertificateCard.propTypes = {
+	certificate: PropTypes.shape({
+		studentFirstName: PropTypes.string.isRequired,
+		studentLastName: PropTypes.string.isRequired,
+		courseCategory: PropTypes.string.isRequired,
+		courseId: PropTypes.string.isRequired,
+		studentId: PropTypes.string.isRequired,
+		estimatedCourseDuration: PropTypes.number.isRequired,
+		courseName: PropTypes.string.isRequired,
+		dateOfCompletion: PropTypes.string.isRequired,
+		courseCreator: PropTypes.string.isRequired,
+	}).isRequired,
+};

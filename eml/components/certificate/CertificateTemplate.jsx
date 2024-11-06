@@ -1,7 +1,8 @@
 import React from 'react';
 import { View, Text, Image } from 'react-native';
 import logo from '../../assets/images/logo.png';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
+import { formatDate } from '../../services/utilityFunctions';
 
 const CertificateTemplate = ({
 	studentName,
@@ -10,14 +11,6 @@ const CertificateTemplate = ({
 	dateOfCompletion,
 	creatorName
 }) => {
-
-	// CertificateTemplate.propTypes = {
-	// 	studentName: PropTypes.string.isRequired,
-	// 	estimatedCourseDuration: PropTypes.string.isRequired,
-	// 	courseName: PropTypes.string.isRequired,
-	// 	dateOfCompletion: PropTypes.string.isRequired,
-	// 	creatorName: PropTypes.string.isRequired,
-	// };
 	return (
 		<View className={'p-2 bg-projectWhite rounded-sm flex items-center'}>
 			<View className={'  border-2'}/* style={styles.outerBleed} */>
@@ -25,7 +18,7 @@ const CertificateTemplate = ({
 					<View className={'flex flex-col items-center px-8 justify-around'} /* style={styles.content} */>
 						<Text className={'font-semibold text-primary_custom text-base mt-5 mb-2'}/* style={styles.title} */>CERTIFICADO DE CONCLUSÃO</Text>
 						<Text className={'text-center text-[10px]'}  /* style={styles.mainText} */>
-                            Certificamos que {studentName} concluiu com sucesso {estimatedCourseDuration} horas do curso de {courseName} no dia {dateOfCompletion}, na modalidade de educação à distância na plataforma Educado.
+                            Certificamos que {studentName} concluiu com sucesso {estimatedCourseDuration} horas do curso de {courseName} no dia {formatDate(dateOfCompletion)}, na modalidade de educação à distância na plataforma Educado.
 						</Text>
 						<View className="w-full flex items-center mt-4"/* style={styles.signatureContainer} */>
 							<Text className="italic text-[8px]" /* style={styles.signature} */>{creatorName}</Text>
@@ -43,6 +36,13 @@ const CertificateTemplate = ({
 			</View>
 		</View>
 	);
+};
+CertificateTemplate.propTypes = {
+	studentName: PropTypes.string.isRequired,
+	estimatedCourseDuration: PropTypes.number.isRequired,
+	courseName: PropTypes.string.isRequired,
+	dateOfCompletion: PropTypes.string.isRequired,
+	creatorName: PropTypes.string.isRequired,
 };
 
 

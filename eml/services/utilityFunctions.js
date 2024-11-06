@@ -147,6 +147,9 @@ export function formatHours(number) {
 
 export function formatDate(dateString) {
 	const date = new Date(dateString);
+	if (isNaN(date.getTime())) {
+		return 'Invalid date';
+	}
 	return new Intl.DateTimeFormat('en-GB', {
 		day: '2-digit',
 		month: '2-digit',
@@ -324,21 +327,21 @@ export async function handleLastComponent(comp, course, navigation) {
 
 	// Check if the section is the last one
 	const isThisTheLastSection = getLastSection === comp.parentSection;
-	
+
 	if (isThisTheLastSection) {
 		// If the course is completed, navigate to the complete course screen
 		navigation.reset({
 			index: 0,
 			routes: [
-				{ 
+				{
 					name: 'CompleteCourse',
-					params: { 
-						course: course 
+					params: {
+						course: course
 					}
 				},
 			],
 		});
-		
+
 	} else {
 		navigation.reset({
 			index: 0,
