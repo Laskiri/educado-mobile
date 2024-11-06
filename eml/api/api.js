@@ -306,9 +306,12 @@ export const getBucketImage = async (fileName, fileType) => {
 
 
 		console.log('fileType:', fileType);
+		const buffer = res.data;
+		const base64Image = Buffer.from(buffer).toString('base64');
+		const image = `data:image/${fileType};base64,${base64Image}`;
 
 		// Convert the image to base64
-		const image = `data:image/${fileType};base64,${Buffer.from(res.data, 'binary').toString('base64')}`;
+		// const image = `data:image/${fileType};base64,${Buffer.from(res.data, 'binary').toString('base64')}`;
 		return image;
 	} catch (err) {
 		if (err?.response?.data != null) {
