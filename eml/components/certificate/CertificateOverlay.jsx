@@ -6,17 +6,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const CertificateOverlay = ({ certificate, handleVisualizarClick}) => {
-	CertificateOverlay.propTypes = {
-		certificate: PropTypes.shape({
-			courseName: PropTypes.string.isRequired,
-			courseCategory: PropTypes.string.isRequired,
-			estimatedCourseDuration: PropTypes.number.isRequired,
-			dateOfCompletion: PropTypes.instanceOf(Date).isRequired,
-		}).isRequired,
-		handleVisualizarClick: PropTypes.func.isRequired,
-	};
-
 	const { courseName, courseCategory, estimatedCourseDuration, dateOfCompletion } = certificate;
+
 	return (
 		<View className="absolute bottom-0 left-0 right-0 h-1/2 bg-projectWhite rounded-lg px-2 opacity-95">
 			<View className="flex-col mx-4 relative">
@@ -51,6 +42,17 @@ const CertificateOverlay = ({ certificate, handleVisualizarClick}) => {
 				<View className="border-b-[1px] w-[90px] border-primary_custom pt-[2px]"></View>
 			</TouchableOpacity>
 		</View>
-	); };
+	); 
+};
+CertificateOverlay.propTypes = {
+	certificate: PropTypes.shape({
+		courseName: PropTypes.string.isRequired,
+		courseCategory: PropTypes.string.isRequired,
+		estimatedCourseDuration: PropTypes.number.isRequired,
+		dateOfCompletion: PropTypes.string,
+	}).isRequired,
+	handleVisualizarClick: PropTypes.func.isRequired,
+};
+
 
 export default CertificateOverlay;
