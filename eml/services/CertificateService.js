@@ -4,11 +4,6 @@ import { getCourse } from '../api/api.js';
 import { getUserInfo } from './StorageService.js';
 import { getStudentInfo } from '../api/userApi.js';
 
-
-
-
-
-
 // Get certificates from student
 export const fetchCertificates = async (userId) => {
 	try {
@@ -54,26 +49,13 @@ export const generateCertificate = async (courseId, userId) => {
 			studentFirstName: userData.firstName,
 			studentLastName: userData.lastName,
 			courseCreator: courseData.creator,
-			estimatedCourseDuration: courseData.estimatedHours,
+			estimatedCourseDuration: courseData.estimatedHours || 0,
 			dateOfCompletion: new Date().toISOString().split('T')[0], // current date
 			courseCategory: courseData.category,
 		};
 
-		console.log(object);
-
 		// Call the endpoint to generate the certificate
-
-		const response = await axios.put(CERTIFICATE_URL + '/api/student-certificates', {
-			courseName: courseData.title,
-			courseId: courseData._id,
-			studentId: studentData._id,
-			studentFirstName: userData.firstName,
-			studentLastName: userData.lastName,
-			courseCreator: courseData.creator,
-			estimatedCourseDuration: courseData.estimatedHours || 0,
-			dateOfCompletion: new Date().toISOString().split('T')[0], // current date
-			courseCategory: courseData.category,
-		});
+		const response = await axios.put(CERTIFICATE_URL + '/api/student-certificates', object);
 		return response.data;
 	} catch (error) {
 		console.error('Error generating certificate:', error.response?.data || error.message);

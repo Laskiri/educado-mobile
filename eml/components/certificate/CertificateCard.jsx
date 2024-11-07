@@ -11,8 +11,10 @@ import CertificateOverlay from './CertificateOverlay';
 import CardLabel from '../explore/CardLabel';
 import * as Sharing from 'expo-sharing';
 import * as FileSystem from 'expo-file-system';
-import { certificateUrl } from '../../api/api';
+import { CERTIFCATE_URL } from '@env';
 import PropTypes from 'prop-types';
+
+const certificateUrl = CERTIFCATE_URL;
 
 /**
  * This component is used to display a certificate card.
