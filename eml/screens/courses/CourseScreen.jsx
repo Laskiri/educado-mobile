@@ -59,7 +59,7 @@ export default function CourseScreen() {
 	};
 
 	
-    // Retrieve student points and level from local storage 
+	// Retrieve student points and level from local storage 
 	const fetchStudentData = async () => {
 		try {
 			const fetchedStudent = await getStudentInfo();

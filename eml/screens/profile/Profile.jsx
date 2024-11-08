@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import ToastNotification from '../../components/general/ToastNotification';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { View, ScrollView } from 'react-native';
+import { View } from 'react-native';
 import LogOutButton from '../../components/profile/LogOutButton';
 import ProfileNavigationButton from '../../components/profile/ProfileNavigationButton.js';
 import UserInfo from '../../components/profile/UserInfo';
