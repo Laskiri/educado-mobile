@@ -26,8 +26,6 @@ import CameraScreen from './screens/camera/CameraScreen';
 import BaseScreen from './components/general/BaseScreen';
 import SubscribedToCourseScreen from './screens/courses/SubscribedToCourseScreen';
 
-import { UserProvider } from './contexts/UserContext';
-
 const Stack = createNativeStackNavigator();
 
 function WelcomeStack() {
@@ -176,91 +174,88 @@ export default function App() {
 	// ***************************************************
 
 	return (
-		// TODO: find a way to exclude WelcomeStack and LoginStack from the UserProvider (or wipe UserProvider on logout)
-		<UserProvider>
-			<TailwindProvider>
-				<BaseScreen>
-					<IconRegistry icons={EvaIconsPack} />
-					<ApplicationProvider {...eva} theme={eva.light}>
-						<NavigationContainer>
-							<Stack.Navigator initialRouteName={initialRoute}>
-								<Stack.Screen
-									name="WelcomeStack"
-									component={WelcomeStack}
-									options={{ headerShown: false }}
-								/>
-								<Stack.Screen
-									name="LoginStack"
-									component={LoginStack}
-									options={{ headerShown: false }}
-								/>
-								<Stack.Screen
-									name="HomeStack"
-									component={NavBar}
-									options={{ headerShown: false }}
-								/>
-								<Stack.Screen
-									name={'CourseStack'}
-									component={CourseStack}
-									options={{ headerShown: false }}
-								/>
-								<Stack.Screen
-									name={'Section'}
-									component={SectionScreen}
-									initialParams={{ course_id: '' }}
-									options={{ headerShown: false }}
-								/>
-								<Stack.Screen
-									name={'CompleteSection'}
-									component={CompleteSectionScreen}
-									options={{ headerShown: false }}
-								/>
-								<Stack.Screen
-									name="EditProfile"
-									component={EditProfileScreen}
-									options={{ headerShown: false }}
-								/>
-								<Stack.Screen
-									name="EditPassword"
-									component={EditPasswordScreen}
-									options={{ headerShown: false }}
-								/>
-								<Stack.Screen
-									name="Exercise"
-									component={ExerciseScreen}
-									options={{ headerShown: false }}
-								/>
-								<Stack.Screen
-									name="Components"
-									component={CompSwipeScreen}
-									options={{ headerShown: false }}
-								/>
-								<Stack.Screen
-									name="CertificateStack"
-									component={CertificateStack}
-									options={{ headerShown: false }}
-								/>
-								<Stack.Screen
-									name="CompleteCourse"
-									component={CompleteCourseScreen}
-									options={{ headerShown: false }}
-								/>
-								<Stack.Screen
-									name="Camera"
-									component={CameraScreen}
-									options={{ headerShown: false }}
-								/>
-								<Stack.Screen
-									name="Subscribed"
-									component={SubscribedToCourseScreen}
-									initialParams={{course_id: ''}}
-									options={{headerShown: false}}
-								/>
-							</Stack.Navigator>
-						</NavigationContainer>
-					</ApplicationProvider>
-				</BaseScreen>
-			</TailwindProvider>
-		</UserProvider>
+		<TailwindProvider>
+			<BaseScreen>
+				<IconRegistry icons={EvaIconsPack} />
+				<ApplicationProvider {...eva} theme={eva.light}>
+					<NavigationContainer>
+						<Stack.Navigator initialRouteName={initialRoute}>
+							<Stack.Screen
+								name="WelcomeStack"
+								component={WelcomeStack}
+								options={{ headerShown: false }}
+							/>
+							<Stack.Screen
+								name="LoginStack"
+								component={LoginStack}
+								options={{ headerShown: false }}
+							/>
+							<Stack.Screen
+								name="HomeStack"
+								component={NavBar}
+								options={{ headerShown: false }}
+							/>
+							<Stack.Screen
+								name={'CourseStack'}
+								component={CourseStack}
+								options={{ headerShown: false }}
+							/>
+							<Stack.Screen
+								name={'Section'}
+								component={SectionScreen}
+								initialParams={{ course_id: '' }}
+								options={{ headerShown: false }}
+							/>
+							<Stack.Screen
+								name={'CompleteSection'}
+								component={CompleteSectionScreen}
+								options={{ headerShown: false }}
+							/>
+							<Stack.Screen
+								name="EditProfile"
+								component={EditProfileScreen}
+								options={{ headerShown: false }}
+							/>
+							<Stack.Screen
+								name="EditPassword"
+								component={EditPasswordScreen}
+								options={{ headerShown: false }}
+							/>
+							<Stack.Screen
+								name="Exercise"
+								component={ExerciseScreen}
+								options={{ headerShown: false }}
+							/>
+							<Stack.Screen
+								name="Components"
+								component={CompSwipeScreen}
+								options={{ headerShown: false }}
+							/>
+							<Stack.Screen
+								name="CertificateStack"
+								component={CertificateStack}
+								options={{ headerShown: false }}
+							/>
+							<Stack.Screen
+								name="CompleteCourse"
+								component={CompleteCourseScreen}
+								options={{ headerShown: false }}
+							/>
+							<Stack.Screen
+								name="Camera"
+								component={CameraScreen}
+								options={{ headerShown: false }}
+							/>
+							<Stack.Screen
+								name="Subscribed"
+								component={SubscribedToCourseScreen}
+								initialParams={{course_id: ''}}
+								options={{headerShown: false}}
+							/>
+						</Stack.Navigator>
+					</NavigationContainer>
+				</ApplicationProvider>
+			</BaseScreen>
+		</TailwindProvider>
 	);
 }

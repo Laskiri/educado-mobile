@@ -16,8 +16,8 @@ const ProfileStatsBox = ({ points, studentLevel, leaderboardPosition, numberOfDa
 
 	// Default values for optional props
 	ProfileStatsBox.defaultProps = {
-		leaderboardPosition: null,
-		numberOfDaysInRow: null
+		leaderboardPosition: 0,
+		numberOfDaysInRow: 0
 	};
 
 	// Calculate remaining points to next level-up (every 100 points)
@@ -66,7 +66,7 @@ const ProfileStatsBox = ({ points, studentLevel, leaderboardPosition, numberOfDa
 				</Fragment>
 			)}
 
-			{/* Level, progress bar and remaining points for next level-up */}
+			{/* Level and progress bar */}
 			<View className='flex flex-row justify-between mb-2'>
 				<Text className='font-sans-bold text-primary_custom'>
 					Nível {studentLevel}
@@ -74,10 +74,10 @@ const ProfileStatsBox = ({ points, studentLevel, leaderboardPosition, numberOfDa
 				<CustomProgressBar className='flex flex-row' progress={levelProgressPercentage} width={65} height={1} displayLabel={false}/>
 			</View>
 	
-			{/* Points to next level */}
+			{/* Remaining points to next level-up */}
 			<View>
-				<Text className='text-primary_custom font-montserrat'>
-					Faltam apenas {pointsToNextLevel} pontos para você mudar de nível, continue estudando para chegar lá 🥳
+				<Text className='text-primary_custom font-montserrat' numberOfLines={2} adjustsFontSizeToFit>
+					Faltam apenas <Text style={{ fontWeight: 'bold' }}>{pointsToNextLevel} pts.</Text> para você mudar de nível, continue estudando para chegar lá 🥳
 				</Text>
 			</View>
 			

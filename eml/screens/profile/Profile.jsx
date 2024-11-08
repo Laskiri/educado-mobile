@@ -1,13 +1,9 @@
-import React, { useEffect, useState, useCallback, useContext } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import ToastNotification from '../../components/general/ToastNotification';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {
-	View,
-	ScrollView,
-} from 'react-native';
+import { View, ScrollView } from 'react-native';
 import LogOutButton from '../../components/profile/LogOutButton';
 import ProfileNavigationButton from '../../components/profile/ProfileNavigationButton.js';
-
 import UserInfo from '../../components/profile/UserInfo';
 import { useNavigation } from '@react-navigation/native';
 import { getUserInfo, getStudentInfo } from '../../services/StorageService';
@@ -16,8 +12,6 @@ import ShowAlert from '../../components/general/ShowAlert';
 import ProfileStatsBox from '../../components/profile/ProfileStatsBox';
 import { useFocusEffect } from '@react-navigation/native';
 import { set } from 'react-native-reanimated';
-
-import { UserContext } from '../../contexts/UserContext';
 
 /**
  * Profile screen
@@ -29,23 +23,20 @@ export default function ProfileComponent() {
 	const [email, setEmail] = useState('');
 	const [photo, setPhoto] = useState('');
 	const navigation = useNavigation();
-	/* const [studentLevel, setStudentLevel] = useState(0);
-	const [levelProgress, setLevelProgress] = useState(0);
-	const [totalPoints, setTotalPoints] = useState(0); */
+	const [studentLevel, setStudentLevel] = useState(0);
+	const [totalPoints, setTotalPoints] = useState(0);
 
-	const { profile, student, fetchUser } = useContext(UserContext);
-
-	/* useEffect(() => {
+	useEffect(() => {
 		const getInfo = navigation.addListener('focus', () => {
 			getProfile();
 		});
 		return getInfo;
-	}, [navigation]); */
+	}, [navigation]);
 
 	/**
   * Fetches the user's profile from local storage
   */
-	/* const getProfile = async () => {
+	const getProfile = async () => {
 		try {
 			const fetchedProfile = await getUserInfo();
 			const fetchedStudent = await getStudentInfo();
@@ -59,16 +50,11 @@ export default function ProfileComponent() {
 			if (fetchedStudent !== null) {
 				setStudentLevel(fetchedStudent.level);
 				setTotalPoints(fetchedStudent.points);
-				setLevelProgress(getLevelProgressPercentage(fetchedStudent.points));
 			}
-
-			// TODO: remove when done!
-			console.log('fetchedStudent: ', fetchedStudent);
-
 		} catch (error) {
 			ShowAlert(errorSwitch(error));
 		}
-	}; */
+	};
 
 	useFocusEffect(
 		useCallback(() => {
@@ -76,8 +62,7 @@ export default function ProfileComponent() {
 			const runAsyncFunction = async () => {
 				try {
 					// Load profile data and check for password reset status
-					//await getProfile();
-					//await fetchUser();
+					await getProfile();
 					await checkPasswordReset();
 				} catch (error) {
 					console.error('Error fetching profile:', error);
@@ -103,14 +88,14 @@ export default function ProfileComponent() {
 	};
 
 	return (
-		<ScrollView className='flex flex-col pt-[80px] px-[24px] pb-[24px]'>
+		<ScrollView className='flex flex-col pt-[80px] px-[24px] pb-[24px] bg-secondary'>
 			<View className="flex-1 justify-start h-screen">
-				<UserInfo firstName={profile?.firstName} lastName={profile?.lastName} email={profile?.email} photo={student?.photo}></UserInfo>
+				<UserInfo firstName={firstName} lastName={lastName} email={email} photo={photo}></UserInfo>
 				<ProfileStatsBox 
-					points={student?.points || 0} 
-					studentLevel={student?.level || 0} 
-					leaderboardPosition={1337}	// Placeholder
-					numberOfDaysInRow={42} 		// Placeholder
+					points={totalPoints || 0} 
+					studentLevel={studentLevel || 0} 
+					leaderboardPosition={0}		// Placeholder
+					numberOfDaysInRow={0} 		// Placeholder
 					drawProgressBarOnly={false} 
 				/>
 				<ProfileNavigationButton label='Editar perfil' testId={'editProfileNav'} onPress={() => navigation.navigate('EditProfile')}></ProfileNavigationButton>

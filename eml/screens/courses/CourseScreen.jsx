@@ -1,5 +1,5 @@
 import {useNavigation} from '@react-navigation/native';
-import React, {useEffect, useState, useContext} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Image, Pressable, RefreshControl, ScrollView, View} from 'react-native';
 import Text from '../../components/general/Text';
 import * as StorageService from '../../services/StorageService';
@@ -12,8 +12,7 @@ import NetworkStatusObserver from '../../hooks/NetworkStatusObserver';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import errorSwitch from '../../components/general/errorSwitch';
 import ShowAlert from '../../components/general/ShowAlert';
-
-import { UserContext } from '../../contexts/UserContext';
+import { getStudentInfo } from '../../services/StorageService';
 import ProfileStatsBox from '../../components/profile/ProfileStatsBox';
 
 /**
@@ -27,10 +26,9 @@ export default function CourseScreen() {
 	const [refreshing, setRefreshing] = useState(false);
 	const [isOnline, setIsOnline] = useState(false);
 	const [loading, setLoading] = useState(true);
+	const [studentLevel, setStudentLevel] = useState(0);
+	const [studentPoints, setStudentPoints] = useState(0);
 	const navigation = useNavigation();
-
-	// Student context
-	const { student } = useContext(UserContext);
 
 	/**
     * Asynchronous function that loads the courses from storage and updates the state.
@@ -58,10 +56,27 @@ export default function CourseScreen() {
 		setRefreshing(false);
 	};
 
+	
+    // Retrieve student points and level from local storage 
+	const fetchStudentData = async () => {
+		try {
+			const fetchedStudent = await getStudentInfo();
+
+			if (fetchedStudent !== null) {
+				setStudentLevel(fetchedStudent.level);
+				setStudentPoints(fetchedStudent.points);
+			}
+		} 
+		catch (error) {
+			ShowAlert(errorSwitch(error));
+		}
+	};
+	
 	useEffect(() => {
 		// this makes sure loadCourses is called when the screen is focused
 		return navigation.addListener('focus', () => {
 			loadCourses();
+			fetchStudentData();
 		});
 	}, [navigation]);
 
@@ -92,12 +107,12 @@ export default function CourseScreen() {
 							title={'Bem Vindo!'}
 							description={'Aqui você encontra todos os cursos em que você está inscrito!'}
 						/>
-						
-						{/* Render box with level and progress bar */}
+											
+						{/* Render stats box with level and progress bar only */}				
 						<View className='px-5'>
 							<ProfileStatsBox 
-								points={student?.points || 0} 
-								studentLevel={student?.level || 0} 
+								points={studentPoints || 0} 
+								studentLevel={studentLevel || 0} 
 								drawProgressBarOnly={true} 
 							/>
 						</View>
@@ -111,7 +126,7 @@ export default function CourseScreen() {
 						</ScrollView>
 					</View>
 					:
-					<View className="bg-secondary justify-center items-center ">
+					<View className="bg-secondary justify-center items-center">
 						<View className="pt-24 pb-16">
 							<Image source={require('../../assets/images/logo.png')} className=" justify-center items-center"/>
 						</View>
