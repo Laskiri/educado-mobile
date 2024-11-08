@@ -1,8 +1,12 @@
 /** Utility functions used in Explore and Course screens **/
 import * as StorageService from '../services/StorageService.js';
 import * as userApi from '../api/userApi.js';
+import * as api from '../api/api.js';
 import 'intl';
 import 'intl/locale-data/jsonp/en-GB'; // Import the locale you need
+import { generateCertificate } from '../services/CertificateService.js';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 /**
  * Converts a numeric difficulty level to a human-readable label.
  * @param {number} lvl - The difficulty level of the course.
@@ -145,6 +149,9 @@ export function formatHours(number) {
 
 export function formatDate(dateString) {
 	const date = new Date(dateString);
+	if (isNaN(date.getTime())) {
+		return 'Invalid date';
+	}
 	return new Intl.DateTimeFormat('en-GB', {
 		day: '2-digit',
 		month: '2-digit',
@@ -305,23 +312,52 @@ export function findIndexOfUncompletedComp(student, courseId, sectionId) {
 }
 
 export async function handleLastComponent(comp, course, navigation) {
+	// Generate certificate
+	const courseId = course.courseId;
+	const userId = await StorageService.getUserId();
+	generateCertificate(courseId, userId);
 
 	// For future reference 
 	// const student = await StorageService.getStudentInfo();
 	// const isComplete = isSectionCompleted(student, comp.parentSection);
 
-	navigation.reset({
-		index: 0,
-		routes: [
-			{
-				name: 'CompleteSection',
-				params: {
-					parsedCourse: course,
-					sectionId: comp.parentSection
-				}
-			},
-		],
-	});
+	// get the full course from DB, to check what section we are in
+	const getCurrentCourse = await api.getCourse(course.courseId);
+
+	// If the section is the last one, the course is completed
+	const getLastSection = getCurrentCourse.sections[getCurrentCourse.sections.length - 1];
+
+	// Check if the section is the last one
+	const isThisTheLastSection = getLastSection === comp.parentSection;
+
+	if (isThisTheLastSection) {
+		// If the course is completed, navigate to the complete course screen
+		navigation.reset({
+			index: 0,
+			routes: [
+				{
+					name: 'CompleteCourse',
+					params: {
+						course: course
+					}
+				},
+			],
+		});
+
+	} else {
+		navigation.reset({
+			index: 0,
+			routes: [
+				{
+					name: 'CompleteSection',
+					params: {
+						parsedCourse: course,
+						sectionId: comp.parentSection
+					}
+				},
+			],
+		});
+	}
 
 	// For future reference
 	// if (isComplete) { 
@@ -329,4 +365,14 @@ export async function handleLastComponent(comp, course, navigation) {
 	// } else {
 	//   console.log('Section not complete - navigate to retry exercises TBD');
 	// }
+}
+
+export async function resetOnboarding(uniqueKeys) {
+	try {
+		const keysToRemove = uniqueKeys.map(key => `tooltip_shown_${key}`);
+		await AsyncStorage.multiRemove(keysToRemove);
+		console.log('Removed keys:', keysToRemove);
+	} catch (error) {
+		console.error('Error removing keys:', error);
+	}
 }

@@ -7,7 +7,8 @@ const timeoutInMs = 1200;
 
 // move these to .env file next sprint
 const url = URL; // Change this to your LOCAL IP address when testing.
-const certificateUrl = CERTIFICATE_URL;
+export const certificateUrl = CERTIFICATE_URL;
+
 
 /* Commented out for avoiding linting errors :))
  * TODO: move IP address to .env file !!!
@@ -182,65 +183,31 @@ export const unSubscribeToCourse = async (userId, courseId) => {
 };
 
 
-// Get certificates from student
-export const fetchCertificates = async (userId) => {
+
+export const giveFeedback = async (courseId, feedbackData) => {
+	const { rating, feedbackText, feedbackOptions } = feedbackData;
 	try {
-		if (userId == null) {
-			throw 'User ID is null';
-		}
-		const res = await axios.get(certificateUrl + '/api/student-certificates/student/' + userId);
-		return res.data;
-	} catch (e) {
-		if (e?.response?.data != null) {
-			throw e.response.data;
-		} else {
-			throw e;
-		}
-	}
-};
-
-
-/* Generates a certificate for a student.
- * @param {string} courseId - The ID of the course.
- * @param {string} studentId - The ID of the student.
- * @returns {Promise<Object>} - The response from the server.
- */
-export const generateCertificate = async (courseId, studentData, userData) => {
-
-	if (!courseId) {
-		throw new Error('Course ID is required');
-	}
-	if (!studentData) {
-		throw new Error('Student data is required');
-	}
-	if (!userData) {
-		throw new Error('User data is required');
-	}
-	// Fetch course data
-	const courseData = await getCourse(courseId);
-
-	// Call the endpoint to generate the certificate
-
-	try {
-		const response = await axios.put(certificateUrl + '/api/student-certificates', {
-			courseName: courseData.title,
-			courseId: courseData._id,
-			studentId: studentData._id,
-			studentFirstName: userData.firstName,
-			studentLastName: userData.lastName,
-			courseCreator: courseData.creator,
-			estimatedCourseDuration: courseData.estimatedDuration || 0,
-			dateOfCompletion: new Date().toISOString().split('T')[0], // current date
-			courseCategory: courseData.category,
+		const response = await axios.post(url + '/api/feedback/' + courseId, {
+			rating: rating,
+			feedbackText: feedbackText,
+			feedbackOptions: feedbackOptions,
 		});
 		return response.data;
 	} catch (error) {
-		console.error('Error generating certificate:', error.response?.data || error.message);
+		console.error('Error giving feedback:', error.response?.data || error.message);
 		throw error;
 	}
 };
 
-
+export const getAllFeedbackOptions = async () => {
+	try {
+		const response = await axios.get(`${url}/api/feedback/options`);
+		return response.data;
+	} catch (error) {
+		console.error('Error getting feedback options:', error.response?.data.error || error.message);
+		throw error;
+	}
+};
 
 //CREATED BY VIDEO STREAM TEAM
 /*This will be improved in next pull request to handle getting different resolutions properly 
