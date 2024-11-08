@@ -11,7 +11,6 @@ import errorSwitch from '../../components/general/errorSwitch';
 import ShowAlert from '../../components/general/ShowAlert';
 import ProfileStatsBox from '../../components/profile/ProfileStatsBox';
 import { useFocusEffect } from '@react-navigation/native';
-import { set } from 'react-native-reanimated';
 import Tooltip from '../../components/onboarding/onboarding';
 
 /**
@@ -26,9 +25,9 @@ export default function ProfileComponent() {
 	const navigation = useNavigation();
 	const [studentLevel, setStudentLevel] = useState(0);
 	const [totalPoints, setTotalPoints] = useState(0);
+	const [streak, setStreak] = useState(0);	// Number of days in a row with points gained
+	const [leaderboardPosition, setLeaderboardPosition] = useState(0);
 	const [isVisible, setIsVisible] = useState(false);
-
-
 
 	useEffect(() => {
 		const getInfo = navigation.addListener('focus', () => {
@@ -44,13 +43,16 @@ export default function ProfileComponent() {
 		try {
 			const fetchedProfile = await getUserInfo();
 			const fetchedStudent = await getStudentInfo();
+			
 			if (fetchedProfile !== null) {
 				setFirstName(fetchedProfile.firstName);
 				setLastName(fetchedProfile.lastName);
 				setEmail(fetchedProfile.email);
+				
 				if (fetchedStudent !== null) 
 					setPhoto(fetchedStudent.photo);
 			} 
+			
 			if (fetchedStudent !== null) {
 				setStudentLevel(fetchedStudent.level);
 				setTotalPoints(fetchedStudent.points);
@@ -91,45 +93,42 @@ export default function ProfileComponent() {
 		}
 	};
 
-	
 	return (
-		<ScrollView className='flex flex-col pt-[80px] px-[24px] pb-[24px] bg-secondary'>
-			<View className="flex-1 justify-start h-screen">
-				<UserInfo firstName={firstName} lastName={lastName} email={email} photo={photo}></UserInfo>
-				<ProfileStatsBox 
-					points={totalPoints || 0} 
-					studentLevel={studentLevel || 0} 
-					leaderboardPosition={0}		// Placeholder
-					numberOfDaysInRow={0} 		// Placeholder
-					drawProgressBarOnly={false} 
-				/>
-				<Tooltip 
-					isVisible={isVisible} 
-					position={{
-						top: -300,
-						left: 70,
-						right: 30,
-						bottom: 24,
-					}} 
-					setIsVisible={setIsVisible} 
-					text={'Você está no seu perfil, onde pode acessar suas informações, visualizar certificados e realizar outras atividades.'} 
-					tailSide="right"
-					tailPosition="20%" 
-					uniqueKey="Profile" 
-					uniCodeChar="👩‍🏫"
-				/>
-				<ProfileNavigationButton label='Editar perfil' testId={'editProfileNav'} onPress={() => navigation.navigate('EditProfile')}></ProfileNavigationButton>
-				<ProfileNavigationButton label='Alterar senha' testId={'editPasswordNav'} onPress={() => navigation.navigate('EditPassword')}></ProfileNavigationButton>
+		<View className='flex flex-col pt-[20%] px-[5%] pb-[5%] bg-secondary'>
+			<UserInfo firstName={firstName} lastName={lastName} email={email} photo={photo}></UserInfo>
+			<ProfileStatsBox 
+				streak={streak || 0}
+				points={totalPoints || 0} 
+				leaderboardPosition={leaderboardPosition || 0}
+				level={studentLevel || 0} 
+				drawProgressBarOnly={false} 
+			/>
+			<Tooltip 
+				isVisible={isVisible} 
+				position={{
+					top: -300,
+					left: 70,
+					right: 30,
+					bottom: 24,
+				}} 
+				setIsVisible={setIsVisible} 
+				text={'Você está no seu perfil, onde pode acessar suas informações, visualizar certificados e realizar outras atividades.'} 
+				tailSide="right"
+				tailPosition="20%" 
+				uniqueKey="Profile" 
+				uniCodeChar="👩‍🏫"
+			/>
+			
+			<ProfileNavigationButton label='Editar perfil' testId={'editProfileNav'} onPress={() => navigation.navigate('EditProfile')}></ProfileNavigationButton>
+			<ProfileNavigationButton label='Certificados' onPress={() => navigation.navigate('Certificate')}></ProfileNavigationButton>
 
-				<ProfileNavigationButton label='Certificados' onPress={() => navigation.navigate('Certificate')}></ProfileNavigationButton>
-				{/* // The certificate page is created and works, it is only commented out to get it approved on play store */}
+			{/* Download page is not implemented yet. However, download works and can be accessed on home page when offline */}
+			<ProfileNavigationButton label='Download'></ProfileNavigationButton>
+			<ProfileNavigationButton label='Alterar senha' testId={'editPasswordNav'} onPress={() => navigation.navigate('EditPassword')}></ProfileNavigationButton>
 
-				{/* Download page is not implemented yet. However, download works and can be accessed on home page when offline
-				<ProfileNavigationButton label='Download'></ProfileNavigationButton>*/}
-				<View className='flex flex-row pb-4'>
-					<LogOutButton testID='logoutBtn'></LogOutButton>
-				</View>
+			<View className='flex flex-row pb-4'>
+				<LogOutButton testID='logoutBtn'></LogOutButton>
 			</View>
-		</ScrollView>
+		</View>
 	);
 }

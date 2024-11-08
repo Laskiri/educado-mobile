@@ -27,9 +27,9 @@ export default function ProfileNavigationButton(props) {
 
 	return (
 		<View>
-			<TouchableOpacity className="border-b border-projectGray py-4 w-full" onPress={props.onPress}>
+			<TouchableOpacity className="border-b border-lightGray py-5 w-full" onPress={props.onPress}>
 				<View className="flex flex-row">
-					<Text className="flex-1 text-body items-start mt-0.5">{props.label}</Text>
+					<Text className="flex-1 text-lg items-start mt-0.5">{props.label}</Text>
 					<View className='items-end'>
 						<Icon
 							size={25}

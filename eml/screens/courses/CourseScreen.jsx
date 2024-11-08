@@ -113,8 +113,8 @@ export default function CourseScreen() {
 						{/* Render stats box with level and progress bar only */}				
 						<View className='px-5'>
 							<ProfileStatsBox 
+								level={studentLevel || 0} 
 								points={studentPoints || 0} 
-								studentLevel={studentLevel || 0} 
 								drawProgressBarOnly={true} 
 							/>
 						</View>
@@ -128,7 +128,7 @@ export default function CourseScreen() {
 						</ScrollView>
 					</View>
 					:
-					<View className="bg-secondary justify-center items-center ">
+					<View className="bg-secondary justify-center items-center">
 						<Tooltip 
 							isVisible={isVisible} 
 							position={{

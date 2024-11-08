@@ -3,21 +3,21 @@ import { View, Text, Image } from 'react-native';
 import CustomProgressBar from '../exercise/Progressbar';
 import PropTypes from 'prop-types';
 
-const ProfileStatsBox = ({ points, studentLevel, leaderboardPosition, numberOfDaysInRow, drawProgressBarOnly }) => {
+const ProfileStatsBox = ({ streak, points, leaderboardPosition, level, drawProgressBarOnly }) => {
 	
 	// Props
 	ProfileStatsBox.propTypes = {
+		streak: PropTypes.number,	// Optional, not provided if drawProgressBarOnly = true
 		points: PropTypes.number.isRequired,
-		studentLevel: PropTypes.number.isRequired,
 		leaderboardPosition: PropTypes.number,	// Optional, not provided if drawProgressBarOnly = true
-		numberOfDaysInRow: PropTypes.number,	// Optional, not provided if drawProgressBarOnly = true
+		level: PropTypes.number.isRequired,
 		drawProgressBarOnly: PropTypes.bool.isRequired
 	};
 
 	// Default values for optional props
 	ProfileStatsBox.defaultProps = {
-		leaderboardPosition: 0,
-		numberOfDaysInRow: 0
+		streak: 0,
+		leaderboardPosition: 0
 	};
 
 	// Calculate remaining points to next level-up (every 100 points)
@@ -36,11 +36,11 @@ const ProfileStatsBox = ({ points, studentLevel, leaderboardPosition, numberOfDa
 				<Fragment>
 					<View className='flex-row justify-between items-center mb-4'>
 
-						{/* Number of days in a row */}
+						{/* Streak (number of days in a row with points gained) */}
 						<View className='flex-1 flex-col bg-badgesGreen items-center rounded-lg py-2 w-24 h-16'>
 							<Image source={require('../../assets/images/profileFlame.png')} />
 							<Text className='text-projectWhite font-sans-bold mt-2' numberOfLines={1} adjustsFontSizeToFit>
-								{numberOfDaysInRow} dia seguido
+								{streak} dia seguido
 							</Text>
 						</View>
 
@@ -52,7 +52,7 @@ const ProfileStatsBox = ({ points, studentLevel, leaderboardPosition, numberOfDa
 							</Text> 
 						</View>
 
-						{/* Position */}
+						{/* Leaderboard position */}
 						<View className='flex-1 flex-col bg-badgesBlue items-center rounded-lg py-2 w-24 h-16'>
 							<Image source={require('../../assets/images/profileLightning.png')} />
 							<Text className='text-projectWhite font-sans-bold mt-2' numberOfLines={1} adjustsFontSizeToFit>
@@ -61,7 +61,7 @@ const ProfileStatsBox = ({ points, studentLevel, leaderboardPosition, numberOfDa
 						</View>
 					</View>
 
-					{/* Divider line */}
+					{/* Border divider line */}
 					<View className='-mx-4 border-t border-lightGray mb-4'></View>
 				</Fragment>
 			)}
@@ -69,7 +69,7 @@ const ProfileStatsBox = ({ points, studentLevel, leaderboardPosition, numberOfDa
 			{/* Level and progress bar */}
 			<View className='flex flex-row justify-between mb-2'>
 				<Text className='font-sans-bold text-primary_custom'>
-					Nível {studentLevel}
+					Nível {level}
 				</Text>
 				<CustomProgressBar className='flex flex-row' progress={levelProgressPercentage} width={65} height={1} displayLabel={false}/>
 			</View>
