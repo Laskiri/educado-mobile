@@ -3,8 +3,6 @@ import { View, Image } from 'react-native';
 import Text from '../general/Text';
 import ProfileNameCircle from './ProfileNameCircle';
 import PropTypes from 'prop-types';
-import { FontAwesome5 } from '@expo/vector-icons';
-import tailwindConfig from '../../tailwind.config';
 
 /**
  * Component for showing user information
