@@ -56,8 +56,11 @@ export default function ProfileComponent() {
 			if (fetchedStudent !== null) {
 				setStudentLevel(fetchedStudent.level);
 				setTotalPoints(fetchedStudent.points);
+				setStreak(0);				// 0 is a placeholder for now
+				setLeaderboardPosition(0);	// 0 is a placeholder for now
 			}
-		} catch (error) {
+		} 
+		catch (error) {
 			ShowAlert(errorSwitch(error));
 		}
 	};
@@ -125,10 +128,7 @@ export default function ProfileComponent() {
 			{/* Download page is not implemented yet. However, download works and can be accessed on home page when offline */}
 			<ProfileNavigationButton label='Download'></ProfileNavigationButton>
 			<ProfileNavigationButton label='Alterar senha' testId={'editPasswordNav'} onPress={() => navigation.navigate('EditPassword')}></ProfileNavigationButton>
-
-			<View className='flex flex-row pb-4'>
-				<LogOutButton testID='logoutBtn'></LogOutButton>
-			</View>
+			<LogOutButton testID='logoutBtn'></LogOutButton>
 		</View>
 	);
 }
