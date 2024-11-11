@@ -13,6 +13,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import errorSwitch from '../../components/general/errorSwitch';
 import ShowAlert from '../../components/general/ShowAlert';
 import Tooltip from '../../components/onboarding/onboarding';
+import { getStudentInfo } from '../../services/StorageService';
+import ProfileStatsBox from '../../components/profile/ProfileStatsBox';
 
 /**
  * Course screen component that displays a list of courses.
@@ -25,6 +27,8 @@ export default function CourseScreen() {
 	const [refreshing, setRefreshing] = useState(false);
 	const [isOnline, setIsOnline] = useState(false);
 	const [loading, setLoading] = useState(true);
+	const [studentLevel, setStudentLevel] = useState(0);
+	const [studentPoints, setStudentPoints] = useState(0);
 	const navigation = useNavigation();
 	const [isVisible, setIsVisible] = useState(false);
 
@@ -54,10 +58,27 @@ export default function CourseScreen() {
 		setRefreshing(false);
 	};
 
+	
+	// Retrieve student points and level from local storage 
+	const fetchStudentData = async () => {
+		try {
+			const fetchedStudent = await getStudentInfo();
+
+			if (fetchedStudent !== null) {
+				setStudentLevel(fetchedStudent.level);
+				setStudentPoints(fetchedStudent.points);
+			}
+		} 
+		catch (error) {
+			ShowAlert(errorSwitch(error));
+		}
+	};
+	
 	useEffect(() => {
 		// this makes sure loadCourses is called when the screen is focused
 		return navigation.addListener('focus', () => {
 			loadCourses();
+			fetchStudentData();
 		});
 	}, [navigation]);
 
@@ -86,7 +107,18 @@ export default function CourseScreen() {
 					<View height="100%">
 						<IconHeader
 							title={'Bem Vindo!'}
-							description={'Aqui você encontra todos os cursos em que você está inscrito!'}/>
+							description={'Aqui você encontra todos os cursos em que você está inscrito!'}
+						/>
+											
+						{/* Render stats box with level and progress bar only */}				
+						<View className='px-5'>
+							<ProfileStatsBox 
+								level={studentLevel || 0} 
+								points={studentPoints || 0} 
+								drawProgressBarOnly={true} 
+							/>
+						</View>
+
 						<ScrollView showsVerticalScrollIndicator={false}
 							refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}>
 							{courses.map((course, index) => (
@@ -96,7 +128,7 @@ export default function CourseScreen() {
 						</ScrollView>
 					</View>
 					:
-					<View className="bg-secondary justify-center items-center ">
+					<View className="bg-secondary justify-center items-center">
 						<Tooltip 
 							isVisible={isVisible} 
 							position={{
