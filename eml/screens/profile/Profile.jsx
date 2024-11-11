@@ -96,6 +96,7 @@ export default function ProfileComponent() {
 		}
 	};
 
+	
 	return (
 		<View className='flex flex-col pt-[20%] px-[5%] pb-[5%] bg-secondary'>
 			<UserInfo firstName={firstName} lastName={lastName} email={email} photo={photo}></UserInfo>
