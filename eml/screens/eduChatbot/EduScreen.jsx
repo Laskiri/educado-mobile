@@ -30,7 +30,7 @@ export default function Explore() {
 	
 		setChatMessages(prevMessages => [
 			...prevMessages,
-			{ sender: 'Chatbot', text: chatbotResponse }
+			{ sender: 'Chatbot', text: chatbotResponse },
 		]);
 	
 		setLoading(false);

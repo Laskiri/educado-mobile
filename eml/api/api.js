@@ -282,19 +282,25 @@ export const getBucketImage = async (fileName) => {
 
 
 export const sendMessageToChatbot = async (userMessage) => {
-	try {
-		const response = await axios.post(url + '/api/ai', {
-			userInput: userMessage
-		});
-	
-		if (response.status === 200) {
-			return response.data.message;
-		} else {
-			return 'Error: Try again.';
-		}
-	} catch (error) {
-		console.warn('Axios error:', error);
-		return 'Error: Try again.';
-	}
+    try {
+        const response = await axios.post(url + '/api/ai', {
+            userInput: userMessage,
+        });
+
+        if (response.status === 200) {
+            return response.data.message;
+        } else {
+            return 'Error: Try again.';
+        }
+    } catch (error) {
+        if (error.response && error.response.status === 429) {
+            // Handle rate-limiting error
+            return error.response.data.error || 'Slow down! Too many requests.';
+        }
+
+        console.warn('Axios error:', error);
+        return 'Error: Try again.';
+    }
 };
+
 
