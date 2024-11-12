@@ -1,8 +1,6 @@
 import axios from 'axios';
 import { Buffer } from 'buffer';
 import { URL, CERTIFICATE_URL } from '@env';
-import FormData from 'form-data';
-
 
 const timeoutInMs = 1200;
 
@@ -299,53 +297,4 @@ export const sendMessageToChatbot = async (userMessage) => {
 		return 'Error: Try again.';
 	}
 };
-
-
-
-/*export const sendAudioToChatbot = async (audioBlob) => {
-	try {
-		const form = new FormData();
-		form.append('audio', {
-			uri: audioBlob.uri,     // Ensure this is the file URI or a compatible blob
-			type: 'audio/mpeg',     // Set the correct MIME type if known
-			name: 'audio.mp3',      // Name the file
-		});
-
-		console.log(form)
-
-		const response = await axios.post(url +'/api/ai/stt', form, {
-			headers: {
-				'Content-Type': 'multipart/form-data',
-			},
-		});
-
-		if (response.status === 200) {
-			return response.data.message;
-		} else {
-			return 'Error: Try again.';
-		}
-	} catch (error) {
-		console.warn('Axios error:', JSON.stringify(error, Object.getOwnPropertyNames(error)));
-		return 'Error: Try again.';
-	}
-};*/
-
-export const sendAudioToChatbot = async (audio) => {
-	try {
-		const formData = new FormData();
-		formData.append('audio', "");
-	
-		const response = await axios.post('http://192.168.0.165:8888/api/ai/stt', formData, {
-		  headers: {
-			'Content-Type': 'multipart/form-data',
-		  },
-		});
-	
-		return response.data;
-	} catch (error) {
-	console.error('Error sending empty audio data:', error);
-	throw error;
-	}
-};
-	
 
