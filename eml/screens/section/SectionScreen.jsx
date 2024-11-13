@@ -13,7 +13,7 @@ import PropTypes from 'prop-types';
 import { checkProgressCourse, checkProgressSection } from '../../services/utilityFunctions';
 import ContinueSection from '../../components/section/ContinueSectionButton';
 import Tooltip from '../../components/onboarding/onboarding';
-import ImageNotFound from '../../assets/images/image-not-found.png'
+
 
 export default function SectionScreen({ route }) {
 	SectionScreen.propTypes = {
@@ -111,29 +111,39 @@ export default function SectionScreen({ route }) {
 
 	return (
     <>
-            <View className="flex flex-row flex-wrap justify-between px-6 pt-[20%] bg-secondary">
+            <View className="flex flex-row flex-wrap justify-between px-6 pt-[20%] bg-secondary mb-[5%] ">
                 {/* Back Button */}
                 <TouchableOpacity className="pr-3" onPress={() => navigation.navigate('Meus cursos')}>
                     <MaterialCommunityIcons name="chevron-left" size={25} color="black" />
                 </TouchableOpacity>
                 <View className="flex w-full items-center">
                     <View className="flex items-center w-full justify-between">
-                        <Image class="h-auto max-w-full" src="../../assets/images/profileEX.jpg">
-
-                        </Image>
+                        {/*Picture*/}
                     </View>
-                    <View className="flex p-[16px] g-[8px] justify-between w-[293px] h-[119px] rounded-md mt-[-5%] mb-[-5%] bg-projectWhite">
+                    <View className="flex p-[16px] justify-between w-[293px] h-[119px] rounded-2xl mt-[-5%] mb-[-5%] bg-projectWhite">
                         {/* Course Title */}
-                        <Text className="flex text-[24px] font-family-Montserrat font-style-normal line-height-[29px] align-items-center">{course.title}</Text>
+                        <Text className="flex text-[24px] font-montserrat font-style-normal line-height-[29px] align-items-center">{course.title}</Text>
+                        <View className="relative border-[1px] box-border rounded-sm bg-border"></View>
                         {/* Progress Bar */}
-                        <CustomProgressBar width={50} progress={studentProgress} height={1}></CustomProgressBar>
+                        <View className="relative w-[261px] h-[20px] ">
+                            <CustomProgressBar width={50} progress={studentProgress} height={0.5}></CustomProgressBar>
+                        </View>
+                        <View className="relative border box-border rounded-sm bg-border"></View>
+                        <View className="flex flex-row w-full justify-between">
+                            <Text>Points</Text>
+                            <CustomProgressBar width={0} progress={studentProgress} height={1}></CustomProgressBar>
+                        </View>
                     </View>
                 </View>
+            </View>
+            <View className="flex flex-row items-center pt-8 px-8 gap-2">
+                {/* Navigate to Current Section Button */}
+                <ContinueSection onPress={navigateToCurrentSection} />
             </View>
             {/* Conditionally render the sections if they exist */}
             {sections ? (
                 sections.length === 0 ? null : (
-                    <View className="flex-[1] flex-col my-[10px]">
+                    <View className="flex-[1] flex-col ]">
                         <Tooltip
                             isVisible={isVisible}
                             position={{
@@ -158,8 +168,6 @@ export default function SectionScreen({ route }) {
                         </ScrollView>
                         {/* Unsubscribe Button */}
                         <SubscriptionCancel onPress={unsubAlert} />
-                        {/* Navigate to Current Section Button */}
-                        <ContinueSection onPress={navigateToCurrentSection} />
                     </View>
 				)
 			) : null}

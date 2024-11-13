@@ -38,6 +38,7 @@ module.exports = {
       badgesPurple: '#C383F7',
       badgesBlue: '#54ADF1',
       unselectedStar: '#CBCAB8',
+      border: '#EAEAEA',
 
     },
     fontFamily: {

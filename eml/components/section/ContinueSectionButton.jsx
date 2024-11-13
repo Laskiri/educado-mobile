@@ -15,7 +15,7 @@ const ContinueSection = ({ onPress }) => {
 	};
 
 	return (
-		<View className="py-4 self-center justify-end w-1/2">
+		<View className=" self-center justify-center w-[100%] h-[70]">
 			<Button
 				mode={'contained'}
 				color={tailwindConfig.theme.colors.bgprimary_custom}
