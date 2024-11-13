@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Alert, View, TouchableOpacity } from 'react-native';
+import { Alert, View, TouchableOpacity, Image } from 'react-native';
 import Text from '../../components/general/Text';
 import * as StorageService from '../../services/StorageService';
 import SectionCard from '../../components/section/SectionCard';
@@ -113,14 +113,13 @@ export default function SectionScreen({ route }) {
     <>
             <View className="flex flex-row flex-wrap justify-between px-6 pt-[20%] bg-secondary">
                 {/* Back Button */}
-                <TouchableOpacity className="pr-3" onPress={() => navigation.navigate('Meus cursos')}>
+                <TouchableOpacity className="absolute top-10 left-5 pr-3 z-10" onPress={() => navigation.navigate('Meus cursos')}>
                     <MaterialCommunityIcons name="chevron-left" size={25} color="black" />
                 </TouchableOpacity>
                 <View className="flex w-full items-center">
                     <View className="flex items-center w-full justify-between">
-                        <Image class="h-auto max-w-full" src="../../assets/images/profileEX.jpg">
-
-                        </Image>
+                        {/* TODO: This should be the actual cource img */}
+                        <Image class="h-auto max-w-full" source={ImageNotFound}/>
                     </View>
                     <View className="flex p-[16px] g-[8px] justify-between w-[293px] h-[119px] rounded-md mt-[-5%] mb-[-5%] bg-projectWhite">
                         {/* Course Title */}
@@ -130,6 +129,9 @@ export default function SectionScreen({ route }) {
                     </View>
                 </View>
             </View>
+            {/* Navigate to Current Section Button */}
+            <ContinueSection onPress={navigateToCurrentSection} />
+
             {/* Conditionally render the sections if they exist */}
             {sections ? (
                 sections.length === 0 ? null : (
@@ -158,8 +160,7 @@ export default function SectionScreen({ route }) {
                         </ScrollView>
                         {/* Unsubscribe Button */}
                         <SubscriptionCancel onPress={unsubAlert} />
-                        {/* Navigate to Current Section Button */}
-                        <ContinueSection onPress={navigateToCurrentSection} />
+
                     </View>
 				)
 			) : null}
