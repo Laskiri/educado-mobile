@@ -13,7 +13,7 @@ import PropTypes from 'prop-types';
 import { checkProgressCourse, checkProgressSection } from '../../services/utilityFunctions';
 import ContinueSection from '../../components/section/ContinueSectionButton';
 import Tooltip from '../../components/onboarding/onboarding';
-
+import ImageNotFound from '../../assets/images/imageNotFound.png'
 
 export default function SectionScreen({ route }) {
 	SectionScreen.propTypes = {
