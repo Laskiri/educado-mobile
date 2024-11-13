@@ -3,9 +3,11 @@ import { useState, useEffect, useRef } from 'react';
 import { View, TextInput, ScrollView, Text, TouchableOpacity} from 'react-native';
 import BaseScreen from '../../components/general/BaseScreen';
 import IconHeader from '../../components/general/IconHeader';
+import RecButton from '../../components/Ai/aiRec';
 import NetworkStatusObserver from '../../hooks/NetworkStatusObserver';
 import { Icon } from '@rneui/themed';
 import Markdown from 'react-native-markdown-display';
+
 
 import { sendMessageToChatbot as fetchChatbotResponse } from '../../api/api.js';
 
@@ -146,7 +148,7 @@ export default function Explore() {
 									size={20}
 								/>
 							</TouchableOpacity>
-
+							<RecButton></RecButton>
 						</View>
 					</View>
 				}
