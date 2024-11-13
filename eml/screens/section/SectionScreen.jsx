@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Alert, View, TouchableOpacity } from 'react-native';
+import { Alert, View, TouchableOpacity, Image } from 'react-native';
 import Text from '../../components/general/Text';
 import * as StorageService from '../../services/StorageService';
 import SectionCard from '../../components/section/SectionCard';
@@ -113,7 +113,7 @@ export default function SectionScreen({ route }) {
     <>
             <View className="flex flex-row flex-wrap justify-between px-6 pt-[20%] bg-secondary mb-[5%] ">
                 {/* Back Button */}
-                <TouchableOpacity className="pr-3" onPress={() => navigation.navigate('Meus cursos')}>
+                <TouchableOpacity className="absolute top-10 left-5 pr-3 z-10" onPress={() => navigation.navigate('Meus cursos')}>
                     <MaterialCommunityIcons name="chevron-left" size={25} color="black" />
                 </TouchableOpacity>
                 <View className="flex w-full items-center">
