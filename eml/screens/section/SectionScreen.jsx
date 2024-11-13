@@ -111,16 +111,16 @@ export default function SectionScreen({ route }) {
 
 	return (
     <>
-            <View className="flex flex-row flex-wrap justify-between px-6 pt-[20%] bg-secondary mb-[5%] ">
+            <View className="flex flex-row flex-wrap justify-between px-6 bg-secondary mb-[5%] ">
                 {/* Back Button */}
                 <TouchableOpacity className="absolute top-10 left-5 pr-3 z-10" onPress={() => navigation.navigate('Meus cursos')}>
                     <MaterialCommunityIcons name="chevron-left" size={25} color="black" />
                 </TouchableOpacity>
                 <View className="flex w-full items-center">
                     <View className="flex items-center w-full justify-between">
-						<Image class="h-auto max-w-full" source={ImageNotFound}/>
+						<Image class="h-full max-w-full" source={ImageNotFound}/>
                     </View>
-                    <View className="flex p-[16px] justify-between w-[293px] h-[119px] rounded-2xl mt-[-5%] mb-[-5%] bg-projectWhite">
+                    <View className="flex p-[16px] justify-between w-[293px] h-[119px] rounded-2xl mt-[-12%] mb-[-10%] bg-projectWhite">
                         {/* Course Title */}
                         <Text className="flex text-[24px] font-montserrat font-style-normal line-height-[29px] align-items-center">{course.title}</Text>
                         <View className="relative border-[1px] box-border rounded-sm bg-border"></View>
@@ -136,7 +136,7 @@ export default function SectionScreen({ route }) {
                     </View>
                 </View>
             </View>
-            <View className="flex flex-row items-center pt-8 px-8 gap-2">
+            <View className="flex flex-row items-center pt-8 px-8 gap-2 ">
                 {/* Navigate to Current Section Button */}
                 <ContinueSection onPress={navigateToCurrentSection} />
             </View>
