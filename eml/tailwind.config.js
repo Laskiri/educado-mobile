@@ -32,7 +32,7 @@ module.exports = {
       profileCircle: '#166276',
       pointsText: '#C1A146',
       pointsCoin: '#AD872D',
-      progressBar: '#5ECCDD',
+      progressBar: '#166276',
       progressBarUnFilled: '#E4F2F5',
       badgesGreen: '#8CC43B',
       badgesPurple: '#C383F7',

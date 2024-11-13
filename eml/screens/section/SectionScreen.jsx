@@ -13,6 +13,7 @@ import PropTypes from 'prop-types';
 import { checkProgressCourse, checkProgressSection } from '../../services/utilityFunctions';
 import ContinueSection from '../../components/section/ContinueSectionButton';
 import Tooltip from '../../components/onboarding/onboarding';
+import ImageNotFound from '../../assets/images/image-not-found.png'
 
 export default function SectionScreen({ route }) {
 	SectionScreen.propTypes = {
@@ -109,49 +110,57 @@ export default function SectionScreen({ route }) {
 	};
 
 	return (
-		<>
-			<View className="flex flex-row flex-wrap items-center justify-between px-6 pt-[20%]">
-				{/* Back Button */}
-				<TouchableOpacity className="pr-3" onPress={() => navigation.navigate('Meus cursos')}>
-					<MaterialCommunityIcons name="chevron-left" size={25} color="black" />
-				</TouchableOpacity>
-				{/* Course Title */}
-				<Text className="text-[25px] font-bold">{course.title}</Text>
-				
-			</View>
-			{/* Conditionally render the sections if they exist */}
-			{sections ? (
-				sections.length === 0 ? null : (
-					<View className="flex-[1] flex-col my-[10px]">
-						<Tooltip 
-							isVisible={isVisible} 
-							position={{
-								top: -30,
-								left: 70,
-								right: 30,
-								bottom: 24,
-							}} 
-							setIsVisible={setIsVisible} 
-							text={'Essa é a página do seu curso. É aqui que você vai acessar as aulas e acompanhar seu progresso.'} 
-							tailSide="right" 
-							tailPosition="20%" 
-							uniqueKey="Sections" 
-							uniCodeChar="🎓"
-						/>
-						{/* Progress Bar */}
-						<CustomProgressBar width={60} progress={studentProgress} height={3}></CustomProgressBar>
-						{/* Section Cards */}
-						<ScrollView className="mt-[5%]" showsVerticalScrollIndicator={false}>
-							{sections.map((section, i) => {
-								const completedComponents = sectionProgress[section.sectionId] || 0;
-								return <SectionCard key={i} section={section} course={course} progress={completedComponents}></SectionCard>;
-							})}
-						</ScrollView>
-						{/* Unsubscribe Button */}
-						<SubscriptionCancel onPress={unsubAlert} />
-						{/* Navigate to Current Section Button */}
-						<ContinueSection onPress={navigateToCurrentSection} />
-					</View>
+    <>
+            <View className="flex flex-row flex-wrap justify-between px-6 pt-[20%] bg-secondary">
+                {/* Back Button */}
+                <TouchableOpacity className="pr-3" onPress={() => navigation.navigate('Meus cursos')}>
+                    <MaterialCommunityIcons name="chevron-left" size={25} color="black" />
+                </TouchableOpacity>
+                <View className="flex w-full items-center">
+                    <View className="flex items-center w-full justify-between">
+                        <Image class="h-auto max-w-full" src="../../assets/images/profileEX.jpg">
+
+                        </Image>
+                    </View>
+                    <View className="flex p-[16px] g-[8px] justify-between w-[293px] h-[119px] rounded-md mt-[-5%] mb-[-5%] bg-projectWhite">
+                        {/* Course Title */}
+                        <Text className="flex text-[24px] font-family-Montserrat font-style-normal line-height-[29px] align-items-center">{course.title}</Text>
+                        {/* Progress Bar */}
+                        <CustomProgressBar width={50} progress={studentProgress} height={1}></CustomProgressBar>
+                    </View>
+                </View>
+            </View>
+            {/* Conditionally render the sections if they exist */}
+            {sections ? (
+                sections.length === 0 ? null : (
+                    <View className="flex-[1] flex-col my-[10px]">
+                        <Tooltip
+                            isVisible={isVisible}
+                            position={{
+                                top: -30,
+                                left: 70,
+                                right: 30,
+                                bottom: 24,
+                            }}
+                            setIsVisible={setIsVisible}
+                            text={'Essa é a página do seu curso. É aqui que você vai acessar as aulas e acompanhar seu progresso.'}
+                            tailSide="right"
+                            tailPosition="20%"
+                            uniqueKey="Sections"
+                            uniCodeChar="🎓"
+                        />
+                        {/* Section Cards */}
+                        <ScrollView className="mt-[5%]" showsVerticalScrollIndicator={false}>
+                            {sections.map((section, i) => {
+                                const completedComponents = sectionProgress[section.sectionId] || 0;
+                                return <SectionCard key={i} section={section} course={course} progress={completedComponents}></SectionCard>;
+                            })}
+                        </ScrollView>
+                        {/* Unsubscribe Button */}
+                        <SubscriptionCancel onPress={unsubAlert} />
+                        {/* Navigate to Current Section Button */}
+                        <ContinueSection onPress={navigateToCurrentSection} />
+                    </View>
 				)
 			) : null}
 		</>
