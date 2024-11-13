@@ -111,17 +111,19 @@ export default function SectionScreen({ route }) {
 
 	return (
     <>
-            <View className="flex flex-row flex-wrap justify-between px-6 pt-[20%] bg-secondary">
-                {/* Back Button */}
-                <TouchableOpacity className="absolute top-10 left-5 pr-3 z-10" onPress={() => navigation.navigate('Meus cursos')}>
-                    <MaterialCommunityIcons name="chevron-left" size={25} color="black" />
-                </TouchableOpacity>
+        {/* Back Button */}
+        <TouchableOpacity className="absolute top-10 left-5 pr-3 z-10" onPress={() => navigation.navigate('Meus cursos')}>
+            <MaterialCommunityIcons name="chevron-left" size={25} color="black" />
+        </TouchableOpacity>
+        <ScrollView showsVerticalScrollIndicator={false}>
+            <View className="flex flex-row flex-wrap justify-between  bg-secondary">
+
                 <View className="flex w-full items-center">
                     <View className="flex items-center w-full justify-between">
                         {/* TODO: This should be the actual cource img */}
                         <Image class="h-auto max-w-full" source={ImageNotFound}/>
                     </View>
-                    <View className="flex p-[16px] g-[8px] justify-between w-[293px] h-[119px] rounded-md mt-[-5%] mb-[-5%] bg-projectWhite">
+                    <View className="flex p-[16px] g-[8px] justify-between w-[293px] rounded-md mt-[-5%] mb-[-5%] bg-projectWhite">
                         {/* Course Title */}
                         <Text className="flex text-[24px] font-family-Montserrat font-style-normal line-height-[29px] align-items-center">{course.title}</Text>
                         {/* Progress Bar */}
@@ -152,18 +154,18 @@ export default function SectionScreen({ route }) {
                             uniCodeChar="🎓"
                         />
                         {/* Section Cards */}
-                        <ScrollView className="mt-[5%]" showsVerticalScrollIndicator={false}>
+                        <View>
                             {sections.map((section, i) => {
                                 const completedComponents = sectionProgress[section.sectionId] || 0;
                                 return <SectionCard key={i} section={section} course={course} progress={completedComponents}></SectionCard>;
                             })}
-                        </ScrollView>
-                        {/* Unsubscribe Button */}
-                        <SubscriptionCancel onPress={unsubAlert} />
-
+                        </View>
                     </View>
-				)
-			) : null}
-		</>
+                )
+            ) : null}
+        </ScrollView>
+        {/* Unsubscribe Button */}
+        <SubscriptionCancel onPress={unsubAlert} />
+	</>
 	);
 }
