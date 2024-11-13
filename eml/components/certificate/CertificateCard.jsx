@@ -1,14 +1,20 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity} from 'react-native';
+import React, { useState} from 'react';
+import { Platform, View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
+import ToastNotification from '../general/ToastNotification';
 
 import * as Utility from '../../services/utilityFunctions';
-import PropTypes from 'prop-types';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
 import CertificateTemplate from './CertificateTemplate';
 import CertificatePopup from './CertificatePopup';
 import CertificateOverlay from './CertificateOverlay';
 import CardLabel from '../explore/CardLabel';
+import * as Sharing from 'expo-sharing';
+import * as FileSystem from 'expo-file-system';
+import { CERTIFICATE_URL } from '@env';
+import PropTypes from 'prop-types';
+
+const certificateUrl = CERTIFICATE_URL;
 
 /**
  * This component is used to display a certificate card.
@@ -17,21 +23,10 @@ import CardLabel from '../explore/CardLabel';
  * @returns {JSX.Element|null} - Returns a JSX element.
  */
 export default function CertificateCard({ certificate }) {
-	CertificateCard.propTypes = {
-		certificate: PropTypes.shape({
-			studentFirstName: PropTypes.string.isRequired,
-			studentLastName: PropTypes.string.isRequired,
-			courseCategory: PropTypes.string.isRequired,
-			estimatedCourseDuration: PropTypes.number.isRequired,
-			courseName: PropTypes.string.isRequired,
-			dateOfCompletion: PropTypes.instanceOf(Date).isRequired,
-			courseCreator: PropTypes.string.isRequired,
-		}).isRequired,
-	};
+	const [loading, setLoading] = useState(false);
+	
 	const [popupVisible, setPopupVisible] = useState(false);
 	
-	
-  
 	const handleVisualizarClick = () => {
 		setPopupVisible(true);
 	};
@@ -40,16 +35,52 @@ export default function CertificateCard({ certificate }) {
 		setPopupVisible(false);
 	};
 
-	/* const handleDownloadClick = () => {
-		// Add your PDF download logic here
-	} */
+	const handleDownloadClick = async () => {
+		try {
+			setLoading(true);
+			const fileName = 'Educado Certificate ' + certificate.courseName + '.pdf';
+			const url = certificateUrl + '/api/student-certificates/download?courseId=' + certificate.courseId + '&studentId=' + certificate.studentId;
+			const fileUri = FileSystem.documentDirectory + fileName;
+			const file = await FileSystem.downloadAsync(url, fileUri);
+			const uri = file.uri;
+
+			if (Platform.OS === 'android') {
+				const permissions = await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
+
+				if (permissions.granted) {
+					const base64 = await FileSystem.readAsStringAsync(uri, { encoding: FileSystem.EncodingType.Base64 });
+
+					await FileSystem.StorageAccessFramework.createFileAsync(permissions.directoryUri, fileName, 'application/pdf')
+						.then(async (uri) => {
+							await FileSystem.writeAsStringAsync(uri, base64, { encoding: FileSystem.EncodingType.Base64 });
+							ToastNotification('success', 'Certificado baixado com sucesso!');
+							handleClosePopup();
+						})
+						.catch(e => console.log(e));
+				} else {
+					await Sharing.shareAsync(uri);
+					ToastNotification('success', 'Certificado baixado com sucesso!');
+					handleClosePopup();
+				}
+			} else {
+				await Sharing.shareAsync(uri);
+				ToastNotification('success', 'Certificado baixado com sucesso!');
+				handleClosePopup();
+			}	
+		} catch (e) {
+			console.log('Error downloading certificate', e);
+			throw e;
+		} finally {
+			setLoading(false);
+		}
+	}; 
 	return (
 		<View className='relative max-h-[33%] min-h-[260px]  m-2 flex items-center rounded-lg border-[3px] border-lightGray'>
 			<CertificateTemplate
 				studentName={certificate.studentFirstName + '' + certificate.studentLastName}
 				estimatedCourseDuration={certificate.estimatedCourseDuration}
 				courseName={certificate.courseName}
-				dateOfCompletion={Utility.formatDate(certificate.dateOfCompletion)}
+				dateOfCompletion={certificate.dateOfCompletion}
 				creatorName={certificate.courseCreator}
 			/>
 			<CertificateOverlay certificate={certificate} handleVisualizarClick={handleVisualizarClick}/>
@@ -89,20 +120,28 @@ export default function CertificateCard({ certificate }) {
 							studentName={certificate.studentFirstName + ' ' + certificate.studentLastName}
 							estimatedCourseDuration={certificate.estimatedCourseDuration}
 							courseName={certificate.courseName}
-							dateOfCompletion={Utility.formatDate(certificate.dateOfCompletion)}
+							dateOfCompletion={certificate.dateOfCompletion}
 							creatorName={certificate.courseCreator}
 						/>
 					</View>
 					<View >
-						<TouchableOpacity
-							
-							onPress={() => {
-
-								// Add your PDF download logic here
-							}}>
-							<View className='flex flex-row justify-center items-end bg-primary_custom py-4 px-10 rounded-lg opacity-50'>
-								<MaterialCommunityIcons name={'download'} size={24} color={'white'}/>
-								<Text className='text-projectWhite text-lg font-montserrat-bold ml-2 text-center'>Baixar PDF</Text>
+						<TouchableOpacity 
+							onPress={handleDownloadClick}
+							disabled={loading}>
+							<View className='flex flex-row justify-center items-end bg-primary_custom py-4 px-10 rounded-lg'>
+								{loading ? (
+									<ActivityIndicator
+										size="small"
+										color="white"
+									/>
+								) : (
+									<>
+										<MaterialCommunityIcons name={'download'} size={24} color={'white'}/>
+										<Text className='text-projectWhite text-lg font-montserrat-bold ml-2 text-center'>
+											Baixar PDF
+										</Text>
+									</>
+								)}
 							</View>
 						</TouchableOpacity>
 					</View>
@@ -110,4 +149,18 @@ export default function CertificateCard({ certificate }) {
 			</CertificatePopup>
 		</View>
 	);
-}	
+}
+
+CertificateCard.propTypes = {
+	certificate: PropTypes.shape({
+		studentFirstName: PropTypes.string.isRequired,
+		studentLastName: PropTypes.string.isRequired,
+		courseCategory: PropTypes.string.isRequired,
+		courseId: PropTypes.string.isRequired,
+		studentId: PropTypes.string.isRequired,
+		estimatedCourseDuration: PropTypes.number.isRequired,
+		courseName: PropTypes.string.isRequired,
+		dateOfCompletion: PropTypes.string.isRequired,
+		courseCreator: PropTypes.string.isRequired,
+	}).isRequired,
+};

@@ -4,7 +4,9 @@ import * as userApi from '../api/userApi.js';
 import * as api from '../api/api.js';
 import 'intl';
 import 'intl/locale-data/jsonp/en-GB'; // Import the locale you need
+import { generateCertificate } from '../services/CertificateService.js';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
 /**
  * Converts a numeric difficulty level to a human-readable label.
  * @param {number} lvl - The difficulty level of the course.
@@ -147,6 +149,9 @@ export function formatHours(number) {
 
 export function formatDate(dateString) {
 	const date = new Date(dateString);
+	if (isNaN(date.getTime())) {
+		return 'Invalid date';
+	}
 	return new Intl.DateTimeFormat('en-GB', {
 		day: '2-digit',
 		month: '2-digit',
@@ -307,6 +312,10 @@ export function findIndexOfUncompletedComp(student, courseId, sectionId) {
 }
 
 export async function handleLastComponent(comp, course, navigation) {
+	// Generate certificate
+	const courseId = course.courseId;
+	const userId = await StorageService.getUserId();
+	generateCertificate(courseId, userId);
 
 	// For future reference 
 	// const student = await StorageService.getStudentInfo();
@@ -320,21 +329,21 @@ export async function handleLastComponent(comp, course, navigation) {
 
 	// Check if the section is the last one
 	const isThisTheLastSection = getLastSection === comp.parentSection;
-	
+
 	if (isThisTheLastSection) {
 		// If the course is completed, navigate to the complete course screen
 		navigation.reset({
 			index: 0,
 			routes: [
-				{ 
+				{
 					name: 'CompleteCourse',
-					params: { 
-						course: course 
+					params: {
+						course: course
 					}
 				},
 			],
 		});
-		
+
 	} else {
 		navigation.reset({
 			index: 0,
