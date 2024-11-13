@@ -118,7 +118,7 @@ export default function SectionScreen({ route }) {
                 </TouchableOpacity>
                 <View className="flex w-full items-center">
                     <View className="flex items-center w-full justify-between">
-                        {/*Picture*/}
+						<Image class="h-auto max-w-full" source={ImageNotFound}/>
                     </View>
                     <View className="flex p-[16px] justify-between w-[293px] h-[119px] rounded-2xl mt-[-5%] mb-[-5%] bg-projectWhite">
                         {/* Course Title */}
