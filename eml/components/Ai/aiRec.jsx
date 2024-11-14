@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Button, StyleSheet, Alert } from 'react-native';
 import { Audio } from 'expo-av';
+import { sendAudioToChatbot} from '../../api/api.js';
 
 export default function App() {
   const [recording, setRecording] = useState(null);
@@ -43,10 +44,14 @@ export default function App() {
   };
 
   const playAudio = async () => {
+
     if (audioSource) {
       try {
+        console.log(audioSource)
         await Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
 
+        
+        
         // Create and play the sound
         const { sound: playbackObject } = await Audio.Sound.createAsync(
           { uri: audioSource },
@@ -65,6 +70,8 @@ export default function App() {
     } else {
       Alert.alert('No Audio', 'Please record some audio first!');
     }
+    const result = await sendAudioToChatbot(audioSource);
+    console.log(result.message)
   };
 
   return (

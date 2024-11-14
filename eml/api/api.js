@@ -303,4 +303,33 @@ export const sendMessageToChatbot = async (userMessage) => {
     }
 };
 
+export const sendAudioToChatbot = async (audioUri) => {
+    try {
+        console.log('Sending audio:', audioUri);
 
+        // Fetch the file from the URI as a blob
+        const response = await fetch(audioUri);
+        const blob = await response.blob();
+
+        const formData = new FormData();
+        formData.append('audio', {
+            uri: audioUri,
+            name: 'audio.m4a', // You can use a generic name or dynamically extract it
+            type: 'audio/m4a', // Ensure this matches the audio type
+        });
+
+        console.log('FormData:', formData);
+
+        // Send the formData via Axios
+        const serverResponse = await axios.post('http://192.168.0.165:8888/api/ai/stt', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+
+        return serverResponse.data;
+    } catch (error) {
+        console.error('Error sending audio data:', error);
+        throw error;
+    }
+};

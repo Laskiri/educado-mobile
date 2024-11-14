@@ -9,7 +9,8 @@ import { Icon } from '@rneui/themed';
 import Markdown from 'react-native-markdown-display';
 
 
-import { sendMessageToChatbot as fetchChatbotResponse } from '../../api/api.js';
+import { sendMessageToChatbot } from '../../api/api.js';
+
 
 
 export default function Explore() {
@@ -21,6 +22,14 @@ export default function Explore() {
 	const [loading, setLoading] = useState(false);
 	const [loadingDots, setLoadingDots] = useState('');
   
+	const handleAudioResponse = (audioResponse) => {
+		// Add the chatbot's response from audio to the chatMessages
+		setChatMessages((prevMessages) => [
+			...prevMessages,
+			{ sender: 'Chatbot', text: audioResponse },
+		]);
+	};
+
 	const handleSendMessage = async () => {
 		if (!userMessage) return;
 	
@@ -28,7 +37,7 @@ export default function Explore() {
 		setLoading(true);
 		setUserMessage('');
 	
-		const chatbotResponse = await fetchChatbotResponse(userMessage);
+		const chatbotResponse = await sendMessageToChatbot(userMessage);
 	
 		setChatMessages(prevMessages => [
 			...prevMessages,
@@ -57,103 +66,81 @@ export default function Explore() {
 
 	return (
 		<>
-			<NetworkStatusObserver setIsOnline={setIsOnline} />
-			<BaseScreen className="h-screen flex flex-col ">
-				<View className="border-b " style={{ borderBottomWidth: 1, borderBottomColor: 'rgba(0, 0, 0, 0.2)' }}>
-					
-					<IconHeader 
-						title={'Edu'}
-						description={'Meu nome é Edu, e estou aqui para ajudá-lo a navegar neste aplicativo.'}
-					/>
-				</View>
-				
-				{!isOnline ?
-					<View>
-						
+		  <NetworkStatusObserver setIsOnline={setIsOnline} />
+		  <BaseScreen className="h-screen flex flex-col">
+			{/* Header and other UI elements */}
+			<View className="flex-1 bg-white flex-end">
+			  <ScrollView
+				ref={scrollViewRef}
+				style={'flex-1'}
+				className="pr-2.5"
+			  >
+				{chatMessages.map((message, index) => (
+				  message.sender === 'User' ? (
+					<View key={index} style={{ alignSelf: 'flex-end' }}>
+					  <View className="p-2.5 pl-3 mb-1 mt-2 flex-row rounded-t-3xl rounded-bl-3xl max-w-[80%] bg-bgprimary_custom">
+						<Text className="text-projectLightGray">{message.text}</Text>
+					  </View>
 					</View>
-					:
-					<View className="flex-1 bg-white flex-end">
-						<ScrollView
-							ref={scrollViewRef}
-							style={'flex-1'}
-							className="pr-2.5"
-						>
-							{chatMessages.map((message, index) => (
-								message.sender === 'User' ? (
-									<View key={index} style={{ alignSelf: 'flex-end' }}>
-										<View
-											className="p-2.5 pl-3 mb-1 mt-2 flex-row rounded-t-3xl rounded-bl-3xl max-w-[80%] bg-bgprimary_custom"
-										>
-											<Text className="text-projectLightGray">{message.text}</Text>
-										</View>
-									</View>
-								) : (
-									<View key={index} style={{ alignSelf: 'flex-start' }}>
-										<View
-											className="p-2.5 pl-3 mb-1 flex-row rounded-t-3xl rounded-br-3xl max-w-[80%]"
-
-										>
-											<View className="px-2">
-												<Icon
-													name="robot-outline"
-													type="material-community"
-													color="primary_custom"
-													size={20} 
-												/>
-											</View>
-											<Markdown>{message.text}</Markdown> 
-
-										</View>
-									</View>
-								)
-							))}
-
-
-								
-							{/* Display loading indicator if loading */}
-							{loading && (
-								<View
-									style={{
-										alignSelf: 'flex-start',
-										padding: 10,
-										marginBottom: 5,
-									}}
-								>
-									<Icon
-										name="robot-outline"
-										type="material-community"
-										color="primary_custom"
-										size={20}
-									/>
-									<Text>Edu is thinking{loadingDots}</Text>
-								</View>
-							)}
-						</ScrollView>
-						<View className="flex-row border border-projectBlack rounded-3xl m-4 p-1 pl-4">
-							<TextInput
-								value={userMessage}
-								onChangeText={setUserMessage}
-								placeholder={'Pesquise aqui...'}
-								className="flex-1"
-								onSubmitEditing={handleSendMessage} // Updated here
-							/>
-							<TouchableOpacity
-								className="rounded-full w-7 h-7 bg-primary_custom ml-2 flex items-center justify-center"
-								onPress={handleSendMessage} // Updated here
-							>
-								<Icon
-									name="arrow-up"
-									type="material-community"
-									color="white"
-									size={20}
-								/>
-							</TouchableOpacity>
-							<RecButton></RecButton>
+				  ) : (
+					<View key={index} style={{ alignSelf: 'flex-start' }}>
+					  <View className="p-2.5 pl-3 mb-1 flex-row rounded-t-3xl rounded-br-3xl max-w-[80%]">
+						<View className="px-2">
+						  <Icon
+							name="robot-outline"
+							type="material-community"
+							color="primary_custom"
+							size={20} 
+						  />
 						</View>
+						<Markdown>{message.text}</Markdown>
+					  </View>
 					</View>
-				}
-			</BaseScreen>
+				  )
+				))}
+				{loading && (
+				  <View
+					style={{
+					  alignSelf: 'flex-start',
+					  padding: 10,
+					  marginBottom: 5,
+					}}
+				  >
+					<Icon
+					  name="robot-outline"
+					  type="material-community"
+					  color="primary_custom"
+					  size={20}
+					/>
+					<Text>Edu is thinking{loadingDots}</Text>
+				  </View>
+				)}
+			  </ScrollView>
+			  <View className="flex-row border border-projectBlack rounded-3xl m-4 p-1 pl-4">
+				<TextInput
+				  value={userMessage}
+				  onChangeText={setUserMessage}
+				  placeholder={'Pesquise aqui...'}
+				  className="flex-1"
+				  onSubmitEditing={handleSendMessage}
+				/>
+				<TouchableOpacity
+				  className="rounded-full w-7 h-7 bg-primary_custom ml-2 flex items-center justify-center"
+				  onPress={handleSendMessage}
+				>
+				  <Icon
+					name="arrow-up"
+					type="material-community"
+					color="white"
+					size={20}
+				  />
+				</TouchableOpacity>
+				<RecButton onAudioResponse={handleAudioResponse} />
+			  </View>
+			</View>
+		  </BaseScreen>
 		</>
-	);
+	  );
+	
 }
 
