@@ -7,16 +7,34 @@ import { getStudentInfo } from '../api/userApi.js';
 // Get certificates from student
 export const fetchCertificates = async (userId) => {
 	try {
-		if (userId == null) {
-			throw 'User ID is null';
+		if (!userId) {
+			throw new Error('User ID is null');
 		}
-		const res = await axios.get(CERTIFICATE_URL + '/api/student-certificates/student/' + userId);
+		const res = await axios.get(`${CERTIFICATE_URL}/api/student-certificates/student/${userId}`);
 		return res.data;
-	} catch (e) {
-		if (e?.response?.data != null) {
-			throw e.response.data;
+	} catch (error) {
+		// Check if the error has a response from the server
+		if (error.response) {
+			const status = error.response.status;
+			const data = error.response.data;
+
+			if (status === 404) {
+				console.error('Endpoint not found:', data.message || 'No further information');
+				throw new Error('Certificates endpoint is not implemented or accessible.');
+			} else if (status >= 500) {
+				console.error('Server error:', data.message || 'No further information');
+				throw new Error('A server error occurred. Please try again later.');
+			} else {
+				throw new Error(data || 'An error occurred while fetching certificates.');
+			}
+		} else if (error.request) {
+			// Request was made, but no response was received
+			console.error('No response from server', error.request);
+			throw new Error('Network error: Unable to reach server.');
 		} else {
-			throw e;
+			// Some other error occurred in setting up the request
+			console.error('Unexpected error:', error.message);
+			throw new Error('An unexpected error occurred.');
 		}
 	}
 };
@@ -34,7 +52,7 @@ export const generateCertificate = async (courseId, userId) => {
 		// Fetch student data and user data concurrently
 		const [studentData, userData] = await Promise.all([
 			getStudentInfo(userId),
-			getUserInfo()
+			getUserInfo(),
 		]);
 
 		// Ensure data is loaded
@@ -55,10 +73,29 @@ export const generateCertificate = async (courseId, userId) => {
 		};
 
 		// Call the endpoint to generate the certificate
-		const response = await axios.put(CERTIFICATE_URL + '/api/student-certificates', object);
+		const response = await axios.put(`${CERTIFICATE_URL}/api/student-certificates`, object);
 		return response.data;
 	} catch (error) {
-		console.error('Error generating certificate:', error.response?.data || error.message);
-		throw error;
+		if (error.response) {
+			const status = error.response.status;
+			const data = error.response.data;
+
+			if (status === 404) {
+				console.error('Certificate generation endpoint not found:', data.message || 'No further information');
+				throw new Error('Certificate generation endpoint is not implemented.');
+			} else if (status >= 500) {
+				console.error('Server error during certificate generation:', data.message || 'No further information');
+				throw new Error('Server error: Unable to generate certificate at this time.');
+			} else {
+				console.error('Certificate generation failed:', data.message || 'Unknown error');
+				throw new Error(data.message || 'An error occurred during certificate generation.');
+			}
+		} else if (error.request) {
+			console.error('No response received for certificate generation:', error.request);
+			throw new Error('Network error: Unable to reach certificate generation endpoint.');
+		} else {
+			console.error('Unexpected error during certificate generation:', error.message);
+			throw new Error('An unexpected error occurred during certificate generation.');
+		}
 	}
 };

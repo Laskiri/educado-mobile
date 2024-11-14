@@ -128,24 +128,62 @@ export const updateUserPassword = async (user_id, oldPassword, newPassword, toke
 	}
 };
 
-export const completeComponent = async (user_id, comp, isComplete, points, token) => {
-	try {
-		const res = await client.patch('/api/students/' + user_id + '/complete', { comp: comp, isComplete: isComplete, points: points }, {
-			headers: {
-				'Content-Type': 'application/json',
-				'token': token, // Include the token in the headers
-			},
-		});
+export const completeComponent = async (user_id, comp, isComplete, token) => {
+    try {
+        // Determine the correct component type
+        const isExercise = comp.type === 'exercise' || comp.compType === 'exercise' ||
+                          (comp.component && comp.component.answers); // Check if it has answers
 
-		return res.data;
-	} catch (e) {
-		if (e?.response?.data != null) {
-			throw e.response.data;
-		} else {
-			throw e;
-		}
-	}
+        // Create a clean component object with required fields
+        const componentToSend = {
+            _id: comp._id || comp.compId,
+            parentSection: comp.parentSection,
+            compType: isExercise ? 'exercise' : 'lecture',
+            isFirstAttempt: isExercise ? (comp.isFirstAttempt !== false) : undefined,
+            ...comp  // Include any other fields from the original component
+        };
+
+        console.log('API call to complete component:', {
+            user_id,
+            component: {
+                _id: componentToSend._id,
+                parentSection: componentToSend.parentSection,
+                compType: componentToSend.compType,
+                isFirstAttempt: componentToSend.isFirstAttempt
+            },
+            isComplete,
+            hasToken: !!token
+        });
+
+        const res = await client.patch('/api/students/' + user_id + '/complete',
+            {
+                comp: componentToSend,
+                isComplete: isComplete
+            },
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'token': token
+                }
+            }
+        );
+
+        console.log('API response:', res.data);
+        return res.data;
+    } catch (e) {
+        console.error('API error:', {
+            status: e.response?.status,
+            error: e.response?.data || e.message,
+            request: e.config
+        });
+        if (e?.response?.data != null) {
+            throw e.response.data;
+        } else {
+            throw e;
+        }
+    }
 };
+
 
 export const getStudentInfo = async (user_Id) => {
 	try {
