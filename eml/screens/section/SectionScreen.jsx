@@ -13,7 +13,7 @@ import PropTypes from 'prop-types';
 import { checkProgressCourse, checkProgressSection } from '../../services/utilityFunctions';
 import ContinueSection from '../../components/section/ContinueSectionButton';
 import Tooltip from '../../components/onboarding/onboarding';
-import ImageNotFound from '../../assets/images/image-not-found.png'
+import ImageNotFound from '../../assets/images/imageNotFound.png'
 
 export default function SectionScreen({ route }) {
 	SectionScreen.propTypes = {
@@ -120,24 +120,32 @@ export default function SectionScreen({ route }) {
 
                 <View className="flex w-full items-center">
                     <View className="flex items-center w-full justify-between">
-                        {/* TODO: This should be the actual cource img */}
-                        <Image class="h-auto max-w-full" source={ImageNotFound}/>
+						<Image class="h-full max-w-full" source={ImageNotFound}/>
                     </View>
                     <View className="flex p-[16px] g-[8px] justify-between w-[293px] rounded-md mt-[-5%] mb-[-5%] bg-projectWhite">
                         {/* Course Title */}
-                        <Text className="flex text-[24px] font-family-Montserrat font-style-normal line-height-[29px] align-items-center">{course.title}</Text>
+                        <Text className="flex text-[24px] font-montserrat font-style-normal line-height-[29px] align-items-center">{course.title}</Text>
+                        <View className="relative border-[1px] box-border rounded-sm bg-border"></View>
                         {/* Progress Bar */}
-                        <CustomProgressBar width={50} progress={studentProgress} height={1}></CustomProgressBar>
+                        <View className="relative w-[261px] h-[20px] ">
+                            <CustomProgressBar width={50} progress={studentProgress} height={0.5}></CustomProgressBar>
+                        </View>
+                        <View className="relative border box-border rounded-sm bg-border"></View>
+                        <View className="flex flex-row w-full justify-between">
+                            <Text>Points</Text>
+                            <CustomProgressBar width={0} progress={studentProgress} height={1}></CustomProgressBar>
+                        </View>
                     </View>
                 </View>
             </View>
-            {/* Navigate to Current Section Button */}
-            <ContinueSection onPress={navigateToCurrentSection} />
-
+            <View className="flex flex-row items-center pt-8 px-8 gap-2 ">
+                {/* Navigate to Current Section Button */}
+                <ContinueSection onPress={navigateToCurrentSection} />
+            </View>
             {/* Conditionally render the sections if they exist */}
             {sections ? (
                 sections.length === 0 ? null : (
-                    <View className="flex-[1] flex-col my-[10px]">
+                    <View className="flex-[1] flex-col ]">
                         <Tooltip
                             isVisible={isVisible}
                             position={{
