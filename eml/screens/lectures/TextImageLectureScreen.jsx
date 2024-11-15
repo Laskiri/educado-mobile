@@ -11,139 +11,139 @@ import * as StorageService from '../../services/StorageService';
 import { completeComponent, handleLastComponent } from '../../services/utilityFunctions';
 
 const TextImageLectureScreen = ({ lectureObject, courseObject, isLastSlide, onContinue }) => {
-    const [imageUrl, setImageUrl] = useState(null);
-    const [paragraphs, setParagraphs] = useState(null);
-    const navigation = useNavigation();
+	const [imageUrl, setImageUrl] = useState(null);
+	const [paragraphs, setParagraphs] = useState(null);
+	const navigation = useNavigation();
 
-    const handleContinue = async () => {
-        try {
-            await completeComponent(lectureObject, courseObject.courseId, true);
-            if (isLastSlide) {
-                handleLastComponent(lectureObject, courseObject, navigation);
-            } else {
-                onContinue();
-            }
-        } catch (error) {
-            console.error('Error completing the component:', error);
-        }
-    };
+	const handleContinue = async () => {
+		try {
+			await completeComponent(lectureObject, courseObject.courseId, true);
+			if (isLastSlide) {
+				handleLastComponent(lectureObject, courseObject, navigation);
+			} else {
+				onContinue();
+			}
+		} catch (error) {
+			console.error('Error completing the component:', error);
+		}
+	};
 
-    useEffect(() => {
-        if (lectureObject.image) {
-            getLectureImage();
-        }
-        splitText(lectureObject.content);
-    }, []);
+	useEffect(() => {
+		if (lectureObject.image) {
+			getLectureImage();
+		}
+		splitText(lectureObject.content);
+	}, []);
 
-    const getLectureImage = async () => {
-        try {
-            const imageRes = await StorageService.fetchLectureImage(lectureObject.image, lectureObject._id);
-            setImageUrl(imageRes);
-        } catch (err) {
-            setImageUrl(null);
-        }
-    };
+	const getLectureImage = async () => {
+		try {
+			const imageRes = await StorageService.fetchLectureImage(lectureObject.image, lectureObject._id);
+			setImageUrl(imageRes);
+		} catch (err) {
+			setImageUrl(null);
+		}
+	};
 
-    // Split text into paragraphs without cutting words
-    const splitText = (text) => {
-        let _paragraphs = [];
+	// Split text into paragraphs without cutting words
+	const splitText = (text) => {
+		let _paragraphs = [];
 
-        if (text.length < 250) {
-            _paragraphs.push(text);
-            setParagraphs(_paragraphs);
-            return;
-        }
+		if (text.length < 250) {
+			_paragraphs.push(text);
+			setParagraphs(_paragraphs);
+			return;
+		}
 
-        const findBreakPoint = (str, start, direction = 1) => {
-            let pos = start;
-            while (pos > 0 && pos < str.length) {
-                if (str[pos] === ' ') return pos;
-                pos += direction;
-            }
-            return pos;
-        };
+		const findBreakPoint = (str, start, direction = 1) => {
+			let pos = start;
+			while (pos > 0 && pos < str.length) {
+				if (str[pos] === ' ') return pos;
+				pos += direction;
+			}
+			return pos;
+		};
 
-        if (text.length <= 250) {
-            _paragraphs.push(text);
-        } else {
-            const breakPoint1 = findBreakPoint(text, 250);
-            _paragraphs.push(text.substring(0, breakPoint1));
+		if (text.length <= 250) {
+			_paragraphs.push(text);
+		} else {
+			const breakPoint1 = findBreakPoint(text, 250);
+			_paragraphs.push(text.substring(0, breakPoint1));
 
-            let remainingText = text.substring(breakPoint1);
+			let remainingText = text.substring(breakPoint1);
 
-            while (remainingText.length > 0) {
-                const breakPoint = findBreakPoint(remainingText, 100);
-                const chunk = remainingText.substring(0, breakPoint);
-                _paragraphs.push(chunk);
-                remainingText = remainingText.substring(breakPoint);
-            }
-        }
+			while (remainingText.length > 0) {
+				const breakPoint = findBreakPoint(remainingText, 100);
+				const chunk = remainingText.substring(0, breakPoint);
+				_paragraphs.push(chunk);
+				remainingText = remainingText.substring(breakPoint);
+			}
+		}
 
-        setParagraphs(_paragraphs);
-    };
+		setParagraphs(_paragraphs);
+	};
 
-    return (
-        <View className="flex-1 bg-secondary px-4 pt-20">
-            <View className="flex-col mt-5 items-center">
-                <Text className="font-sans text-base text-projectGray">
+	return (
+		<View className="flex-1 bg-secondary px-4 pt-20">
+			<View className="flex-col mt-5 items-center">
+				<Text className="font-sans text-base text-projectGray">
                     Nome do curso: {courseObject.title}
-                </Text>
-                <Text className="font-sans-bold text-lg text-projectBlack">
-                    {lectureObject.title}
-                </Text>
-            </View>
+				</Text>
+				<Text className="font-sans-bold text-lg text-projectBlack">
+					{lectureObject.title}
+				</Text>
+			</View>
 
-            <View className="flex-1 w-full">
-                <ScrollView className="max-h-128 flex-grow mt-2 mb-4">
-                    {paragraphs && paragraphs.map((paragraph, index) => (
-                        <Text
-                            key={index}
-                            className={`text-lg pt-4 px-4 ${index === 0 ? 'text-primary_custom' : 'text-projectGray'}`}
-                        >
-                            {paragraph}
-                        </Text>
-                    ))}
-                    {imageUrl && (
-                        <View className="w-full h-[25vh] px-4 pt-8">
-                            <Image source={{ uri: imageUrl }} className="w-full h-full" />
-                        </View>
-                    )}
-                    {paragraphs && paragraphs.length > 2 && (
-                        <Text className="text-[18px] px-4 text-projectGray">
-                            {paragraphs[paragraphs.length - 1]}
-                        </Text>
-                    )}
-                </ScrollView>
-            </View>
+			<View className="flex-1 w-full">
+				<ScrollView className="max-h-128 flex-grow mt-2 mb-4">
+					{paragraphs && paragraphs.map((paragraph, index) => (
+						<Text
+							key={index}
+							className={`text-lg pt-4 px-4 ${index === 0 ? 'text-primary_custom' : 'text-projectGray'}`}
+						>
+							{paragraph}
+						</Text>
+					))}
+					{imageUrl && (
+						<View className="w-full h-[25vh] px-4 pt-8">
+							<Image source={{ uri: imageUrl }} className="w-full h-full" />
+						</View>
+					)}
+					{paragraphs && paragraphs.length > 2 && (
+						<Text className="text-[18px] px-4 text-projectGray">
+							{paragraphs[paragraphs.length - 1]}
+						</Text>
+					)}
+				</ScrollView>
+			</View>
 
-            <View className="w-100 px-6 mb-8">
-                <TouchableOpacity
-                    className="bg-primary_custom px-10 py-4 rounded-medium flex-row items-center justify-center"
-                    onPress={handleContinue}
-                >
-                    <View className='flex-row items-center'>
-                        <Text className="text-center font-sans-bold text-body text-projectWhite">
+			<View className="w-100 px-6 mb-8">
+				<TouchableOpacity
+					className="bg-primary_custom px-10 py-4 rounded-medium flex-row items-center justify-center"
+					onPress={handleContinue}
+				>
+					<View className='flex-row items-center'>
+						<Text className="text-center font-sans-bold text-body text-projectWhite">
                             Continuar
-                        </Text>
-                        <Icon
-                            name="chevron-right"
-                            type="material"
-                            size={24}
-                            color="white"
-                            style={{ marginLeft: 8 }}
-                        />
-                    </View>
-                </TouchableOpacity>
-            </View>
-        </View>
-    );
+						</Text>
+						<Icon
+							name="chevron-right"
+							type="material"
+							size={24}
+							color="white"
+							style={{ marginLeft: 8 }}
+						/>
+					</View>
+				</TouchableOpacity>
+			</View>
+		</View>
+	);
 };
 
 TextImageLectureScreen.propTypes = {
-    lectureObject: PropTypes.object.isRequired,
-    courseObject: PropTypes.object.isRequired,
-    isLastSlide: PropTypes.bool.isRequired,
-    onContinue: PropTypes.func.isRequired,
+	lectureObject: PropTypes.object.isRequired,
+	courseObject: PropTypes.object.isRequired,
+	isLastSlide: PropTypes.bool.isRequired,
+	onContinue: PropTypes.func.isRequired,
 };
 
 export default TextImageLectureScreen;

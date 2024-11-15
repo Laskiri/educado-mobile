@@ -13,21 +13,21 @@ Props: 			courseTitle - The title of the course the student is in.
 */
 
 const ExerciseInfo = ({ courseTitle, sectionTitle }) => {
-    return (
-        <View className="items-center px-6 z-10 mt-20">
-            <Text className="font-sans text-caption-body text-projectGray text-center">
+	return (
+		<View className="items-center px-6 z-10 mt-20">
+			<Text className="font-sans text-caption-body text-projectGray text-center">
                 Course name: {courseTitle}
-            </Text>
-            <Text className="font-sans-bold text-lg text-projectBlack text-center">
-                {sectionTitle}
-            </Text>
-        </View>
-    );
+			</Text>
+			<Text className="font-sans-bold text-lg text-projectBlack text-center">
+				{sectionTitle}
+			</Text>
+		</View>
+	);
 };
 
 ExerciseInfo.propTypes = {
-    courseTitle: PropTypes.string.isRequired,
-    sectionTitle: PropTypes.string.isRequired,
+	courseTitle: PropTypes.string.isRequired,
+	sectionTitle: PropTypes.string.isRequired,
 };
 
 export default ExerciseInfo;
