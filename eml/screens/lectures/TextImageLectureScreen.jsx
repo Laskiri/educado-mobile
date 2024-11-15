@@ -21,11 +21,10 @@ const TextImageLectureScreen = ({ lectureObject, courseObject, isLastSlide, onCo
             if (isLastSlide) {
                 handleLastComponent(lectureObject, courseObject, navigation);
             } else {
-                onContinue(); // Advance to the next slide
+                onContinue();
             }
         } catch (error) {
             console.error('Error completing the component:', error);
-            // Optionally, show an error message to the user
         }
     };
 

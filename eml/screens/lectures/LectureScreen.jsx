@@ -32,7 +32,7 @@ const LectureScreen = ({ lectureObject, courseObject, isLastSlide, onContinue })
                             lectureObject={lecture}
                             courseObject={course}
                             isLastSlide={isLastSlide}
-                            onContinue={onContinue} // Pass onContinue here
+                            onContinue={onContinue}
                         />
                     )}
                 </View>
@@ -49,7 +49,7 @@ LectureScreen.propTypes = {
     lectureObject: PropTypes.object.isRequired,
     courseObject: PropTypes.object.isRequired,
     isLastSlide: PropTypes.bool.isRequired,
-    onContinue: PropTypes.func.isRequired, // Added onContinue
+    onContinue: PropTypes.func.isRequired,
 };
 
 export default LectureScreen;
