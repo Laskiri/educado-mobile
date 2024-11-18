@@ -83,7 +83,7 @@ const TextImageLectureScreen = ({ lectureObject, courseObject, isLastSlide, onCo
 	};
 
 	return (
-		<View className="flex-1 bg-secondary px-4 pt-20">
+		<View className="flex-1 bg-secondary pt-20">
 			<View className="flex-col mt-5 items-center">
 				<Text className="font-sans text-base text-projectGray">
                     Nome do curso: {courseObject.title}
@@ -94,7 +94,7 @@ const TextImageLectureScreen = ({ lectureObject, courseObject, isLastSlide, onCo
 			</View>
 
 			<View className="flex-1 w-full">
-				<ScrollView className="max-h-128 flex-grow mt-2 mb-4">
+				<ScrollView className="max-h-128 flex-grow mt-2 mb-4 px-4">
 					{paragraphs && paragraphs.map((paragraph, index) => (
 						<Text
 							key={index}

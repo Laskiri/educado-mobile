@@ -113,7 +113,7 @@ const VideoLectureScreen = ({ lectureObject, courseObject, isLastSlide, onContin
 				{/* Overlay Controls */}
 				<View className="absolute w-full h-full p-5">
 					{/* Continue Button */}
-					<View className="w-full px-6 mb-8">
+					<View className="w-ful lpx-6 mb-8">
 						<TouchableOpacity
 							className="bg-primary_custom px-10 py-4 rounded-medium flex-row items-center justify-center"
 							onPress={handleContinuePress}

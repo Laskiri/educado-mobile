@@ -149,27 +149,33 @@ const ExerciseScreen = ({ componentList, exerciseObject, sectionObject, courseOb
 			{/* Continue Button */}
 			<View className="w-full px-6 mb-8">
 				<TouchableOpacity
-					style={{ opacity: selectedAnswer === null ? 0.6 : 1 }}
-					className="bg-primary_custom px-10 py-4 rounded-medium flex-row items-center justify-center"
-					onPress={() => {
-						if (selectedAnswer !== null) {
-							handleReviewAnswer(exerciseObject.answers[selectedAnswer]?.correct, selectedAnswer);
-						}
-					}}
+    				className={`px-10 py-4 rounded-medium flex-row items-center justify-center ${
+        				selectedAnswer === null ? 'bg-primary_custom opacity-60' : 'bg-primary_custom opacity-100'
+    				}`}
+    				onPress={() => {
+        				if (selectedAnswer !== null) {
+            				handleReviewAnswer(
+                				exerciseObject.answers[selectedAnswer]?.correct,
+                				selectedAnswer
+            				);
+        				}
+    				}}
+    				disabled={selectedAnswer === null} // Prevents interaction when no answer is selected
 				>
-					<View className='flex-row items-center'>
-						<Text className="text-center font-sans-bold text-body text-projectWhite">
-							{buttonText}
-						</Text>
-						<Icon
-							name="chevron-right"
-							type="material"
+    				<View className="flex-row items-center">
+        				<Text className="text-center font-sans-bold text-body text-projectWhite">
+            				{buttonText || 'Continuar'}
+        				</Text>
+        				<Icon
+            				name="chevron-right"
+            				type="material"
 							size={24}
 							color="white"
-							style={{ marginLeft: 8 }}
-						/>
-					</View>
+            				className="ml-2"
+        				/>
+    				</View>
 				</TouchableOpacity>
+
 			</View>
 
 			{/* PopUp for Feedback */}

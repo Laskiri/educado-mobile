@@ -5,6 +5,7 @@ import Text from '../../components/general/Text.js';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import PropTypes from 'prop-types';
 import { giveFeedback } from '../../api/api';
+import { Icon } from '@rneui/themed';
 
 
 
@@ -90,16 +91,29 @@ export default function CompleteCourseScreen() {
 					/>
 				</View>
 
-				<View className="px-6 w-screen">
-					<TouchableOpacity 
-						className={`bg-primary_custom px-10 py-4 rounded-medium ${onFBScreenNoStars ? 'opacity-50' : ''}`}
-						onPress={() => {
-							!(onFBScreenNoStars) && handleNextSlide();
-						}}
-						disabled={onFBScreenNoStars}
-					>
-						<Text className="text-center font-sans-bold text-body text-projectWhite">{isFeedbackScreen ? 'Enviar e concluir' : 'Continuar'}</Text>
-					</TouchableOpacity>
+				<View className="w-full px-6">
+    				<TouchableOpacity
+        				className={`bg-primary_custom px-10 py-4 rounded-medium flex-row items-center justify-center ${
+            				onFBScreenNoStars ? 'opacity-50' : ''
+       					}`}
+        				onPress={() => {
+            				!(onFBScreenNoStars) && handleNextSlide();
+        				}}
+        				disabled={onFBScreenNoStars}
+    				>
+        				<View className="flex-row items-center">
+            				<Text className="text-center font-sans-bold text-body text-projectWhite">
+                				{isFeedbackScreen ? 'Enviar e concluir' : 'Continuar'}
+            				</Text>
+							<Icon
+								name="chevron-right"
+								type="material"
+								size={24}
+								color="white"
+								className="ml-2"
+							/>
+        				</View>
+    				</TouchableOpacity>
 				</View>
 			</View>
 		</SafeAreaView>		

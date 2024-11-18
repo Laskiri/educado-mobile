@@ -19,7 +19,7 @@ const LectureScreen = ({ lectureObject, courseObject, isLastSlide, onContinue })
 	return (
 		<View className="flex-1 bg-projectWhite">
 			{lecture && course ? (
-				<View className="w-full h-full flex-col justify-center">
+				<View className="flex-1 flex-col">
 					{lecture.video ? (
 						<VideoLectureScreen
 							lectureObject={lecture}
