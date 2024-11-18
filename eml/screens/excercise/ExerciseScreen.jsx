@@ -14,7 +14,7 @@ import { completeComponent, handleLastComponent } from '../../services/utilityFu
 import { useNavigation } from '@react-navigation/native';
 
 /*
-Description: 	This screen is displayed when the student is doing an exercise.
+Description:	This screen is displayed when the student is doing an exercise.
 				It displays the question and the answers, and the student can select one answer.
 				When the student presses the confirm button, the answer is checked and the student is given feedback.
 				When the student presses the continue button, the next component is displayed.
@@ -22,7 +22,7 @@ Description: 	This screen is displayed when the student is doing an exercise.
 				The student is given 10 points when the answer is correct in the first try,
 				otherwise the student gets 5 points when the answer is correct.
 				The student gets 0 points when the answer is incorrect or they have completed the exercise before.
-Dependencies: 	CompSwipeScreen, the screen which contains all the components in the section
+Dependencies:	CompSwipeScreen, the screen which contains all the components in the section
 Props:			- exerciseObject: The exercise object, which contains the question and the answers
 				- sectionObject: The section object, which contains the section title
 				- courseObject: The course object, which contains the course title
@@ -59,7 +59,7 @@ const ExerciseScreen = ({ componentList, exerciseObject, sectionObject, courseOb
 				}
 			} else {
 				setIsCorrectAnswer(false);
-				setAttempts(prevAttempts => prevAttempts + 1);
+				setAttempts((prevAttempts) => prevAttempts + 1);
 			}
 		}
 		if (buttonText === 'Continuar') {
@@ -92,7 +92,7 @@ const ExerciseScreen = ({ componentList, exerciseObject, sectionObject, courseOb
 				<View className="flex-1 w-full px-6">
 					{/* Question Text */}
 					<View className="mb-4">
-						<Text testID='exerciseQuestion' className='text-center text-lg font-sans-bold text-projectBlack'>
+						<Text testID="exerciseQuestion" className="text-center text-lg font-sans-bold text-projectBlack">
 							{exerciseObject.question}
 						</Text>
 					</View>
@@ -125,16 +125,24 @@ const ExerciseScreen = ({ componentList, exerciseObject, sectionObject, courseOb
 
 									{/* Feedback */}
 									{showFeedback && selectedAnswer === index && (
-										<View className={`flex-row items-center pb-2 w-fit rounded-medium ${answer.correct ? 'bg-projectGreen' : 'bg-projectRed'}`}>
+										<View
+											className={`flex-row items-center pb-2 w-fit rounded-medium ${
+												answer.correct ? 'bg-projectGreen' : 'bg-projectRed'
+											}`}
+										>
 											<View className="pl-2 pt-1">
 												<Icon
 													size={10}
 													name={answer.correct ? 'check' : 'close'}
-													type='material'
+													type="material"
 													color={answer.correct ? projectColors.success : projectColors.error}
 												/>
 											</View>
-											<Text className={`pl-1 pt-2 pr-2 text-caption-medium ${answer.correct ? 'text-success' : 'text-error'}`}>
+											<Text
+												className={`pl-1 pt-2 pr-2 text-caption-medium ${
+													answer.correct ? 'text-success' : 'text-error'
+												}`}
+											>
 												{answer.feedback}
 											</Text>
 										</View>
@@ -149,41 +157,32 @@ const ExerciseScreen = ({ componentList, exerciseObject, sectionObject, courseOb
 			{/* Continue Button */}
 			<View className="w-full px-6 mb-8">
 				<TouchableOpacity
-    				className={`px-10 py-4 rounded-medium flex-row items-center justify-center ${
-        				selectedAnswer === null ? 'bg-primary_custom opacity-60' : 'bg-primary_custom opacity-100'
-    				}`}
-    				onPress={() => {
-        				if (selectedAnswer !== null) {
-            				handleReviewAnswer(
-                				exerciseObject.answers[selectedAnswer]?.correct,
-                				selectedAnswer
-            				);
-        				}
-    				}}
-    				disabled={selectedAnswer === null} // Prevents interaction when no answer is selected
+					className={`px-10 py-4 rounded-medium flex-row items-center justify-center ${
+						selectedAnswer === null ? 'bg-primary_custom opacity-60' : 'bg-primary_custom opacity-100'
+					}`}
+					onPress={() => {
+						if (selectedAnswer !== null) {
+							handleReviewAnswer(
+								exerciseObject.answers[selectedAnswer]?.correct,
+								selectedAnswer
+							);
+						}
+					}}
+					disabled={selectedAnswer === null} // Prevents interaction when no answer is selected
 				>
-    				<View className="flex-row items-center">
-        				<Text className="text-center font-sans-bold text-body text-projectWhite">
-            				{buttonText || 'Continuar'}
-        				</Text>
-        				<Icon
-            				name="chevron-right"
-            				type="material"
-							size={24}
-							color="white"
-            				className="ml-2"
-        				/>
-    				</View>
+					<View className="flex-row items-center">
+						<Text className="text-center font-sans-bold text-body text-projectWhite">
+							{buttonText || 'Continuar'}
+						</Text>
+						<Icon name="chevron-right" type="material" size={24} color="white" className="ml-2" />
+					</View>
 				</TouchableOpacity>
-
 			</View>
 
 			{/* PopUp for Feedback */}
-			{isPopUpVisible && (
-				<PopUp pointAmount={points} isCorrectAnswer={isCorrectAnswer} />
-			)}
+			{isPopUpVisible && <PopUp pointAmount={points} isCorrectAnswer={isCorrectAnswer} />}
 
-			<StatusBar style='auto' />
+			<StatusBar style="auto" />
 		</SafeAreaView>
 	);
 };

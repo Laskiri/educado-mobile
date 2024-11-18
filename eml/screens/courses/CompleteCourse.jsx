@@ -92,19 +92,19 @@ export default function CompleteCourseScreen() {
 				</View>
 
 				<View className="w-full px-6">
-    				<TouchableOpacity
-        				className={`bg-primary_custom px-10 py-4 rounded-medium flex-row items-center justify-center ${
-            				onFBScreenNoStars ? 'opacity-50' : ''
-       					}`}
-        				onPress={() => {
-            				!(onFBScreenNoStars) && handleNextSlide();
-        				}}
-        				disabled={onFBScreenNoStars}
-    				>
-        				<View className="flex-row items-center">
-            				<Text className="text-center font-sans-bold text-body text-projectWhite">
-                				{isFeedbackScreen ? 'Enviar e concluir' : 'Continuar'}
-            				</Text>
+					<TouchableOpacity
+						className={`bg-primary_custom px-10 py-4 rounded-medium flex-row items-center justify-center ${
+							onFBScreenNoStars ? 'opacity-50' : ''
+						}`}
+						onPress={() => {
+							!(onFBScreenNoStars) && handleNextSlide();
+						}}
+						disabled={onFBScreenNoStars}
+					>
+						<View className="flex-row items-center">
+							<Text className="text-center font-sans-bold text-body text-projectWhite">
+								{isFeedbackScreen ? 'Enviar e concluir' : 'Continuar'}
+							</Text>
 							<Icon
 								name="chevron-right"
 								type="material"
@@ -112,8 +112,8 @@ export default function CompleteCourseScreen() {
 								color="white"
 								className="ml-2"
 							/>
-        				</View>
-    				</TouchableOpacity>
+						</View>
+					</TouchableOpacity>
 				</View>
 			</View>
 		</SafeAreaView>		
