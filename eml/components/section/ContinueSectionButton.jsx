@@ -16,13 +16,14 @@ const ContinueSection = ({ onPress }) => {
 
 	return (
 		<View className=" self-center justify-center w-[100%] h-[70]">
-			<Button
+			<Button className="flex flex-row h-14 m-2 justify-center self-center items-center rounded-lg"
 				mode={'contained'}
 				color={tailwindConfig.theme.colors.bgprimary_custom}
 				testID="continueSectionButton"
 				onPress={onPress}
 			>
               Continuar seção
+              "icon"
 			</Button>
 		</View>
 	);

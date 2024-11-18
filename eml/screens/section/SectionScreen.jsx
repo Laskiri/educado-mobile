@@ -115,37 +115,36 @@ export default function SectionScreen({ route }) {
         <TouchableOpacity className="absolute top-10 left-5 pr-3 z-10" onPress={() => navigation.navigate('Meus cursos')}>
             <MaterialCommunityIcons name="chevron-left" size={25} color="black" />
         </TouchableOpacity>
-        <ScrollView showsVerticalScrollIndicator={false}>
-            <View className="flex flex-row flex-wrap justify-between  bg-secondary">
-
+        <ScrollView className="bg-secondary" showsVerticalScrollIndicator={false}>
+            <View className="flex flex-row flex-wrap justify-between bg-secondary">
                 <View className="flex w-full items-center">
                     <View className="flex items-center w-full justify-between">
 						<Image class="h-full max-w-full" source={ImageNotFound}/>
                     </View>
-                    <View className="flex p-[16px] g-[8px] justify-between w-[293px] rounded-md mt-[-5%] mb-[-5%] bg-projectWhite">
-                        {/* Course Title */}
-                        <Text className="flex text-[24px] font-montserrat font-style-normal line-height-[29px] align-items-center">{course.title}</Text>
+                    <View className="flex p-[16px] g-[8px] justify-between w-[293px] rounded-md mt-[-10%] mb-[-2%] bg-projectWhite">
+                            {/* Course Title */}
+                            <Text className="flex text-[24px] font-montserrat font-style-normal line-height-[29px] align-items-center">{course.title}</Text>
                         <View className="relative border-[1px] box-border rounded-sm bg-border"></View>
-                        {/* Progress Bar */}
-                        <View className="relative w-[261px] h-[20px] ">
-                            <CustomProgressBar width={50} progress={studentProgress} height={0.5}></CustomProgressBar>
-                        </View>
+                            {/* Progress Bar */}
+                            <View className="relative w-[261px] h-[20px] ">
+                                <CustomProgressBar width={50} progress={studentProgress} height={0.5}></CustomProgressBar>
+                            </View>
                         <View className="relative border box-border rounded-sm bg-border"></View>
-                        <View className="flex flex-row w-full justify-between">
-                            <Text>Points</Text>
-                            <CustomProgressBar width={0} progress={studentProgress} height={1}></CustomProgressBar>
+                            <View className="flex flex-row w-full justify-between">
+                                <Text>Points</Text>
+                                <CustomProgressBar width={0} progress={studentProgress} height={1}></CustomProgressBar>
+                            </View>
+                        </View>
+                        <View className="flex flex-row items-center pt-4 px-6 bg-secondary ">
+                            {/* Navigate to Current Section Button */}
+                            <ContinueSection onPress={navigateToCurrentSection} />
                         </View>
                     </View>
                 </View>
-            </View>
-            <View className="flex flex-row items-center pt-8 px-8 gap-2 ">
-                {/* Navigate to Current Section Button */}
-                <ContinueSection onPress={navigateToCurrentSection} />
-            </View>
             {/* Conditionally render the sections if they exist */}
             {sections ? (
                 sections.length === 0 ? null : (
-                    <View className="flex-[1] flex-col ]">
+                    <View className="flex-[1] flex-col] bg-secondary">
                         <Tooltip
                             isVisible={isVisible}
                             position={{
@@ -172,8 +171,10 @@ export default function SectionScreen({ route }) {
                 )
             ) : null}
         </ScrollView>
-        {/* Unsubscribe Button */}
-        <SubscriptionCancel onPress={unsubAlert} />
+        <View className="bg-secondary">
+            {/* Unsubscribe Button */}
+            <SubscriptionCancel onPress={unsubAlert} />
+        </View>
 	</>
 	);
 }
