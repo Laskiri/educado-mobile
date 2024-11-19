@@ -457,11 +457,7 @@ export const getSubCourseList = async () => {
 		if (courseList !== null) {
 			return courseList;
 		}
-		if (error?.response?.data != null) {
-			throw error.response.data;
-		} else {
-			throw error;
-		}
+		handleError(error, 'getSubCourseList');
 	}
 };
 
@@ -594,22 +590,21 @@ export const storeCourseLocally = async (courseID) => {
 			let componentList = await api.getComponents(section._id);
 			await AsyncStorage.setItem('C' + section._id, JSON.stringify(componentList));
 			for (let component of componentList) {
-				if (component.type === 'lecture'){
-					if (component.component.image) {
+				if (component.type !== 'lecture'){ continue; }
+				if (component.component.image) {
 
-						//Stores images
-						try {
-							let image = await api.getBucketImage(component.component.image);
-							await AsyncStorage.setItem('I' + component.component._id, JSON.stringify(image));
-						} catch {
-							await AsyncStorage.setItem('I' + component.component._id, defaultImage.base64);
-						}
-					} else if (component.component.video){
-
-						//Stores videos
-						await makeDirectory();
-						await FileSystem.writeAsStringAsync(lectureVideoPath + component.component.video + '.json', await api.getBucketImage(component.component.video));
+					//Stores images
+					try {
+						let image = await api.getBucketImage(component.component.image);
+						await AsyncStorage.setItem('I' + component.component._id, JSON.stringify(image));
+					} catch {
+						await AsyncStorage.setItem('I' + component.component._id, defaultImage.base64);
 					}
+				} else if (component.component.video){
+
+					//Stores videos
+					await makeDirectory();
+					await FileSystem.writeAsStringAsync(lectureVideoPath + component.component.video + '.json', await api.getBucketImage(component.component.video));
 				}
 			}
 		}
@@ -634,25 +629,30 @@ export const deleteLocallyStoredCourse = async (courseID) => {
 
 		const sectionList = JSON.parse(await AsyncStorage.getItem('S' + courseID));
 		await AsyncStorage.removeItem('S' + courseID);
-		for (let section of sectionList) {
-			let componentList = JSON.parse(await AsyncStorage.getItem('C' + section._id));
-			await AsyncStorage.removeItem('C' + section._id);
-            
-			for (let component of componentList) {
-				if (component.type === 'lecture'){
-					if (component.component.image) {
-						await AsyncStorage.removeItem('I' + component._id);
-					} else if (component.component.video) {
-						await FileSystem.deleteAsync(lectureVideoPath + component.component.video + '.json');
-					}
-				}
-			}
-		}
+		await removeComponentsBySection(sectionList);
 	} catch (error) {
 		success = false;
 		handleError(error, 'deleteLocallyStoredCourse');
 	} finally {
 		return success;
+	}
+
+	async function removeComponentsBySection(sectionList) {
+		for (let section of sectionList) {
+			let componentList = JSON.parse(await AsyncStorage.getItem('C' + section._id));
+			await AsyncStorage.removeItem('C' + section._id);
+
+			for (let component of componentList) {
+				if (component.type !== 'lecture') {
+					continue;
+				}	
+				if (component.component.image) {
+					await AsyncStorage.removeItem('I' + component._id);
+				} else if (component.component.video) {
+					await FileSystem.deleteAsync(lectureVideoPath + component.component.video + '.json');
+				}
+			}
+		}
 	}
 };
 
