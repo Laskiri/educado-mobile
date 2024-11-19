@@ -22,7 +22,9 @@ export default function SectionCard({ section, course, progress }) {
 	const inProgress = 0 < progress && progress < section.components.length;
 	const notPossible = progress > section.components.length;
 	const [isOpen, setIsOpen] = useState(false);
-	const backgroundColor = isComplete ? 'bg-limeGreenDarker' : inProgress ? 'bg-cyanBlue' : notPossible ? 'bg-error' : {};
+	const backgroundColor = notPossible ? 'bg-error' : {};
+	const progressText = isComplete ? 'Concluído' : inProgress ? 'Em progresso' : 'Não iniciado';
+    const progressTextColor = isComplete ? 'text-success' : 'text-projectBlack';
 
 	/**
 		 * Toggles the dropdown state.
@@ -45,15 +47,25 @@ export default function SectionCard({ section, course, progress }) {
 
 	return (
 		<View>
-			<Pressable testID="collapsible" onPress={toggleDropdown} className="bg-projectWhite rounded-lg shadow-lg shadow-opacity-[0.3] mb-[15] mx-[18] overflow-hidden elevation-[8]">
+			<Pressable testID="collapsible" onPress={toggleDropdown} className="bg-secondary border-[1px] border-lightGray rounded-lg shadow-lg shadow-opacity-[0.3] mb-[15] mx-[18] overflow-hidden elevation-[8]">
 				<View className={'flex-row items-center justify-between px-[25] py-[15] ' + backgroundColor}>
-					<Text className="text-[16px] font-bold text-projectBlack flex-[1]">
-						{section.title}
-					</Text>
-					<Text className="mr-[10] text-projectBlack">
-						{/* completed */}
-						{progress}/{section.components.length} concluídos
-					</Text>
+                    <View className={'flex-column'}>
+                        <Text className="text-[16px] font-bold text-projectBlack flex-[1]">
+                            {section.title}
+                        </Text>
+                        <Text className={`mr-[10] ${progressTextColor}`}>
+                            {/* progress */}
+                            {progress}/{section.components.length} {progressText}
+                            {(isComplete ?
+                                <MaterialCommunityIcons
+                                    testID={'check-circle'}
+                                    name={'check-circle'}
+                                    size={16}
+                                    color="green"
+                                /> : ""
+                            )}
+                        </Text>
+                    </View>
 					<MaterialCommunityIcons
 						testID={isOpen ? 'chevron-up' : 'chevron-down'}
 						name={isOpen ? 'chevron-up' : 'chevron-down'}

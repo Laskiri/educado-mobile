@@ -124,22 +124,24 @@ export default function SectionScreen({ route }) {
                     <View className="flex p-[16px] g-[8px] justify-between w-[293px] rounded-md mt-[-10%] mb-[-2%] bg-projectWhite">
                             {/* Course Title */}
                             <Text className="flex text-[24px] font-montserrat font-style-normal line-height-[29px] align-items-center">{course.title}</Text>
-                        <View className="relative border-[1px] box-border rounded-sm bg-border"></View>
                             {/* Progress Bar */}
-                            <View className="relative w-[261px] h-[20px] ">
-                                <CustomProgressBar width={50} progress={studentProgress} height={0.5}></CustomProgressBar>
+                            <View className="h-[20px] border-y-[1px] border-lightGray rounded-sm ">
+                                <CustomProgressBar width={50} progress={studentProgress} height={1}></CustomProgressBar>
                             </View>
-                        <View className="relative border box-border rounded-sm bg-border"></View>
+
                             <View className="flex flex-row w-full justify-between">
                                 <Text>Points</Text>
-                                <CustomProgressBar width={0} progress={studentProgress} height={1}></CustomProgressBar>
+                                <Text className='px-5 text-center font-montserrat-bold text-caption-medium text-projectBlack'>
+                                    {studentProgress}%
+                                </Text>
                             </View>
                         </View>
-                        <View className="flex flex-row items-center pt-4 px-6 bg-secondary ">
-                            {/* Navigate to Current Section Button */}
-                            <ContinueSection onPress={navigateToCurrentSection} />
-                        </View>
+
                     </View>
+                </View>
+                <View className="flex flex-row items-center pt-4 px-6 bg-secondary ">
+                    {/* Navigate to Current Section Button */}
+                    <ContinueSection onPress={navigateToCurrentSection} />
                 </View>
             {/* Conditionally render the sections if they exist */}
             {sections ? (
@@ -164,7 +166,7 @@ export default function SectionScreen({ route }) {
                         <View>
                             {sections.map((section, i) => {
                                 const completedComponents = sectionProgress[section.sectionId] || 0;
-                                return <SectionCard key={i} section={section} course={course} progress={completedComponents}></SectionCard>;
+                                    return <SectionCard key={i} section={section} course={course} progress={completedComponents}></SectionCard>;
                             })}
                         </View>
                     </View>
