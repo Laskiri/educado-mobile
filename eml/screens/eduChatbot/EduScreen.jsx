@@ -13,7 +13,7 @@ import { sendMessageToChatbot } from '../../api/api.js';
 
 
 
-export default function Explore() {
+export default function Edu() {
 
 	const [isOnline, setIsOnline] = useState(false);
 	const [userMessage, setUserMessage] = useState('');
@@ -23,10 +23,10 @@ export default function Explore() {
 	const [loadingDots, setLoadingDots] = useState('');
   
 	const handleAudioResponse = (audioResponse) => {
-		// Add the chatbot's response from audio to the chatMessages
+		const trimmedResponse = audioResponse.trim().replace(/[\n\s]+$/, '');
 		setChatMessages((prevMessages) => [
 			...prevMessages,
-			{ sender: 'Chatbot', text: audioResponse },
+			{ sender: 'User', text: trimmedResponse },
 		]);
 	};
 
@@ -68,6 +68,13 @@ export default function Explore() {
 		<>
 		  <NetworkStatusObserver setIsOnline={setIsOnline} />
 		  <BaseScreen className="h-screen flex flex-col">
+				<View className="border-b " style={{ borderBottomWidth: 1, borderBottomColor: 'rgba(0, 0, 0, 0.2)' }}>
+					
+					<IconHeader 
+						title={'Edu'}
+						description={'Meu nome é Edu, e estou aqui para ajudá-lo a navegar neste aplicativo.'}
+					/>
+				</View>
 			{/* Header and other UI elements */}
 			<View className="flex-1 bg-white flex-end">
 			  <ScrollView
@@ -124,18 +131,21 @@ export default function Explore() {
 				  className="flex-1"
 				  onSubmitEditing={handleSendMessage}
 				/>
-				<TouchableOpacity
-				  className="rounded-full w-7 h-7 bg-primary_custom ml-2 flex items-center justify-center"
-				  onPress={handleSendMessage}
-				>
-				  <Icon
-					name="arrow-up"
-					type="material-community"
-					color="white"
-					size={20}
-				  />
-				</TouchableOpacity>
-				<RecButton onAudioResponse={handleAudioResponse} />
+				{userMessage.trim() ? (
+					<TouchableOpacity
+					className="rounded-full w-7 h-7 bg-primary_custom ml-2 flex items-center justify-center"
+					onPress={handleSendMessage}
+					>
+					<Icon
+						name="arrow-up"
+						type="material-community"
+						color="white"
+						size={20}
+					/>
+					</TouchableOpacity>
+				) : (
+					<RecButton onAudioResponse={handleAudioResponse} />
+				)}
 			  </View>
 			</View>
 		  </BaseScreen>
