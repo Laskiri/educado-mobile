@@ -1,13 +1,15 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import CourseScreen from '../../screens/courses/CourseScreen';
+import DownloadScreen from '../../screens/download/DownloadScreen';
 import Explore from '../../screens/explore/Explore';
+import Edu from '../../screens/eduChatbot/EduScreen';
 import ProfileComponent from '../../screens/profile/Profile';
 import EditProfile from '../../screens/profile/EditProfile';
 import CertificateScreen from '../../screens/certificate/CertificateScreen';
 import { Icon } from '@rneui/themed';
-import { Platform } from 'react-native';
+import { Platform, Keyboard} from 'react-native';
 import tailwindConfig from '../../tailwind.config';
 
 const Tab = createBottomTabNavigator();
@@ -15,26 +17,32 @@ const Tab = createBottomTabNavigator();
 const ProfileStack = createNativeStackNavigator();
 
 function ProfileStackScreen() {
-	
 	return (
 		<ProfileStack.Navigator initialRouteName='ProfileHome'>
 			<ProfileStack.Screen
-				name="ProfileHome"
+				name='ProfileHome'
 				component={ProfileComponent}
 				options={{
 					headerShown: false,
 				}}
 			/>
 			<ProfileStack.Screen
-				name="EditProfile"
+				name='EditProfile'
 				component={EditProfile}
 				options={{
 					headerShown: false,
 				}}
 			/>
 			<ProfileStack.Screen
-				name="Certificate"
+				name='Certificate'
 				component={CertificateScreen}
+				options={{
+					headerShown: false,
+				}}
+			/>
+			<ProfileStack.Screen
+				name='Download'
+				component={DownloadScreen}
 				options={{
 					headerShown: false,
 				}}
@@ -46,28 +54,43 @@ function ProfileStackScreen() {
 /**
  * This component is used to display the navigation bar at the bottom of the screen.
  * @returns {JSX.Element} - Returns a JSX element.
- * 
- * 
+ *
+ *
  */
 export default function NavBar() {
+	const [keyboardStatus, setKeyboardStatus] = useState(0);
+
+	useEffect(() => {
+		console.log('Setting up keyboard listeners');
+
+		const toggleSubscription = Keyboard.addListener('keyboardDidShow', () => {
+			setKeyboardStatus((prevStatus) => {
+				const newStatus = prevStatus === 0 ? 1 : 0;
+				console.log(`Keyboard toggle triggered, status set to: ${newStatus}`);
+				return newStatus;
+			});
+		});
+
+		return () => {
+			console.log('Cleaning up keyboard listeners');
+			toggleSubscription.remove();
+		};
+	}, []);
 
 	return (
 		<Tab.Navigator
-			testID="navBar" // Make sure you set the testID on the correct element
+			testID="navBar"
 			initialRouteName={'Central'}
 			screenOptions={{
 				tabBarActiveTintColor: 'black',
 				tabBarActiveBackgroundColor: tailwindConfig.theme.colors.cyanBlue,
 				tabBarLabelStyle: {
-					fontSize: 14,
+					fontSize: keyboardStatus === 1 ? 0 : 14, // Hide text when keyboard is open
 				},
-
 				tabBarStyle: {
 					backgroundColor: 'white',
 					height: '10%',
 					paddingBottom: '2%',
-
-					// THIS IS SHADOW STUFF - HAVE TO BE PLATFORM SPECIFIC
 					...Platform.select({
 						ios: {
 							paddingVertical: '2%',
@@ -85,15 +108,15 @@ export default function NavBar() {
 							paddingVertical: '4%',
 							paddingHorizontal: '4%',
 							paddingBottom: '2%',
-							elevation: 4, // Add elevation for the shadow (Android-specific)
+							elevation: 4,
 						},
 					}),
 				},
 				tabBarItemStyle: {
 					borderRadius: 15,
-					marginHorizontal: '2%', // Adjust the margin for spacing
-					paddingBottom: '2%', // Vertical padding for the icon
-					paddingTop: '1%', // Vertical padding for the icon
+					marginHorizontal: '0%',
+					paddingBottom: '2%',
+					paddingTop: '1%',
 				},
 			}}
 		>
@@ -103,16 +126,16 @@ export default function NavBar() {
 				options={{
 					tabBarActiveBackgroundColor: tailwindConfig.theme.colors.cyanBlue,
 					headerShown: false,
-					tabBarIcon: ({ color }) => ( // Pass the color as a parameter to the icon component
+					tabBarIcon: ({ color }) => (
 						<Icon
 							size={25}
 							name="home-outline"
 							type="material-community"
-							color={color} // Use the color parameter here
+							color={color}
 						/>
 					),
-					tabBarActiveTintColor: 'white', // Set the active text color to white
-					tabBarInactiveTintColor: 'grey', // Set the inactive text color to grey
+					tabBarActiveTintColor: 'white',
+					tabBarInactiveTintColor: 'grey',
 				}}
 			/>
 			<Tab.Screen
@@ -121,16 +144,34 @@ export default function NavBar() {
 				options={{
 					tabBarActiveBackgroundColor: tailwindConfig.theme.colors.cyanBlue,
 					headerShown: false,
-					tabBarIcon: ({ color }) => ( // Pass the color as a parameter to the icon component
+					tabBarIcon: ({ color }) => (
 						<Icon
 							size={25}
 							name="compass-outline"
 							type="material-community"
-							color={color} // Use the color parameter here
+							color={color}
 						/>
 					),
-					tabBarActiveTintColor: 'white', // Set the active text color to white
-					tabBarInactiveTintColor: 'grey', // Set the inactive text color to grey
+					tabBarActiveTintColor: 'white',
+					tabBarInactiveTintColor: 'grey',
+				}}
+			/>
+			<Tab.Screen
+				name="Edu"
+				component={Edu}
+				options={{
+					tabBarActiveBackgroundColor: tailwindConfig.theme.colors.cyanBlue,
+					headerShown: false,
+					tabBarIcon: ({ color }) => (
+						<Icon
+							size={25}
+							name="robot-outline"
+							type="material-community"
+							color={color}
+						/>
+					),
+					tabBarActiveTintColor: 'white',
+					tabBarInactiveTintColor: 'grey',
 				}}
 			/>
 			<Tab.Screen
@@ -139,16 +180,16 @@ export default function NavBar() {
 				options={{
 					tabBarActiveBackgroundColor: tailwindConfig.theme.colors.cyanBlue,
 					headerShown: false,
-					tabBarIcon: ({ color }) => ( // Pass the color as a parameter to the icon component
+					tabBarIcon: ({ color }) => (
 						<Icon
 							size={34}
 							name="account-outline"
 							type="material-community"
-							color={color} // Use the color parameter here
+							color={color}
 						/>
 					),
-					tabBarActiveTintColor: 'white', // Set the active text color to white
-					tabBarInactiveTintColor: 'grey', // Set the inactive text color to grey
+					tabBarActiveTintColor: 'white',
+					tabBarInactiveTintColor: 'grey',
 				}}
 			/>
 		</Tab.Navigator>

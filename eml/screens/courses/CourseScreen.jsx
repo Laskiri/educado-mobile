@@ -15,6 +15,7 @@ import ShowAlert from '../../components/general/ShowAlert';
 import Tooltip from '../../components/onboarding/onboarding';
 import { getStudentInfo } from '../../services/StorageService';
 import ProfileStatsBox from '../../components/profile/ProfileStatsBox';
+import OfflineScreen from '../offline/OfflineScreen';
 
 /**
  * Course screen component that displays a list of courses.
@@ -100,74 +101,94 @@ export default function CourseScreen() {
 	}, []);
 
 	return (
-		loading ? <LoadingScreen /> :
+		loading ? (
+			<LoadingScreen />
+		) : (
 			<>
-				<NetworkStatusObserver setIsOnline={setIsOnline}/>
-				{courseLoaded ?
+				<NetworkStatusObserver setIsOnline={setIsOnline} />
+				{!isOnline ? (
+					<OfflineScreen />
+				) : courseLoaded ? (
 					<View height="100%">
 						<IconHeader
-							title={'Bem Vindo!'}
-							description={'Aqui você encontra todos os cursos em que você está inscrito!'}
+							title="Bem Vindo!"
+							description="Aqui você encontra todos os cursos em que você está inscrito!"
 						/>
-											
-						{/* Render stats box with level and progress bar only */}				
-						<View className='px-5'>
+						
+						{/* Render stats box with level and progress bar only */}
+						<View className="px-5">
 							<ProfileStatsBox 
 								level={studentLevel || 0} 
 								points={studentPoints || 0} 
 								drawProgressBarOnly={true} 
 							/>
 						</View>
-
-						<ScrollView showsVerticalScrollIndicator={false}
-							refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}>
+	
+						<ScrollView
+							showsVerticalScrollIndicator={false}
+							refreshControl={
+								<RefreshControl 
+									refreshing={refreshing} 
+									onRefresh={onRefresh} 
+								/>
+							}>
 							{courses.map((course, index) => (
-								<CourseCard key={index} course={course} isOnline={isOnline}></CourseCard>
-							)
-							)}
+								<CourseCard 
+									key={index} 
+									course={course} 
+									isOnline={isOnline} 
+								/>
+							))}
 						</ScrollView>
 					</View>
-					:
+				) : (
 					<View className="bg-secondary justify-center items-center">
-						<Tooltip 
-							isVisible={isVisible} 
+						<Tooltip
+							isVisible={isVisible}
 							position={{
 								top: -150,
 								left: 95,
 								right: 5,
 								bottom: 24,
-							}} 
-							setIsVisible={setIsVisible} 
-							text={'Bem-vindo ao Educado! Nesta página central, você encontrará todos os cursos em que está inscrito.".'} 
-							tailSide="right" 
-							tailPosition="20%" 
+							}}
+							setIsVisible={setIsVisible}
+							text="Bem-vindo ao Educado! Nesta página central, você encontrará todos os cursos em que está inscrito."
+							tailSide="right"
+							tailPosition="20%"
 							uniqueKey="Courses"
 							uniCodeChar="📚"
 						/>
 						<View className="pt-24 pb-16">
-							<Image source={require('../../assets/images/logo.png')} className=" justify-center items-center"/>
+							<Image
+								source={require('../../assets/images/logo.png')}
+								className="justify-center items-center"
+							/>
 						</View>
-						
-						<View className=" justify-center items-center py-10 gap-10 ">
-							<View className=" justify-center items-center w-full h-auto  px-10">
-								{/* No active courses */}
-								<Image source={require('../../assets/images/no-courses.png')}/>
-								<Text
-									className=" leading-[29.26] text-projectBlack pb-4 pt-4 font-sans-bold text-subheading text-center ">Comece agora</Text>
-								<Text className=" text-projectBlack font-montserrat text-center text-body "> Você ainda não se increveu em nenhum curso. Acesse a página Explore e use a busca para encontrar cursos do seu intresse.</Text>
-								{/*You haven't signed up for any course yet. Access the Explore page and use the search to find courses that interest you.*/}
+	
+						<View className="justify-center items-center py-10 gap-10">
+							<View className="justify-center items-center w-full h-auto px-10">
+								<Image source={require('../../assets/images/no-courses.png')} />
+								<Text className="leading-[29.26] text-projectBlack pb-4 pt-4 font-sans-bold text-subheading text-center">
+									Comece agora
+								</Text>
+								<Text className="text-projectBlack font-montserrat text-center text-body">
+									Você ainda não se increveu em nenhum curso. Acesse a página Explore e use a busca para encontrar cursos do seu interesse.
+								</Text>
 							</View>
 							<View>
 								<Pressable
-									testID={'exploreButton'}
-									className=" rounded-r-8 rounded-md bg-primary_custom justify-center items-center py-4 w-full h-auto px-20 "
+									testID="exploreButton"
+									className="rounded-r-8 rounded-md bg-primary_custom justify-center items-center py-4 w-full h-auto px-20"
 									onPress={() => navigation.navigate('Explorar')}>
-									{/* Click to explore courses */}
-									<Text className=" text-projectWhite font-sans-bold text-center text-body "> Explorar cursos</Text>
+									<Text className="text-projectWhite font-sans-bold text-center text-body">
+										Explorar cursos
+									</Text>
 								</Pressable>
 							</View>
 						</View>
-					</View>}
+					</View>
+				)}
 			</>
+		)
 	);
-}
+}	
