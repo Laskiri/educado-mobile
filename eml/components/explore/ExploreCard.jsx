@@ -47,7 +47,7 @@ export default function ExploreCard({ course, isPublished, subscribed }) {
 
 					<View className='w-full h-[0.5] pt-2' />
 					<View className='flex-row justify-between w-full items-start'>
-						<View className='flex-col items-start justify-between'>
+						<View className='flex-col items-start justify-between w-full'>
 							<View className='flex-row items-center justify-start pb-2 flex-wrap'>
 								<CardLabel
 									title={Utility.determineCategory(course.category)}
@@ -65,8 +65,23 @@ export default function ExploreCard({ course, isPublished, subscribed }) {
 								/>
 							</View>
 							<View className='h-1.25 opacity-50' />
-							<CustomRating rating={course.rating} />
-							<View className='w-full justify-end flex-row'>
+							{course.topFeedbackOptions && course.topFeedbackOptions.length > 0 && (
+								<View className='flex-row flex-wrap'>
+									{course.topFeedbackOptions.map((option, index) => (
+										<View
+											key={index}
+											className='bg-[#E4F2F5] rounded-full px-3 py-1 mr-2 mb-2'
+										>
+											<Text className='text-projectBlack text-xs'>
+												{option}
+											</Text>
+										</View>
+									))}
+								</View>
+							)}
+							
+							<View className="flex-row items-end justify-between w-full pt-2">
+								<CustomRating rating={course.rating} />
 								<Pressable onPress={() => setModalVisible(true)}>
 									<View className='flex-row items-center border-b border-profileCircle'>
 										<Text className='text-profileCircle text-xs font-bold pr-2'>
@@ -80,6 +95,7 @@ export default function ExploreCard({ course, isPublished, subscribed }) {
 									</View>
 								</Pressable>
 							</View>
+							
 							<UpdateDate
 								dateUpdated={Utility.getUpdatedDate(course.dateUpdated)}
 							/>

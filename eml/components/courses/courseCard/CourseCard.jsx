@@ -41,11 +41,11 @@ export default function CourseCard({ course, isOnline}) {
 	return (
 		<Pressable testID="courseCard"
 			className={layout}
-			onPress={() => { layout === enabledUI ?
+			onPress={() => layout === enabledUI ?
 				navigation.navigate('Section', {
 					course: course,
-				}) : null;
-			}}
+				}) : null
+			}
 		>
 			<View>
 				<View className="flex-row items-start justify-between px-[1%] py-[1%]">
