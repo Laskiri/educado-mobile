@@ -100,44 +100,44 @@ export default function ProfileComponent() {
 
 	return (
 		<>
-		<NetworkStatusObserver setIsOnline={setIsOnline} />
-		{!isOnline ? 
-			<OfflineScreen />
-		: 
-			<View className='flex flex-col pt-[20%] px-[5%] pb-[5%] bg-secondary'>
-				<UserInfo firstName={firstName} lastName={lastName} email={email} photo={photo}></UserInfo>
-				<ProfileStatsBox 
-					streak={streak || 0}
-					points={totalPoints || 0} 
-					leaderboardPosition={leaderboardPosition || 0}
-					level={studentLevel || 0} 
-					drawProgressBarOnly={false} 
-				/>
-				<Tooltip 
-					isVisible={isVisible} 
-					position={{
-						top: -300,
-						left: 70,
-						right: 30,
-						bottom: 24,
-					}} 
-					setIsVisible={setIsVisible} 
-					text={'Você está no seu perfil, onde pode acessar suas informações, visualizar certificados e realizar outras atividades.'} 
-					tailSide="right"
-					tailPosition="20%" 
-					uniqueKey="Profile" 
-					uniCodeChar="👩‍🏫"
-				/>
-				
-				<ProfileNavigationButton label='Editar perfil' testId={'editProfileNav'} onPress={() => navigation.navigate('EditProfile')}></ProfileNavigationButton>
-				<ProfileNavigationButton label='Certificados' onPress={() => navigation.navigate('Certificate')}></ProfileNavigationButton>
+			<NetworkStatusObserver setIsOnline={setIsOnline} />
+			{!isOnline ? 
+				<OfflineScreen />
+				: 
+				<View className='flex flex-col pt-[20%] px-[5%] pb-[5%] bg-secondary'>
+					<UserInfo firstName={firstName} lastName={lastName} email={email} photo={photo}></UserInfo>
+					<ProfileStatsBox 
+						streak={streak || 0}
+						points={totalPoints || 0} 
+						leaderboardPosition={leaderboardPosition || 0}
+						level={studentLevel || 0} 
+						drawProgressBarOnly={false} 
+					/>
+					<Tooltip 
+						isVisible={isVisible} 
+						position={{
+							top: -300,
+							left: 70,
+							right: 30,
+							bottom: 24,
+						}} 
+						setIsVisible={setIsVisible} 
+						text={'Você está no seu perfil, onde pode acessar suas informações, visualizar certificados e realizar outras atividades.'} 
+						tailSide="right"
+						tailPosition="20%" 
+						uniqueKey="Profile" 
+						uniCodeChar="👩‍🏫"
+					/>
+					
+					<ProfileNavigationButton label='Editar perfil' testId={'editProfileNav'} onPress={() => navigation.navigate('EditProfile')}></ProfileNavigationButton>
+					<ProfileNavigationButton label='Certificados' onPress={() => navigation.navigate('Certificate')}></ProfileNavigationButton>
 
-				{/* Download page is not implemented yet. However, download works and can be accessed on home page when offline */}
-				<ProfileNavigationButton label='Download'  onPress={() => navigation.navigate('Download')}></ProfileNavigationButton>
-				<ProfileNavigationButton label='Alterar senha' testId={'editPasswordNav'} onPress={() => navigation.navigate('EditPassword')}></ProfileNavigationButton>
-				<LogOutButton testID='logoutBtn'></LogOutButton>
-			</View>
-		}
-	</>
+					{/* Download page is not implemented yet. However, download works and can be accessed on home page when offline */}
+					<ProfileNavigationButton label='Download'  onPress={() => navigation.navigate('Download')}></ProfileNavigationButton>
+					<ProfileNavigationButton label='Alterar senha' testId={'editPasswordNav'} onPress={() => navigation.navigate('EditPassword')}></ProfileNavigationButton>
+					<LogOutButton testID='logoutBtn'></LogOutButton>
+				</View>
+			}
+		</>
 	);
 }

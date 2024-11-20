@@ -1,14 +1,12 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { View, ScrollView, RefreshControl, Pressable } from 'react-native';
+import { View, ScrollView, RefreshControl } from 'react-native';
 import FilterNavBar from '../../components/explore/FilterNavBar';
 import ExploreCard from '../../components/explore/ExploreCard';
 import * as StorageService from '../../services/StorageService';
 import { useNavigation } from '@react-navigation/native';
 import IconHeader from '../../components/general/IconHeader';
 import { shouldUpdate, determineCategory } from '../../services/utilityFunctions';
-import Text from '../../components/general/Text';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import NetworkStatusObserver from '../../hooks/NetworkStatusObserver';
 import Tooltip from '../../components/onboarding/onboarding';
 import OfflineScreen from '../offline/OfflineScreen';
@@ -129,43 +127,42 @@ export default function Explore() {
 				<OfflineScreen />
 				:
 				<>
-				<IconHeader
-				title={'Explorar cursos'}
-				description={'Inscreva-se nos cursos do seu interesse e comece sua jornada'}
-				/>
-				<Tooltip
-					isVisible={isVisible}  
-					position={{top: -360,
-						left: 50,
-						right: 30,
-						bottom: 24,}} 
-					text={'Aqui, você encontrará todos os cursos disponíveis e poderá conhecer e se inscrever facilmente.'}
-					setIsVisible={setIsVisible}  
-					tailSide="top" 
-					tailPosition="10%" 
-					uniqueKey="Explore" 
-					uniCodeChar="🔍"
-				/>	
-				<View height="77%">
-					<FilterNavBar
-						onChangeText={(text) => handleFilter(text)}
-						onCategoryChange={handleCategoryFilter}
+					<IconHeader
+						title={'Explorar cursos'}
+						description={'Inscreva-se nos cursos do seu interesse e comece sua jornada'}
+					/>
+					<Tooltip
+						isVisible={isVisible}  
+						position={{top: -360,
+							left: 50,
+							right: 30,
+							bottom: 24,}} 
+						text={'Aqui, você encontrará todos os cursos disponíveis e poderá conhecer e se inscrever facilmente.'}
+						setIsVisible={setIsVisible}  
+						tailSide="top" 
+						tailPosition="10%" 
+						uniqueKey="Explore" 
+						uniCodeChar="🔍"
+					/>	
+					<View height="77%">
+						<FilterNavBar
+							onChangeText={(text) => handleFilter(text)}
+							onCategoryChange={handleCategoryFilter}
 						/>
-					<ScrollView showsVerticalScrollIndicator={false} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-						<View className="overflow-y-auto">
-							{courses && filteredCourses && filteredCourses.map((course, index) => (
-								<ExploreCard
-								key={index}
-								isPublished={course.status === 'published'}
-								subscribed={/*isSubscribed[index]*/checkIfSubscribed(course, subCourses)}
-								course={course}
-								></ExploreCard>
-							))}
-						</View>
-					</ScrollView>
-				
-				</View>
-			</>
+						<ScrollView showsVerticalScrollIndicator={false} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+							<View className="overflow-y-auto">
+								{courses && filteredCourses && filteredCourses.map((course, index) => (
+									<ExploreCard
+										key={index}
+										isPublished={course.status === 'published'}
+										subscribed={/*isSubscribed[index]*/checkIfSubscribed(course, subCourses)}
+										course={course}
+									></ExploreCard>
+								))}
+							</View>
+						</ScrollView>
+					</View>
+				</>
 			}
 		</>
 	);

@@ -57,13 +57,11 @@ export default function Explore() {
 	return (
 		<>
 			<NetworkStatusObserver setIsOnline={setIsOnline} />
-				
-				{!isOnline ?
-					<OfflineScreen />
-					:
-					<BaseScreen className="h-screen flex flex-col ">
+			{!isOnline ?
+				<OfflineScreen />
+				:
+				<BaseScreen className="h-screen flex flex-col ">
 					<View className="border-b " style={{ borderBottomWidth: 1, borderBottomColor: 'rgba(0, 0, 0, 0.2)' }}>
-						
 						<IconHeader 
 							title={'Edu'}
 							description={'Meu nome é Edu, e estou aqui para ajudá-lo a navegar neste aplicativo.'}
@@ -104,9 +102,6 @@ export default function Explore() {
 									</View>
 								)
 							))}
-
-
-								
 							{/* Display loading indicator if loading */}
 							{loading && (
 								<View
@@ -145,11 +140,10 @@ export default function Explore() {
 									size={20}
 								/>
 							</TouchableOpacity>
-
 						</View>
 					</View>
-		</BaseScreen>	
-				}
+				</BaseScreen>	
+			}
 		</>
 	);
 }
