@@ -1,3 +1,5 @@
+// ExerciseScreen.js
+
 import React, { useState } from 'react';
 import { ScrollView, View, TouchableOpacity } from 'react-native';
 import Text from '../../components/general/Text';
@@ -11,173 +13,186 @@ import PropTypes from 'prop-types';
 import { completeComponent, handleLastComponent } from '../../services/utilityFunctions';
 import { useNavigation } from '@react-navigation/native';
 
-/* 
-Description: 	This screen is displayed when the student is doing an exercise.
+/*
+Description:	This screen is displayed when the student is doing an exercise.
 				It displays the question and the answers, and the student can select one answer.
 				When the student presses the confirm button, the answer is checked and the student is given feedback.
 				When the student presses the continue button, the next component is displayed.
 				The student can only continue if an answer is selected.
-				The student is given 10 points when the answer is correct in the first try, 
+				The student is given 10 points when the answer is correct in the first try,
 				otherwise the student gets 5 points when the answer is correct.
 				The student gets 0 points when the answer is incorrect or they have completed the exercise before.
-Dependencies: 	CompSwipeScreen, the screen which contains all the components in the section
+Dependencies:	CompSwipeScreen, the screen which contains all the components in the section
 Props:			- exerciseObject: The exercise object, which contains the question and the answers
-				- sectionObject: The section object, which contains the section title	
+				- sectionObject: The section object, which contains the section title
 				- courseObject: The course object, which contains the course title
-				- onContinue: A function that is called when the student presses the continue button, 
+				- onContinue: A function that is called when the student presses the continue button,
 				when the exercise is completed and it is the last component in the section, the student is taken to the section complete screen
 */
 
-export default function ExerciseScreen({ componentList, exerciseObject, sectionObject, courseObject, onContinue }) {
+const ExerciseScreen = ({ componentList, exerciseObject, sectionObject, courseObject, onContinue }) => {
 	const tailwindConfig = require('../../tailwind.config.js');
 	const projectColors = tailwindConfig.theme.colors;
 	const navigation = useNavigation();
 
 	const [selectedAnswer, setSelectedAnswer] = useState(null);
-	const [buttonClassName] = useState('');
+	const [buttonText, setButtonText] = useState(null);
 	const [showFeedback, setShowFeedback] = useState(false);
-	const [buttonText, setButtonText] = useState(null); 
-	const [isPopUpVisible, setIsPopUpVisible] = useState(false); 
+	const [isPopUpVisible, setIsPopUpVisible] = useState(false);
 	const [isCorrectAnswer, setIsCorrectAnswer] = useState(false);
 	const [points, setPoints] = useState(10);
 	const [attempts, setAttempts] = useState(0);
 
-	async function handleReviewAnswer(isAnswerCorrect, answerIndex) {
+	const handleReviewAnswer = async (isAnswerCorrect, answerIndex) => {
 		setSelectedAnswer(answerIndex);
 		if (buttonText === null) {
 			setButtonText('Continuar');
 			setShowFeedback(true);
 			if (isAnswerCorrect) {
 				setIsCorrectAnswer(true);
-				// Award points based on number of attempts
 				setPoints(attempts === 0 ? 10 : 5);
 				setIsPopUpVisible(true);
+				try {
+					await completeComponent(exerciseObject, courseObject.courseId, true);
+				} catch (error) {
+					console.error('Error completing the exercise:', error);
+				}
 			} else {
 				setIsCorrectAnswer(false);
-				setAttempts(attempts + 1);
+				setAttempts((prevAttempts) => prevAttempts + 1);
 			}
 		}
 		if (buttonText === 'Continuar') {
 			setIsPopUpVisible(false);
-      
-			// Check if it is the last component in the section
+
 			const currentLastComponent = componentList[componentList.length - 1];
-			const isLastComponent = currentLastComponent.component._id === exerciseObject._id;   
+			const isLastComponent = currentLastComponent.component._id === exerciseObject._id;
 
-			// If the answer is correct and it is the last component in the section, handleLastComponent is called
-			if (isAnswerCorrect && isLastComponent) {  
+			if (isAnswerCorrect && isLastComponent) {
 				try {
-					await completeComponent(exerciseObject, courseObject.courseId, true);
+					await handleLastComponent(exerciseObject, courseObject, navigation);
 				} catch (error) {
-					throw new Error('Error completing course');
+					console.error('Error handling last component:', error);
 				}
-
-				handleLastComponent(exerciseObject, courseObject, navigation);
-			} 
-			else {
+			} else {
 				onContinue(isAnswerCorrect);
 			}
-			
 		}
-	}
+	};
 
 	return (
-		<SafeAreaView className="h-full bg-secondary">
+		<SafeAreaView className="flex-1 bg-secondary">
+			<View className="flex-1 items-center">
+				{/* Exercise Information */}
+				<View className="text-center">
+					<ExerciseInfo courseTitle={courseObject.title} sectionTitle={sectionObject.title} />
+				</View>
 
-			<View className='items-center'>
-				<Text testID='exerciseQuestion'
-					className='pt-20 pb-10 text-center text-body font-sans-bold text-projectBlack w-11/12'>
-					{exerciseObject.question}
-				</Text>
+				{/* Question and Answers */}
+				<View className="flex-1 w-full px-6">
+					{/* Question Text */}
+					<View className="mb-4">
+						<Text testID="exerciseQuestion" className="text-center text-lg font-sans-bold text-projectBlack">
+							{exerciseObject.question}
+						</Text>
+					</View>
 
-				<View className={`${buttonClassName} items-center justify-center h-96 w-full`}>
-					<ScrollView className="py-2">
-						{/* Map through the answers and render each one */}
+					{/* Answers ScrollView with Fixed Height */}
+					<ScrollView className="py-2 h-60 mb-10">
 						{exerciseObject.answers.map((answer, index) => (
-							<View
-								key={index}
-								className='flex-row w-96 pb-6 pl-2'
-							>
-								<View>
-									<RadioButton.Android
-										disabled={buttonText === 'Continuar'}
-										value={index}
-										status={
-											selectedAnswer === index ? 'checked' : 'unchecked'
-										}
-										onPress={() => handleReviewAnswer(exerciseObject.answers[selectedAnswer]?.correct, index)}
-										color={projectColors.primary_custom}
-										uncheckedColor={projectColors.primary_custom}
-									/>
-								</View> 
+							<View key={index} className="flex-row items-start pb-6">
+								{/* Radio Button */}
+								<RadioButton.Android
+									disabled={buttonText === 'Continuar'}
+									value={index}
+									status={selectedAnswer === index ? 'checked' : 'unchecked'}
+									onPress={() => handleReviewAnswer(answer.correct, index)}
+									color={projectColors.primary_custom}
+									uncheckedColor={projectColors.primary_custom}
+								/>
 
-								<View>
-									<TouchableOpacity 
+								{/* Answer Text and Feedback */}
+								<View style={{ flex: 1 }}>
+									<TouchableOpacity
 										disabled={buttonText === 'Continuar'}
-										value={index}
-										status={
-											selectedAnswer === index ? 'checked' : 'unchecked'
-										}
-										onPress={() => handleReviewAnswer(exerciseObject.answers[selectedAnswer]?.correct, index)}
+										onPress={() => handleReviewAnswer(answer.correct, index)}
+										className="flex-1"
 									>
-										<Text className='pt-2 pb-1 w-72 font-montserrat text-body text-projectBlack'>{answer.text}</Text>
+										<Text className="pt-2 pb-1 font-montserrat text-body text-projectBlack">
+											{answer.text}
+										</Text>
 									</TouchableOpacity>
 
-									{showFeedback && selectedAnswer === index ? (
-										<View className={`flex-row pb-2 w-fit rounded-medium ${answer.correct ? 'bg-projectGreen' : 'bg-projectRed'}`}>
-											<View className='pl-2 pt-1'>
-												<View className='pt-1.5'>
-													{answer.correct === true ? (
-														<Icon
-															size={10}
-															name='check'
-															type='material'
-															color={projectColors.success}
-														/>
-													) : (
-														<Icon
-															size={10}
-															name='close'
-															type='material'
-															color={projectColors.error}
-														/>
-													)}
-												</View>
+									{/* Feedback */}
+									{showFeedback && selectedAnswer === index && (
+										<View
+											className={`flex-row items-center pb-2 w-fit rounded-medium ${
+												answer.correct ? 'bg-projectGreen' : 'bg-projectRed'
+											}`}
+										>
+											<View className="pl-2 pt-1">
+												<Icon
+													size={10}
+													name={answer.correct ? 'check' : 'close'}
+													type="material"
+													color={answer.correct ? projectColors.success : projectColors.error}
+												/>
 											</View>
-											<Text className={`w-72 pl-1 pt-2 pr-2 text-caption-medium ${answer.correct ? 'text-success' : 'text-error'}`}>{answer.feedback}</Text>
+											<Text
+												className={`pl-1 pt-2 pr-2 text-caption-medium ${
+													answer.correct ? 'text-success' : 'text-error'
+												}`}
+											>
+												{answer.feedback}
+											</Text>
 										</View>
-									) : null}
+									)}
 								</View>
 							</View>
 						))}
 					</ScrollView>
 				</View>
-				<View className='px-6 pt-10 w-screen'>
-					<TouchableOpacity
-						disabled={selectedAnswer === null}
-						className={`${selectedAnswer !== null ? 'opacity-100' : 'opacity-0'} bg-primary_custom px-10 py-4 rounded-medium`}
-						onPress={() => handleReviewAnswer(exerciseObject.answers[selectedAnswer]?.correct, 8)}
-					>
-						<Text className='text-center font-sans-bold text-body text-projectWhite'>{buttonText}</Text>
-					</TouchableOpacity>
-				</View>
 			</View>
-			
 
-			{isPopUpVisible ? (
-				<PopUp pointAmount={points} isCorrectAnswer={isCorrectAnswer} />
-			) : null}
+			{/* Continue Button */}
+			<View className="w-full px-6 mb-8">
+				<TouchableOpacity
+					className={`px-10 py-4 rounded-medium flex-row items-center justify-center ${
+						selectedAnswer === null ? 'bg-primary_custom opacity-60' : 'bg-primary_custom opacity-100'
+					}`}
+					onPress={() => {
+						if (selectedAnswer !== null) {
+							handleReviewAnswer(
+								exerciseObject.answers[selectedAnswer]?.correct,
+								selectedAnswer
+							);
+						}
+					}}
+					disabled={selectedAnswer === null} // Prevents interaction when no answer is selected
+				>
+					<View className="flex-row items-center">
+						<Text className="text-center font-sans-bold text-body text-projectWhite">
+							{buttonText || 'Continuar'}
+						</Text>
+						<Icon name="chevron-right" type="material" size={24} color="white" className="ml-2" />
+					</View>
+				</TouchableOpacity>
+			</View>
 
-			{<ExerciseInfo courseTitle={courseObject.title} sectionTitle={sectionObject.title} />}
-			<StatusBar style='auto' />
+			{/* PopUp for Feedback */}
+			{isPopUpVisible && <PopUp pointAmount={points} isCorrectAnswer={isCorrectAnswer} />}
+
+			<StatusBar style="auto" />
 		</SafeAreaView>
 	);
-}
+};
 
 ExerciseScreen.propTypes = {
-	exerciseObject: PropTypes.object,
-	sectionObject: PropTypes.object,
-	courseObject: PropTypes.object,
-	onContinue: PropTypes.func,
-	componentList: PropTypes.array,
+	exerciseObject: PropTypes.object.isRequired,
+	sectionObject: PropTypes.object.isRequired,
+	courseObject: PropTypes.object.isRequired,
+	onContinue: PropTypes.func.isRequired,
+	componentList: PropTypes.array.isRequired,
 };
+
+export default ExerciseScreen;

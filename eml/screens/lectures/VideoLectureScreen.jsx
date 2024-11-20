@@ -1,223 +1,204 @@
+// VideoLectureScreen.js
+
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Pressable } from 'react-native';
+import { View, Pressable, TouchableOpacity, Alert } from 'react-native';
 import Text from '../../components/general/Text';
 import VideoActions from '../../components/lectures/VideoActions';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import CustomExpoVideoPlayer from '../../components/lectures/VideoPlayer';
 import ReactSliderProgress from './ReactSliderProgress';
-import { getVideoStreamUrl } from '../../api/api';
 import PropTypes from 'prop-types';
+import { Icon } from '@rneui/themed';
 import { useNavigation } from '@react-navigation/native';
-import StandardButton from '../../components/general/StandardButton';
 import { completeComponent, handleLastComponent } from '../../services/utilityFunctions';
-import {getVideoURL} from '../../services/StorageService';
+import { getVideoURL } from '../../services/StorageService';
 
-export default function VideoLectureScreen({ lectureObject, courseObject, isLastSlide }) {
+const VideoLectureScreen = ({ lectureObject, courseObject, isLastSlide, onContinue }) => {
 	const navigation = useNavigation();
-
 	const videoRef = useRef(null);
-	const [isPlaying, setIsPlaying] = useState(false); // Keep track of playback status
+	const [isPlaying, setIsPlaying] = useState(false);
 	const [positionMillis, setPositionMillis] = useState(0);
 	const [durationMillis, setDurationMillis] = useState(0);
-	const [isMuted, setIsMuted] = useState(false); // Keep track of mute status
+	const [isMuted, setIsMuted] = useState(false);
+	const [videoUrl, setVideoUrl] = useState(null);
+	const [showPlayPauseIcon, setShowPlayPauseIcon] = useState(false);
+	const [currentResolution, setCurrentResolution] = useState('360');
+	const [allResolutions] = useState(['1080', '720', '480', '360']);
 
+	// Fetch video URL based on current resolution
+	useEffect(() => {
+		const fetchVideoUrl = async () => {
+			try {
+				const url = await getVideoURL(lectureObject.video, currentResolution);
+				if (!url) {
+					throw new Error('Video URL is null');
+				}
+				setVideoUrl(url);
+			} catch (error) {
+				console.error('Error fetching video URL:', error);
+				Alert.alert(
+					'Error',
+					'Failed to load the video. Please try again later.',
+					[{ text: 'OK' }]
+				);
+				setVideoUrl(null);
+			}
+		};
+		fetchVideoUrl();
+	}, [lectureObject.video, currentResolution]);
 
 	const onStatusUpdate = (status) => {
 		setPositionMillis(status.positionMillis || 0);
 		setDurationMillis(status.durationMillis || 0);
-
 	};
 
-	const handleContinue = async () => {
-		await completeComponent(lectureObject, courseObject.courseId, true);
-		handleLastComponent(lectureObject, courseObject, navigation);
-	};
-
-	const [videoUrl, setVideoUrl] = useState(null);
-
-	useEffect(() => {
-		const _videoUrl = getVideoStreamUrl(lectureObject.video, '360');
-		//test if video is available for download from internet
-		setVideoUrl(_videoUrl);
-	}, []);
-
-	/* This block does nothing?
-    useEffect(() => {
-      if (videoRef.current) {
-      }
-    }, [videoRef]);
-  */
-
-	const handlePress = () => {
-
-
-		if (!videoRef.current) {
-			return;
+	const handleContinuePress = async () => {
+		if (isLastSlide) {
+			try {
+				await completeComponent(lectureObject, courseObject.courseId, true);
+				handleLastComponent(lectureObject, courseObject, navigation);
+			} catch (error) {
+				console.error('Error completing the course:', error);
+				Alert.alert(
+					'Error',
+					'Failed to complete the course. Please try again later.',
+					[{ text: 'OK' }]
+				);
+			}
+		} else {
+			if (onContinue && typeof onContinue === 'function') {
+				onContinue(); // Advance to the next slide
+			} else {
+				console.warn('onContinue prop is not provided or not a function.');
+			}
 		}
-
-
-		setIsPlaying(!isPlaying);
 	};
-
-	const handleMutepress = () => {
-
-		setIsMuted(!isMuted);
-	};
-
-	/* check if video url is valid
-  useEffect(() => {
-    const _videoUrl = getVideoDownloadUrl(lecture._id, "180p");
-
-    //check for video url validity maybe not needed
-    // fetch(_videoUrl, {
-    //     method: 'HEAD'
-    // })
-    //     .then(response => {
-    //         if (response.ok) {
-    //             // HTTP status between 200-299 or equals 304.
-    //             setVideoUrl(_videoUrl);
-    //         } else {
-    //             console.error('Video URL is not valid');
-    //             Alert.alert("Error", "The video is corrupted. Please try again later", "OK");
-    //         }
-    //     })
-    //     .catch(error => {
-    //         Alert.alert("Error", "The video is corrupted. Please try again later", "OK");
-    //     });
-  }, []);
-  */
-
-
-
-	//Animation vars
-
-	const [showPlayPauseIcon, setShowPlayPauseIcon] = useState(false);
-
-	useEffect(() => {
-		setShowPlayPauseIcon(true);
-		const timer = setTimeout(() => {
-			setShowPlayPauseIcon(false);
-		}, 500);
-		// Clear the timer when the component is unmounted or when isPlaying changes
-		return () => clearTimeout(timer);
-	}, [isPlaying]);
-
-
-	const [currentResolution, setCurrentResolution] = useState('360');
-
-	const [allResolutions] = useState([
-		'1080',
-		'720',
-		'480',
-		'360',
-	]);
 
 	const handleResolutionChange = (newRes) => {
 		setCurrentResolution(newRes);
 	};
 
-	useEffect(() => {
-		getVideoURL(lectureObject.video, currentResolution).then((result)=>{
-			setVideoUrl(result);
-		});
-	}, [currentResolution]);
+	const togglePlayPause = () => {
+		setIsPlaying((prev) => !prev);
+		setShowPlayPauseIcon(true);
+		// Hide the icon after 500ms
+		setTimeout(() => setShowPlayPauseIcon(false), 500);
+	};
 
+	const toggleMute = () => {
+		setIsMuted((prev) => !prev);
+	};
 
 	return (
-
-		<View className="relative">
-
-			{/* Video - currently just black image */}
-			<View className="w-full h-full bg-projectBlack" >
-
-				<View className="w-full h-full bg-projectBlack" >
-					{videoUrl ?
+		<View className="flex-1 w-full">
+			<View className="relative flex-1 bg-projectBlack w-full">
+				{/* Video Player */}
+				<View className="flex-1 w-full bg-projectBlack">
+					{videoUrl ? (
 						<CustomExpoVideoPlayer
 							videoUrl={videoUrl}
 							ref={videoRef}
 							isPlaying={isPlaying}
 							isMuted={isMuted}
 							onStatusUpdate={onStatusUpdate}
-						/> :
-						<Text>Loading</Text>
-					}
-				</View>
-			</View>
-			{/* Layers on top of video */}
-
-			<View className="absolute w-full h-full p-5">
-				<View className="w-full h-full flex-col justify-end items-center bg-opacity-20" >
-
-					{isLastSlide ?
-						<View className="px-6 mb-3 w-screen">
-							<StandardButton
-								props={{
-									buttonText: 'Continuar',
-									onPress: () => {
-										handleContinue();
-									}
-								}}
-							/>
+							style={{ flex: 1, width: '100%' }}
+						/>
+					) : (
+						<View className="flex-1 justify-center items-center">
+							<Text>Loading...</Text>
 						</View>
-						: null}
+					)}
+				</View>
 
-					{/* Lecture information */}
+				{/* Overlay Controls */}
+				<View className="absolute w-full h-full p-5">
+					{/* Continue Button */}
+					<View className="w-ful lpx-6 mb-8">
+						<TouchableOpacity
+							className="bg-primary_custom px-10 py-4 rounded-medium flex-row items-center justify-center"
+							onPress={handleContinuePress}
+						>
+							<View className='flex-row items-center'>
+								<Text className="text-center font-sans-bold text-body text-projectWhite">
+                                    Continuar
+								</Text>
+								<Icon
+									name="chevron-right"
+									type="material"
+									size={24}
+									color="white"
+									style={{ marginLeft: 8 }}
+								/>
+							</View>
+						</TouchableOpacity>
+					</View>
 
-					<View className="w-full flex-col items-start justify-left" >
-
+					{/* Lecture Information */}
+					<View className="w-full flex-col items-start justify-left">
 						<View className="w-full flex-row justify-between items-end">
 							<View className="flex-col">
-								<Text className="text-projectWhite opacity-80">Nome do curso: {courseObject.title}</Text>
-								<Text className="text-xl text-projectWhite" >{lectureObject.title && lectureObject.title}</Text>
+								<Text className="text-projectWhite text-base opacity-80">
+                                    Nome do curso: {courseObject.title}
+								</Text>
+								<Text className="text-lg text-projectWhite">
+									{lectureObject.title}
+								</Text>
 							</View>
-
 							<VideoActions
 								isPlaying={isPlaying}
 								isMuted={isMuted}
-								onVolumeClick={handleMutepress}
-								onPlayClick={handlePress}
+								onVolumeClick={toggleMute}
+								onPlayClick={togglePlayPause}
 								currentResolution={currentResolution}
 								allResolutions={allResolutions}
-								onResolutionChange={(newRes) => handleResolutionChange(newRes)} />
+								onResolutionChange={handleResolutionChange}
+							/>
 						</View>
 
-						<View className="h-[3vh]" />
+						<View className="h-3" />
 
-						{/* Video Progress Bar Component */}
-						{/* <VideoProgressBar elapsedMs={positionMillis} totalMs={durationMillis} videoRef={videoRef} /> */}
-						<ReactSliderProgress elapsedMs={positionMillis} totalMs={durationMillis} videoRef={videoRef} />
-
-
-
+						{/* Video Progress Bar */}
+						<ReactSliderProgress
+							elapsedMs={positionMillis}
+							totalMs={durationMillis}
+							videoRef={videoRef}
+						/>
 					</View>
-
 				</View>
 
-			</View>
+				{/* Pressable Areas for Play/Pause */}
+				<Pressable
+					className="absolute top-[12%] bottom-[50%] right-0 left-0"
+					onPress={togglePlayPause}
+				/>
+				<Pressable
+					className="absolute top-[24%] bottom-[22%] right-[20%] left-0"
+					onPress={togglePlayPause}
+				/>
 
-			<Pressable className="absolute top-[12%] bottom-[50%] right-0 left-0" onPress={handlePress} />
-			<Pressable className="absolute top-[24%] bottom-[22%] right-[20%] left-0" onPress={handlePress} />
-			{/* Fade in out play /pause icon shown for one second */}
-			{/* Fade in/out play/pause icon */}
-
-			{showPlayPauseIcon && (
-				<View className="absolute top-0 left-0 right-0 bottom-0 flex-row justify-center items-center" pointerEvents='none'
-				>
-					<View>
+				{/* Play/Pause Icon */}
+				{showPlayPauseIcon && (
+					<View
+						className="absolute top-0 left-0 right-0 bottom-0 flex-row justify-center items-center"
+						pointerEvents='none'
+					>
 						<MaterialCommunityIcons
-							name={isPlaying ? 'play' : 'pause'}
+							name={isPlaying ? 'pause' : 'play'}
 							size={50}
 							color="white"
 						/>
 					</View>
-				</View>
-			)}
+				)}
+			</View>
 		</View>
 	);
-}
+};
 
 VideoLectureScreen.propTypes = {
-	lectureObject: PropTypes.object,
-	courseObject: PropTypes.object,
-	isLastSlide: PropTypes.bool
+	lectureObject: PropTypes.object.isRequired,
+	courseObject: PropTypes.object.isRequired,
+	isLastSlide: PropTypes.bool.isRequired,
+	onContinue: PropTypes.func.isRequired,
 };
+
+export default VideoLectureScreen;
