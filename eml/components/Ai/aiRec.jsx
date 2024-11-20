@@ -39,10 +39,12 @@ export default function RecButton({ onAudioResponse }) {
 
         // Send the audio to the chatbot
         const result = await sendAudioToChatbot(uri);
-        console.log(result.message);
+        console.log('Chatbot response audio:', result);
+
+        onAudioResponse(result);
 
         // Pass the chatbot's response back to the Edu screen
-        onAudioResponse(result.message);
+        
       }
     } catch (error) {
       console.error('Failed to stop recording', error);

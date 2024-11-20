@@ -319,7 +319,7 @@ export const sendAudioToChatbot = async (audioUri) => {
         console.log('FormData:', formData);
 
         // Send the formData via Axios
-        const serverResponse = await axios.post(url + '/api/ai/stt', formData, {
+        const serverResponse = await axios.post(url + '/api/ai/processAudio', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
