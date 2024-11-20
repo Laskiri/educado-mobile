@@ -1,6 +1,8 @@
+import React, { useState, useEffect } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import CourseScreen from '../../screens/courses/CourseScreen';
+import DownloadScreen from '../../screens/download/DownloadScreen';
 import Explore from '../../screens/explore/Explore';
 import Edu from '../../screens/eduChatbot/EduScreen';
 import ProfileComponent from '../../screens/profile/Profile';
@@ -8,7 +10,6 @@ import EditProfile from '../../screens/profile/EditProfile';
 import CertificateScreen from '../../screens/certificate/CertificateScreen';
 import { Icon } from '@rneui/themed';
 import { Platform, Keyboard} from 'react-native';
-import React, {useState, useEffect} from 'react';
 import tailwindConfig from '../../tailwind.config';
 
 const Tab = createBottomTabNavigator();
@@ -16,26 +17,32 @@ const Tab = createBottomTabNavigator();
 const ProfileStack = createNativeStackNavigator();
 
 function ProfileStackScreen() {
-	
 	return (
 		<ProfileStack.Navigator initialRouteName='ProfileHome'>
 			<ProfileStack.Screen
-				name="ProfileHome"
+				name='ProfileHome'
 				component={ProfileComponent}
 				options={{
 					headerShown: false,
 				}}
 			/>
 			<ProfileStack.Screen
-				name="EditProfile"
+				name='EditProfile'
 				component={EditProfile}
 				options={{
 					headerShown: false,
 				}}
 			/>
 			<ProfileStack.Screen
-				name="Certificate"
+				name='Certificate'
 				component={CertificateScreen}
+				options={{
+					headerShown: false,
+				}}
+			/>
+			<ProfileStack.Screen
+				name='Download'
+				component={DownloadScreen}
 				options={{
 					headerShown: false,
 				}}
@@ -47,8 +54,8 @@ function ProfileStackScreen() {
 /**
  * This component is used to display the navigation bar at the bottom of the screen.
  * @returns {JSX.Element} - Returns a JSX element.
- * 
- * 
+ *
+ *
  */
 export default function NavBar() {
 	const [keyboardStatus, setKeyboardStatus] = useState(0);

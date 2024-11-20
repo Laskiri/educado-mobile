@@ -6,6 +6,7 @@ import IconHeader from '../../components/general/IconHeader';
 import NetworkStatusObserver from '../../hooks/NetworkStatusObserver';
 import { Icon } from '@rneui/themed';
 import Markdown from 'react-native-markdown-display';
+import OfflineScreen from '../offline/OfflineScreen';
 
 import { sendMessageToChatbot as fetchChatbotResponse } from '../../api/api.js';
 
@@ -56,20 +57,16 @@ export default function Explore() {
 	return (
 		<>
 			<NetworkStatusObserver setIsOnline={setIsOnline} />
-			<BaseScreen className="h-screen flex flex-col ">
-				<View className="border-b " style={{ borderBottomWidth: 1, borderBottomColor: 'rgba(0, 0, 0, 0.2)' }}>
-					
-					<IconHeader 
-						title={'Edu'}
-						description={'Meu nome é Edu, e estou aqui para ajudá-lo a navegar neste aplicativo.'}
-					/>
-				</View>
-				
-				{!isOnline ?
-					<View>
-						
+			{!isOnline ?
+				<OfflineScreen />
+				:
+				<BaseScreen className="h-screen flex flex-col ">
+					<View className="border-b " style={{ borderBottomWidth: 1, borderBottomColor: 'rgba(0, 0, 0, 0.2)' }}>
+						<IconHeader 
+							title={'Edu'}
+							description={'Meu nome é Edu, e estou aqui para ajudá-lo a navegar neste aplicativo.'}
+						/>
 					</View>
-					:
 					<View className="flex-1 bg-white flex-end">
 						<ScrollView
 							ref={scrollViewRef}
@@ -105,9 +102,6 @@ export default function Explore() {
 									</View>
 								)
 							))}
-
-
-								
 							{/* Display loading indicator if loading */}
 							{loading && (
 								<View
@@ -146,11 +140,10 @@ export default function Explore() {
 									size={20}
 								/>
 							</TouchableOpacity>
-
 						</View>
 					</View>
-				}
-			</BaseScreen>
+				</BaseScreen>	
+			}
 		</>
 	);
 }

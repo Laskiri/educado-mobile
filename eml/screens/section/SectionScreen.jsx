@@ -112,7 +112,7 @@ export default function SectionScreen({ route }) {
 		<>
 			<View className="flex flex-row flex-wrap items-center justify-between px-6 pt-[20%]">
 				{/* Back Button */}
-				<TouchableOpacity className="pr-3" onPress={() => navigation.navigate('Meus cursos')}>
+				<TouchableOpacity className="pr-3" onPress={() => navigation.goBack()}>
 					<MaterialCommunityIcons name="chevron-left" size={25} color="black" />
 				</TouchableOpacity>
 				{/* Course Title */}
