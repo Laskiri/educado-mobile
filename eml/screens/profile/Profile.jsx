@@ -38,6 +38,7 @@ export default function ProfileComponent() {
 		return getInfo;
 	}, [navigation]);
 
+	
 	/**
   * Fetches the user's profile from local storage
   */
