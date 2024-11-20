@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, Alert, TouchableOpacity } from 'react-native';
 import { Audio } from 'expo-av';
 import { sendAudioToChatbot } from '../../api/api.js';
 import { Icon } from '@rneui/themed';
 
-export default function RecButton({ onAudioResponse }) {
+export default function RecButton({ onAudioResponse, onLock }) {
   const [recording, setRecording] = useState(null);
 
   const startRecording = async () => {
@@ -24,8 +24,15 @@ export default function RecButton({ onAudioResponse }) {
       await recordingInstance.prepareToRecordAsync(Audio.RecordingOptionsPresets.HIGH_QUALITY);
       await recordingInstance.startAsync();
       setRecording(recordingInstance);
+
+      if (onLock) {
+        onLock(true); // Notify parent that recording has started
+      }
     } catch (error) {
       console.error('Failed to start recording', error);
+      if (onLock) {
+        onLock(false);
+      }
     }
   };
 
@@ -35,19 +42,24 @@ export default function RecButton({ onAudioResponse }) {
         await recording.stopAndUnloadAsync();
         const uri = recording.getURI();
         setRecording(null);
+
         console.log('Recording saved at:', uri);
 
         // Send the audio to the chatbot
         const result = await sendAudioToChatbot(uri);
         console.log('Chatbot response audio:', result);
+        // Notify parent that recording has stopped
+        if (onLock) {
+          onLock(false);
+        }
 
         onAudioResponse(result);
-
-        // Pass the chatbot's response back to the Edu screen
-        
       }
     } catch (error) {
       console.error('Failed to stop recording', error);
+      if (onLock) {
+        onLock(false);
+      }
     }
   };
 
