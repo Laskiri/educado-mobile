@@ -7,6 +7,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import CustomProgressBar from '../../components/exercise/Progressbar';
+import NavBar from '../../components/navBar/NavBar';
 import SubscriptionCancel from '../../components/section/CancelSubscriptionButton';
 import { unsubscribe } from '../../services/StorageService';
 import PropTypes from 'prop-types';
@@ -121,25 +122,39 @@ export default function SectionScreen({ route }) {
                     <View className="flex items-center w-full justify-between">
 						<Image class="h-full max-w-full" source={ImageNotFound}/>
                     </View>
-                    <View className="flex p-[16px] g-[8px] justify-between w-[293px] rounded-md mt-[-10%] mb-[-2%] bg-projectWhite">
-                            {/* Course Title */}
-                            <Text className="flex text-[24px] font-montserrat font-style-normal line-height-[29px] align-items-center">{course.title}</Text>
+                    <View className="flex p-[14px] w-[293px] rounded-xl mt-[-10%] bg-projectWhite">
+                            <View className="flex flex-row justify-between">
+                              {/* Course Title */}
+                              <Text className="text-[24px] font-montserrat-bold line-height-[29px] max-w-[80%]">
+                                {course.title}
+                              </Text>
+                              {/* TODO: Button to download course should be implemented */}
+                              <TouchableOpacity>
+                                <MaterialCommunityIcons name="cloud-download-outline" size={30} color="gray"/>
+                              </TouchableOpacity>
+                            </View>
                             {/* Progress Bar */}
-                            <View className="h-[20px] border-y-[1px] border-lightGray rounded-sm ">
-                                <CustomProgressBar width={50} progress={studentProgress} height={1}></CustomProgressBar>
+                            <View className="flex justify-center h-6 border-y-[1px] border-lightGray rounded-sm ">
+                                <CustomProgressBar width={63} progress={studentProgress} height={1} displayLabel={false}></CustomProgressBar>
                             </View>
 
-                            <View className="flex flex-row w-full justify-between">
-                                <Text>Points</Text>
-                                <Text className='px-5 text-center font-montserrat-bold text-caption-medium text-projectBlack'>
-                                    {studentProgress}%
-                                </Text>
+                            <View className="flex items-center flex-row w-full justify-between">
+                                <View className="flex flex-row">
+                                    <MaterialCommunityIcons name="crown-circle" size={20} color="orange"/>
+                                    {/* TODO: Points should be implemented */}
+                                    <Text>?? pontos</Text>
+                                </View>
+                                <MaterialCommunityIcons name="circle-small" size={30} color="gray"/>
+                                <View className="flex flex-row">
+                                    <MaterialCommunityIcons name="lightning-bolt" size={20} color="orange"/>
+                                    <Text>{studentProgress}% concluído</Text>
+                                </View>
                             </View>
                         </View>
 
                     </View>
                 </View>
-                <View className="flex flex-row items-center pt-4 px-6 bg-secondary ">
+                <View className="flex items-center px-4 my-6">
                     {/* Navigate to Current Section Button */}
                     <ContinueSection onPress={navigateToCurrentSection} />
                 </View>
@@ -177,6 +192,8 @@ export default function SectionScreen({ route }) {
             {/* Unsubscribe Button */}
             <SubscriptionCancel onPress={unsubAlert} />
         </View>
+
+
 	</>
 	);
 }
