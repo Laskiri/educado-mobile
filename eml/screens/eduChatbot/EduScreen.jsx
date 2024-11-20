@@ -112,7 +112,7 @@ export default function Edu() {
     if (scrollViewRef.current) {
       scrollViewRef.current.scrollToEnd({ animated: true });
     }
-  }, [chatMessages]);
+  }, [chatMessages,loading]);
 
   useEffect(() => {
     if (loading) {
@@ -212,16 +212,19 @@ export default function Edu() {
             />
             {userMessage.trim() ? (
               <TouchableOpacity
-                className="rounded-full w-7 h-7 bg-primary_custom ml-2 flex items-center justify-center"
-                onPress={handleSendMessage}
-              >
-                <Icon
-                  name="arrow-up"
-                  type="material-community"
-                  color="white"
-                  size={20}
-                />
-              </TouchableOpacity>
+			  className={`rounded-full w-7 h-7 ml-2 flex items-center justify-center ${
+				loading ? 'bg-gray-400' : 'bg-primary_custom'
+			  }`}
+			  onPress={loading ? null : handleSendMessage}
+			  disabled={loading}
+			>
+			  <Icon
+				name="arrow-up"
+				type="material-community"
+				color="white"
+				size={20}
+			  />
+			</TouchableOpacity>
             ) : (
               <RecButton onAudioResponse={handleAudioResponse} onLock={setLoading} />
             )}
