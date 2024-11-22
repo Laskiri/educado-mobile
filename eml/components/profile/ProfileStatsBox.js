@@ -1,9 +1,13 @@
 import React, { Fragment } from 'react';
 import { View, Text, Image } from 'react-native';
+import { useNavigation, useRoute } from '@react-navigation/native';
+
 import CustomProgressBar from '../exercise/Progressbar';
 import PropTypes from 'prop-types';
-
+import { Button } from '@rneui/base';
 const ProfileStatsBox = ({ streak, points, leaderboardPosition, level, drawProgressBarOnly }) => {
+	const navigation = useNavigation();
+	const route = useRoute();
 	
 	// Props
 	ProfileStatsBox.propTypes = {
@@ -27,6 +31,8 @@ const ProfileStatsBox = ({ streak, points, leaderboardPosition, level, drawProgr
 	// e.g., 42 pts. (out of 100) = 42% progress, 128 pts. (out of 200) = 28% progress, etc.
 	const levelProgressPercentage = points % 100;
 
+	
+		
 	return (
 		<View className='border rounded-lg border-lightGray p-4'>
 			
@@ -46,7 +52,9 @@ const ProfileStatsBox = ({ streak, points, leaderboardPosition, level, drawProgr
 
 						{/* Points */}
 						<View className='flex-1 flex-col bg-badgesPurple items-center rounded-lg py-2 mx-2 w-24 h-16'>
-							<Image source={require('../../assets/images/profileCoin.png')} />
+							<Button onPress={() => navigation.navigate('LeaderboardStack')}>
+								<Image source={require('../../assets/images/profileCoin.png')} />
+							</Button>	
 							<Text className='text-projectWhite font-sans-bold mt-2' numberOfLines={1} adjustsFontSizeToFit>
 								{points} pontos
 							</Text> 

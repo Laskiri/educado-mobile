@@ -25,10 +25,25 @@ import CertificateScreen from './screens/certificate/CertificateScreen';
 import CompleteCourseScreen from './screens/courses/CompleteCourse';
 import CameraScreen from './screens/camera/CameraScreen';
 import BaseScreen from './components/general/BaseScreen';
+import LeaderboardScreen from './screens/leaderboard/Leaderboard';
 import SubscribedToCourseScreen from './screens/courses/SubscribedToCourseScreen';
 import { DownloadProvider } from './services/DownloadService';
-
 const Stack = createNativeStackNavigator();
+
+function LeaderboardStack() {
+	return (
+		<Stack.Navigator initialRouteName={'Leaderboard'}>
+			<Stack.Screen
+				name="Leaderboard"
+				component={LeaderboardScreen}
+				options={{
+					headerShown: false,
+				}}
+			/>
+		</Stack.Navigator>
+	);
+}
+
 
 function WelcomeStack() {
 	return (
@@ -183,6 +198,11 @@ export default function App() {
 					<DownloadProvider>
 						<NavigationContainer>
 							<Stack.Navigator initialRouteName={initialRoute}>
+								<Stack.Screen
+									name="LeaderboardStack"
+									component={LeaderboardStack}
+									options={{ headerShown: false }}
+								/>
 								<Stack.Screen
 									name="WelcomeStack"
 									component={WelcomeStack}

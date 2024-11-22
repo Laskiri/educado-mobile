@@ -87,8 +87,7 @@ const StatsOverview = forwardRef(({ courseObject }, ref) => {
 				<Text className="text-center text-lg text-projectBlack pt-10 px-10">Você respondeu {percentage}% correta, bravo!</Text>
 			</View>
 
-			{/* ---------------------------- Code for leaderboard goes from here ------------------------------------------------------------------------------------
-
+		
       <Text className="text-center font-sans-bold text-lg text-projectBlack mb-3">Placar Educado</Text>
 
       <View className="px-6 w-screen">
@@ -120,8 +119,6 @@ const StatsOverview = forwardRef(({ courseObject }, ref) => {
           <Text className="text-center font-sans-bold text-lg text-projectWhite">1101</Text>
         </View>
       </View>
-
-      ---------------------------- Code for leaderboard goes to here   ------------------------------------------------------------------------------------ */}
 
 		</View>
 	);
