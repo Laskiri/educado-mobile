@@ -143,39 +143,62 @@ export default function Edu() {
 								</View>
 							) : (
 								<View key={index} style={{ alignSelf: 'flex-start', flexDirection: 'row', alignItems: 'center' }}>
-									<View className="p-2.5 pl-3 mb-1 flex-row rounded-t-3xl rounded-br-3xl max-w-[80%]">
-										<View className="px-2">
-											<Icon
-												name="robot-outline"
-												type="material-community"
-												color="black"
-												size={20}
-											/>
+									<View>
+										<View className="p-2.5 pl-3 mb-1 flex-row rounded-t-3xl rounded-br-3xl max-w-[80%]">
+											<View className="px-2">
+												<Icon
+													name="robot-outline"
+													type="material-community"
+													color="black"
+													size={20}
+												/>
+											</View>
+											<View className="w-full">
+												<Markdown>
+													{message.text}
+												</Markdown>
+											</View>
+											{message.audio && (
+												<View className="pl-2 self-center">
+													<TouchableOpacity
+														onPress={() => playAudio(message.audio, index)}
+														className=""
+													>
+														<Icon
+															name={
+																currentlyPlaying === index ? 'stop-circle-outline' : 'play-circle-outline'
+															}
+															type="material-community"
+															color="black"
+															size={32}
+														/>
+													</TouchableOpacity>
+												</View>
+											)}
 										</View>
-										<View className="w-full">
-											<Markdown>
-												{message.text}
-											</Markdown>
-										</View>
-										{message.audio && (
-											<View className="pl-2 self-center">
-												<TouchableOpacity
-													onPress={() => playAudio(message.audio, index)}
-													className=""
-												>
-													<Icon
-														name={
-															currentlyPlaying === index ? 'stop-circle-outline' : 'play-circle-outline'
-														}
+										<View className="self-start pl-8 flex-row  w-full">
+											<TouchableOpacity className="px-2">
+												<Icon
+														name="thumb-up-outline"
 														type="material-community"
 														color="black"
-														size={32}
-													/>
-												</TouchableOpacity>
-											</View>
-										)}
+														size={16}
+												/>
+											</TouchableOpacity>
+											
+											<TouchableOpacity>
+												<Icon
+														name="thumb-down-outline"
+														type="material-community"
+														color="black"
+														size={16}
+												/>
+											</TouchableOpacity>
+										</View>
+										
 									</View>
 								</View>
+								
 							)
 						))}
 						{loading && (
