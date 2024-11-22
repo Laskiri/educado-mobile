@@ -329,3 +329,31 @@ export const sendAudioToChatbot = async (audioUri) => {
 		throw error;
 	}
 };
+
+export const sendFeedbackToBackend = async (userPrompt, chatbotResponse, feedback) => {
+	try {
+	  const response = await fetch('/api/ai/feedback', {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify({
+		  userPrompt,        // The user's original input
+		  chatbotResponse,   // The chatbot's response to the user
+		  feedback,          // Thumbs-up (true) or thumbs-down (false)
+		}),
+	  });
+  
+	  const data = await response.json();
+  
+	  if (response.ok) {
+		console.log('Feedback successfully sent to backend:', data.message);
+		return { success: true, data };
+	  } else {
+		console.error('Failed to send feedback:', data.error);
+		return { success: false, error: data.error };
+	  }
+	} catch (error) {
+	  console.error('Error submitting feedback:', error.message);
+	  return { success: false, error: error.message };
+	}
+  };
+  

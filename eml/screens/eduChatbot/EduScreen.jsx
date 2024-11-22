@@ -3,11 +3,13 @@ import { View, TextInput, ScrollView, Text, TouchableOpacity } from 'react-nativ
 import BaseScreen from '../../components/general/BaseScreen';
 import IconHeader from '../../components/general/IconHeader';
 import RecButton from '../../components/Ai/aiRec';
+import FeedbackButtons from '../../components/Ai/FeedbackButtons';
 import { Icon } from '@rneui/themed';
 import Markdown from 'react-native-markdown-display';
 import { Audio } from 'expo-av';
 import * as FileSystem from 'expo-file-system';
 import { sendMessageToChatbot } from '../../api/api.js';
+import { sendFeedbackToBackend } from '../../api/api.js';
 
 export default function Edu() {
 	const [userMessage, setUserMessage] = useState('');
@@ -176,29 +178,12 @@ export default function Edu() {
 												</View>
 											)}
 										</View>
-										<View className="self-start pl-8 flex-row  w-full">
-											<TouchableOpacity className="px-2">
-												<Icon
-														name="thumb-up-outline"
-														type="material-community"
-														color="black"
-														size={16}
-												/>
-											</TouchableOpacity>
-											
-											<TouchableOpacity>
-												<Icon
-														name="thumb-down-outline"
-														type="material-community"
-														color="black"
-														size={16}
-												/>
-											</TouchableOpacity>
-										</View>
-										
+										<FeedbackButtons
+  										  userPrompt={chatMessages[index - 1]?.text || 'Unknown user message'} // Fallback to avoid undefined
+  										  chatbotResponse={message.text || 'Unknown chatbot response'} // Fallback to avoid undefined
+										/>
 									</View>
-								</View>
-								
+								</View>	
 							)
 						))}
 						{loading && (
