@@ -282,50 +282,50 @@ export const getBucketImage = async (fileName) => {
 
 
 export const sendMessageToChatbot = async (userMessage) => {
-    try {
-        const response = await axios.post(url + '/api/ai', {
-            userInput: userMessage,
-        });
+	try {
+		const response = await axios.post(url + '/api/ai', {
+			userInput: userMessage,
+		});
 
-        if (response.status === 200) {
-            return response.data.message;
-        } else {
-            return 'Error: Try again.';
-        }
-    } catch (error) {
-        if (error.response && error.response.status === 429) {
-            // Handle rate-limiting error
-            return error.response.data.error || 'Slow down! Too many requests.';
-        }
+		if (response.status === 200) {
+			return response.data.message;
+		} else {
+			return 'Error: Try again.';
+		}
+	} catch (error) {
+		if (error.response && error.response.status === 429) {
+			// Handle rate-limiting error
+			return error.response.data.error || 'Slow down! Too many requests.';
+		}
 
-        console.warn('Axios error:', error);
-        return 'Error: Try again.';
-    }
+		console.warn('Axios error:', error);
+		return 'Error: Try again.';
+	}
 };
 
 export const sendAudioToChatbot = async (audioUri) => {
-    try {
-        console.log('Sending audio:', audioUri);
+	try {
+		console.log('Sending audio:', audioUri);
 
-        // Fetch the file from the URI as a blob
+		// Fetch the file from the URI as a blob
 
-        const formData = new FormData();
-        formData.append('audio', {
-            uri: audioUri,
-            name: 'audio.m4a', // You can use a generic name or dynamically extract it
-            type: 'audio/m4a', // Ensure this matches the audio type
-        });
+		const formData = new FormData();
+		formData.append('audio', {
+			uri: audioUri,
+			name: 'audio.m4a', // You can use a generic name or dynamically extract it
+			type: 'audio/m4a', // Ensure this matches the audio type
+		});
 
-        // Send the formData via Axios
-        const serverResponse = await axios.post(url + '/api/ai/processAudio', formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
-        });
+		// Send the formData via Axios
+		const serverResponse = await axios.post(url + '/api/ai/processAudio', formData, {
+			headers: {
+				'Content-Type': 'multipart/form-data',
+			},
+		});
 
-        return serverResponse.data;
-    } catch (error) {
-        console.error('Error sending audio data:', error);
-        throw error;
-    }
+		return serverResponse.data;
+	} catch (error) {
+		console.error('Error sending audio data:', error);
+		throw error;
+	}
 };
