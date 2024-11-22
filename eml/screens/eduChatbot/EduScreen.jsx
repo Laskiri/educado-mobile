@@ -164,7 +164,7 @@ export default function Edu() {
                                                 size={20}
                                             />
                                         </View>
-                                        <View className="">
+                                        <View className="w-full">
                                             <Markdown>
                                                 {message.text}
                                             </Markdown>
