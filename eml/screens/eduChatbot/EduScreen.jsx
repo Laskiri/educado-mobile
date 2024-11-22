@@ -178,10 +178,8 @@ export default function Edu() {
 												</View>
 											)}
 										</View>
-										<FeedbackButtons
-  										  userPrompt={chatMessages[index - 1]?.text || 'Unknown user message'} // Fallback to avoid undefined
-  										  chatbotResponse={message.text || 'Unknown chatbot response'} // Fallback to avoid undefined
-										/>
+										<FeedbackButtons aiText={message.text} userText={chatMessages[index - 1]?.text || ''} />
+
 									</View>
 								</View>	
 							)

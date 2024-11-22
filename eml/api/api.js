@@ -332,7 +332,7 @@ export const sendAudioToChatbot = async (audioUri) => {
 
 export const sendFeedbackToBackend = async (userPrompt, chatbotResponse, feedback) => {
 	try {
-	  const response = await fetch('/api/ai/feedback', {
+	  const response = await fetch(url + '/api/ai/feedback', {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify({
