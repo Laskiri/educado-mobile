@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Alert, TouchableOpacity } from 'react-native';
+import { Alert, TouchableOpacity } from 'react-native';
 import { Audio } from 'expo-av';
 import { sendAudioToChatbot } from '../../api/api.js';
 import { Icon } from '@rneui/themed';
@@ -47,7 +47,6 @@ export default function RecButton({ onAudioResponse, onLock }) {
 
         // Send the audio to the chatbot
         const result = await sendAudioToChatbot(uri);
-        console.log('Chatbot response audio:', result);
         // Notify parent that recording has stopped
         if (onLock) {
           onLock(false);
