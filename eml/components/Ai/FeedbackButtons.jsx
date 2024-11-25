@@ -25,24 +25,47 @@ const FeedbackButtons = ({ aiText, userText }) => {
 
     return (
         <View className="flex-row justify-start">
-            <TouchableOpacity 
-              onPress={() => handleFeedback('thumbsUp')}
-              className="mr-1">
+            {selectedFeedback === null && (
+                <>
+                    <TouchableOpacity 
+                        onPress={() => handleFeedback('thumbsUp')} 
+                        className="mr-1"
+                    >
+                        <Icon
+                            name="thumb-up-outline"
+                            type="material-community"
+                            color="black"
+                            size={18}
+                        />
+                    </TouchableOpacity>
+                    <TouchableOpacity 
+                        onPress={() => handleFeedback('thumbsDown')}
+                    >
+                        <Icon
+                            name="thumb-down-outline"
+                            type="material-community"
+                            color="black"
+                            size={18}
+                        />
+                    </TouchableOpacity>
+                </>
+            )}
+            {selectedFeedback === 'thumbsUp' && (
                 <Icon
-                    name="thumb-up-outline"
+                    name="thumb-up"
                     type="material-community"
-                    color={selectedFeedback === 'thumbsUp' ? '#166276' : 'black'} // Highlight thumbs-up if selected
+                    color="#166276"
                     size={18}
                 />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleFeedback('thumbsDown')}>
+            )}
+            {selectedFeedback === 'thumbsDown' && (
                 <Icon
-                    name="thumb-down-outline"
+                    name="thumb-down"
                     type="material-community"
-                    color={selectedFeedback === 'thumbsDown' ? '#166276' : 'black'} // Highlight thumbs-down if selected
+                    color="#166276"
                     size={18}
                 />
-            </TouchableOpacity>
+            )}
         </View>
     );
 };
