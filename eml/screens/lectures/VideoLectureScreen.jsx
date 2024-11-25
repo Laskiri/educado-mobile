@@ -13,7 +13,7 @@ import { useNavigation } from '@react-navigation/native';
 import { completeComponent, handleLastComponent } from '../../services/utilityFunctions';
 import { getVideoURL } from '../../services/StorageService';
 
-const VideoLectureScreen = ({ lectureObject, courseObject, isLastSlide, onContinue }) => {
+const VideoLectureScreen = ({ lectureObject, courseObject, isLastSlide, onContinue, handleStudyStreak }) => {
 	const navigation = useNavigation();
 	const videoRef = useRef(null);
 	const [isPlaying, setIsPlaying] = useState(false);
@@ -53,6 +53,8 @@ const VideoLectureScreen = ({ lectureObject, courseObject, isLastSlide, onContin
 	};
 
 	const handleContinuePress = async () => {
+		handleStudyStreak();
+		
 		if (isLastSlide) {
 			try {
 				await completeComponent(lectureObject, courseObject.courseId, true);

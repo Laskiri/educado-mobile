@@ -11,6 +11,7 @@ import ExerciseScreen from '../excercise/ExerciseScreen';
 import tailwindConfig from '../../tailwind.config';
 import { completeComponent, findIndexOfUncompletedComp } from '../../services/utilityFunctions';
 import { getComponentList, getStudentInfo } from '../../services/StorageService';
+import { updateStudyStreak } from '../../api/userApi';
 
 const LectureType = {
 	TEXT: 'text',
@@ -43,11 +44,22 @@ const CompSwipeScreen = ({ route }) => {
 	const [combinedLecturesAndExercises, setCombinedLecturesAndExercises] = useState([]);
 	const swiperRef = useRef(null);
 	const [resetKey, setResetKey] = useState(0);
+	const [studentId, setStudentId] = useState(null);
+	
+	async function handleStudyStreak() {
+		try {
+			await updateStudyStreak(studentId);
+		}
+		catch (error) {
+			console.error('Error updating study streak: ' + error);
+		}
+	}
 
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
 				const studentInfo = await getStudentInfo();
+				setStudentId(studentInfo._id);
 				let initialIndex = findIndexOfUncompletedComp(studentInfo, parsedCourse.courseId, section.sectionId);
 
 				if (initialIndex === -1) {
@@ -166,6 +178,7 @@ const CompSwipeScreen = ({ route }) => {
 									courseObject={parsedCourse}
 									isLastSlide={_index === combinedLecturesAndExercises.length - 1}
 									onContinue={handleLectureContinue} // Pass handleLectureContinue here
+									handleStudyStreak={handleStudyStreak}
 								/>
 							) : (
 								<ExerciseScreen
@@ -175,6 +188,7 @@ const CompSwipeScreen = ({ route }) => {
 									sectionObject={section}
 									courseObject={parsedCourse}
 									onContinue={(isCorrect) => handleExerciseContinue(isCorrect)}
+									handleStudyStreak={handleStudyStreak}
 								/>
 							)
 						))}

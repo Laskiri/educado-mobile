@@ -10,13 +10,15 @@ import Text from '../../components/general/Text';
 import * as StorageService from '../../services/StorageService';
 import { completeComponent, handleLastComponent } from '../../services/utilityFunctions';
 
-const TextImageLectureScreen = ({ lectureObject, courseObject, isLastSlide, onContinue }) => {
+const TextImageLectureScreen = ({ lectureObject, courseObject, isLastSlide, onContinue, handleStudyStreak }) => {
 	const [imageUrl, setImageUrl] = useState(null);
 	const [paragraphs, setParagraphs] = useState(null);
 	const navigation = useNavigation();
 
 	const handleContinue = async () => {
 		try {
+			handleStudyStreak();
+						
 			await completeComponent(lectureObject, courseObject.courseId, true);
 			if (isLastSlide) {
 				handleLastComponent(lectureObject, courseObject, navigation);

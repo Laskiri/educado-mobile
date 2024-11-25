@@ -4,11 +4,9 @@ import { URL, CERTIFICATE_URL } from '@env';
 
 const timeoutInMs = 1200;
 
-
 // move these to .env file next sprint
 const url = URL; // Change this to your LOCAL IP address when testing.
 export const certificateUrl = CERTIFICATE_URL;
-
 
 /* Commented out for avoiding linting errors :))
  * TODO: move IP address to .env file !!!

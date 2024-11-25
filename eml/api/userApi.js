@@ -10,7 +10,6 @@ const local = 'http://localhost:8888';
 const digitalOcean = 'http://207.154.213.68:8888';
 */
 
-
 const url = URL;// Change this to your LOCAL IP address when testing.
 
 /**
@@ -292,5 +291,20 @@ export const enterNewPassword = async (obj) => {
 		} else {
 			throw e;
 		}
+	}
+};
+
+// Update student study streak
+export const updateStudyStreak = async (studentId) => {
+	try {
+		const res = await client.patch(
+			`/api/students/${studentId}/updateStudyStreak`);
+		return res.data;
+	} 
+	catch (error) {
+		console.error('Error Message: ' + error.message);
+		console.error('Error Code: ' + error.code);
+    
+		throw error;
 	}
 };

@@ -30,7 +30,7 @@ Props:			- exerciseObject: The exercise object, which contains the question and 
 				when the exercise is completed and it is the last component in the section, the student is taken to the section complete screen
 */
 
-const ExerciseScreen = ({ componentList, exerciseObject, sectionObject, courseObject, onContinue }) => {
+const ExerciseScreen = ({ componentList, exerciseObject, sectionObject, courseObject, onContinue, handleStudyStreak }) => {
 	const tailwindConfig = require('../../tailwind.config.js');
 	const projectColors = tailwindConfig.theme.colors;
 	const navigation = useNavigation();
@@ -44,6 +44,8 @@ const ExerciseScreen = ({ componentList, exerciseObject, sectionObject, courseOb
 	const [attempts, setAttempts] = useState(0);
 
 	const handleReviewAnswer = async (isAnswerCorrect, answerIndex) => {
+		handleStudyStreak();
+		
 		setSelectedAnswer(answerIndex);
 		if (buttonText === null) {
 			setButtonText('Continuar');

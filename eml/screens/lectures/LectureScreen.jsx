@@ -7,7 +7,7 @@ import TextImageLectureScreen from './TextImageLectureScreen';
 import PropTypes from 'prop-types';
 import Text from '../../components/general/Text';
 
-const LectureScreen = ({ lectureObject, courseObject, isLastSlide, onContinue }) => {
+const LectureScreen = ({ lectureObject, courseObject, isLastSlide, onContinue, handleStudyStreak }) => {
 	const [course, setCourse] = useState(courseObject);
 	const [lecture, setLecture] = useState(lectureObject);
 
@@ -26,6 +26,7 @@ const LectureScreen = ({ lectureObject, courseObject, isLastSlide, onContinue })
 							courseObject={course}
 							isLastSlide={isLastSlide}
 							onContinue={onContinue}
+							handleStudyStreak={handleStudyStreak}
 						/>
 					) : (
 						<TextImageLectureScreen
@@ -33,6 +34,7 @@ const LectureScreen = ({ lectureObject, courseObject, isLastSlide, onContinue })
 							courseObject={course}
 							isLastSlide={isLastSlide}
 							onContinue={onContinue}
+							handleStudyStreak={handleStudyStreak}
 						/>
 					)}
 				</View>
