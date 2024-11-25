@@ -6,13 +6,13 @@ const timeoutInMs = 1200;
 
 
 // move these to .env file next sprint
-const url = URL; // Change this to your LOCAL IP address when testing.
+const url = 'http://192.168.0.244:8888';
 export const certificateUrl = CERTIFICATE_URL;
 
 
 /* Commented out for avoiding linting errors :))
  * TODO: move IP address to .env file !!!
-const testUrl = 'http://localhost:8888';
+const testUrl = 'http://localhost:8888';In 
 const testExpo = 'http://172.30.211.57:8888'; 
 const digitalOcean = 'http://207.154.213.68:8888';
 */
@@ -294,5 +294,30 @@ export const sendMessageToChatbot = async (userMessage) => {
 		console.warn('Axios error:', error);
 		return 'Error: Try again.';
 	}
+};
+
+export const getLeaderboardDataAndUserRank = async (page, token, timeInterval) => {
+  try {
+    const res = await axios.get(`${url}/api/students/leaderboard`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+      params: {
+        page,
+        timeInterval // Add time interval parameter
+      }
+    });
+    console.log('API response:', res.data); // Add debug log
+    return {
+      leaderboard: res.data,
+      rank: res.data.findIndex(student => student.rank === 1) + 1 // Assuming rank 1 is the user
+    };
+  } catch (e) {
+    if (e?.response?.data != null) {
+      throw e.response.data;
+    } else {
+      throw e;
+    }
+  }
 };
 
