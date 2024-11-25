@@ -11,9 +11,11 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getLeaderboardDataAndUserRank } from '../../api/api';
 
+const defaultImage = require('./image.png');
+
 const TopLeaderboardItem = ({ rank, name, score, image, color, style }) => (
   <View className={`bg-secondary rounded-md mb-2 items-center justify-center ${style}`}>
-    <ImageBackground className="w-12 h-12 rounded-full mb-2" source={{ uri: image }} resizeMode='cover' />
+    <ImageBackground className="w-12 h-12 rounded-full mb-2" source={image ? { uri: image } : defaultImage} resizeMode='cover' />
     <View className={`w-6 h-6 rounded-full items-center justify-center mb-1`} style={{ backgroundColor: color }}>
       <Text className="font-sans-bold text-xs text-black">{rank}</Text>
     </View>
@@ -25,7 +27,7 @@ const TopLeaderboardItem = ({ rank, name, score, image, color, style }) => (
 const OtherLeaderboardItem = ({ rank, name, score, image }) => (
   <View className="flex-row items-center bg-secondary rounded-md p-2 mb-2">
     <Text className="font-sans-bold text-sm text-black mr-2">{rank}</Text>
-    <ImageBackground className="w-8 h-8 rounded-full mr-2" source={{ uri: image }} resizeMode='cover' />
+    <ImageBackground className="w-8 h-8 rounded-full mr-2" source={image ? { uri: image } : defaultImage} resizeMode='cover' />
     <Text className="font-sans-medium text-sm text-black flex-1">{name}</Text>
     <Text className="font-sans-bold text-sm text-primary_custom">{score}</Text>
   </View>
