@@ -20,22 +20,22 @@ const rankColors = {
 };
 
 const TopLeaderboardItem = ({ rank, name, score, image }) => (
-  <View className="bg-secondary" style={{ alignItems: 'center', justifyContent: 'center', marginBottom: 10, width: rank === 1 ? 120 : rank === 2 ? 100 : 80, height: rank === 1 ? 160 : rank === 2 ? 140 : 120, borderRadius: 10 }}>
-    <ImageBackground style={{ width: 60, height: 60, borderRadius: 30, marginBottom: 10 }} source={image ? { uri: image } : defaultImage} resizeMode='cover' />
-    <View style={{ width: 30, height: 30, borderRadius: 15, backgroundColor: rankColors[rank] || '#A9A9A9', alignItems: 'center', justifyContent: 'center', marginBottom: 5 }}>
-      <Text style={{ fontWeight: 'bold', fontSize: 14, color: '#000' }}>{rank}</Text>
+  <View className={`bg-secondary items-center justify-center mb-2 ${rank === 1 ? 'w-30 h-40' : rank === 2 ? 'w-25 h-35' : 'w-20 h-30'} rounded-lg`}>
+    <ImageBackground className="w-10 h-10 rounded-full mr-2" source={image ? { uri: image } : defaultImage} resizeMode='cover' />
+    <View className="w-7 h-7 rounded-full items-center justify-center mb-1" style={{ backgroundColor: rankColors[rank] || '#A9A9A9' }}>
+      <Text className="font-bold text-sm text-black">{rank}</Text>
     </View>
-    <Text style={{ fontWeight: '500', fontSize: 16, color: '#000', marginBottom: 5 }}>{name}</Text>
-    <Text style={{ fontWeight: 'bold', fontSize: 18, color: '#FF6347', marginBottom: 5 }}>{score}</Text>
+    <Text className="font-medium text-lg text-black mb-1">{name}</Text>
+    <Text className="font-bold text-xl text-red-500 mb-1">{score}</Text>
   </View>
 );
 
 const OtherLeaderboardItem = ({ rank, name, score, image }) => (
-  <View className="bg-secondary" style={{ flexDirection: 'row', alignItems: 'center', borderRadius: 10, padding: 10, marginBottom: 10 }}>
-    <Text style={{ fontWeight: 'bold', fontSize: 14, color: '#000', marginRight: 10 }}>{rank}</Text>
-    <ImageBackground style={{ width: 40, height: 40, borderRadius: 20, marginRight: 10 }} source={image ? { uri: image } : defaultImage} resizeMode='cover' />
-    <Text style={{ fontWeight: '500', fontSize: 14, color: '#000', flex: 1 }}>{name}</Text>
-    <Text style={{ fontWeight: 'bold', fontSize: 14, color: '#FF6347' }}>{score}</Text>
+  <View className="bg-secondary flex-row items-center rounded-lg p-2 mb-2">
+    <Text className="font-bold text-sm text-black mr-2">{rank}</Text>
+    <ImageBackground className="w-10 h-10 rounded-full mr-2" source={image ? { uri: image } : defaultImage} resizeMode='cover' />
+    <Text className="font-medium text-sm text-black flex-1">{name}</Text>
+    <Text className="font-bold text-sm text-red-500">{score}</Text>
   </View>
 );
 
@@ -131,14 +131,14 @@ export default function App(): React.JSX.Element {
         onScroll={handleScroll}
         scrollEventThrottle={16}
       >
-        <View className="white" style={{ width: '100%', padding: 20 }}>
-          <View style={{ marginBottom: 20 }}>
-            <Text style={{ fontWeight: 'bold', fontSize: 24, color: '#000', textAlign: 'center' }}>Leaderboard</Text>
+        <View className="white w-full p-5">
+          <View className="mb-5">
+            <Text className="font-bold text-2xl text-black text-center">Leaderboard</Text>
           </View>
           {leaderboardData.length > 0 ? (
             <LeaderboardSection title="Top Players" topItems={leaderboardData.slice(0, 3)} otherItems={leaderboardData.slice(3)} />
           ) : (
-            <Text style={{ textAlign: 'center', marginTop: 20 }}>No data available</Text>
+            <Text className="text-center mt-5">No data available</Text>
           )}
           {loading && <ActivityIndicator size="large" color="#FF6347" />}
         </View>
