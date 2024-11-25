@@ -8,7 +8,7 @@ const timeoutInMs = 1200;
 // move these to .env file next sprint
 const url = URL; // Change this to your LOCAL IP address when testing.
 export const certificateUrl = CERTIFICATE_URL;
-
+console.log("apiUrl: " + url + "certificateUrl: " + certificateUrl) 
 
 /* Commented out for avoiding linting errors :))
  * TODO: move IP address to .env file !!!
@@ -281,11 +281,12 @@ export const getBucketImage = async (fileName) => {
 };
 
 
-export const sendMessageToChatbot = async (userMessage) => {
-	try {
-		const response = await axios.post(url + '/api/ai', {
-			userInput: userMessage,
-		});
+export const sendMessageToChatbot = async (userMessage, courses) => {
+    try {
+        const response = await axios.post(url + '/api/ai', {
+            userInput: userMessage,
+			courses: courses,
+        });
 
 		if (response.status === 200) {
 			return response.data;
