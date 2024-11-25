@@ -8,12 +8,14 @@ import { Icon } from '@rneui/themed';
 import Markdown from 'react-native-markdown-display';
 import { Audio } from 'expo-av';
 import * as FileSystem from 'expo-file-system';
-import { sendMessageToChatbot } from '../../api/api.js';
+import { sendMessageToChatbot, getCourses } from '../../api/api.js';
+
 
 export default function Edu() {
   const [isOnline, setIsOnline] = useState(false);
   const [userMessage, setUserMessage] = useState('');
   const [chatMessages, setChatMessages] = useState([]);
+  const [courses, setCourses] = useState([]);
   const [currentlyPlaying, setCurrentlyPlaying] = useState(null); // Tracks which audio is playing
   const [currentSound, setCurrentSound] = useState(null); // Stores the current Audio.Sound instance
   const scrollViewRef = useRef(null);
@@ -93,12 +95,14 @@ export default function Edu() {
 
   const handleSendMessage = async () => {
     if (!userMessage) return;
-
+    console.log("courses: ="+ courses.length)
+    console.log(courses[0])
+  
     setChatMessages([...chatMessages, { sender: 'User', text: userMessage }]);
     setLoading(true);
     setUserMessage('');
 
-    const chatbotResponse = await sendMessageToChatbot(userMessage);
+    const chatbotResponse = await sendMessageToChatbot(userMessage, courses);
 
     setChatMessages((prevMessages) => [
       ...prevMessages,
@@ -124,6 +128,25 @@ export default function Edu() {
       setLoadingDots('');
     }
   }, [loading]);
+
+  const fetchCourses = async () => {
+    setCourses([])
+    const tempCourses = await getCourses();
+    tempCourses.forEach(element => {
+      if (element.status == 'published'){
+        setCourses((prevCourses) => [
+          ...prevCourses,
+          { title: element.title, category: element.category, rating: element.rating, description: element.description, estimatedHours: element.estimatedHours, difficulty: element.difficulty},
+        ]);  
+      }
+    });
+  };
+  
+  useEffect(() => {
+    fetchCourses();
+    console.log("got courses")
+  }, []);
+
 
   return (
     <>
