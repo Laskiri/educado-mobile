@@ -24,21 +24,23 @@ const FeedbackButtons = ({ aiText, userText }) => {
     };
 
     return (
-        <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
-            <TouchableOpacity onPress={() => handleFeedback('thumbsUp')}>
+        <View className="flex-row justify-start">
+            <TouchableOpacity 
+              onPress={() => handleFeedback('thumbsUp')}
+              className="mr-1">
                 <Icon
                     name="thumb-up-outline"
                     type="material-community"
-                    color={selectedFeedback === 'thumbsUp' ? 'blue' : 'black'} // Highlight thumbs-up if selected
-                    size={16}
+                    color={selectedFeedback === 'thumbsUp' ? '#166276' : 'black'} // Highlight thumbs-up if selected
+                    size={18}
                 />
             </TouchableOpacity>
             <TouchableOpacity onPress={() => handleFeedback('thumbsDown')}>
                 <Icon
                     name="thumb-down-outline"
                     type="material-community"
-                    color={selectedFeedback === 'thumbsDown' ? 'red' : 'black'} // Highlight thumbs-down if selected
-                    size={16}
+                    color={selectedFeedback === 'thumbsDown' ? '#166276' : 'black'} // Highlight thumbs-down if selected
+                    size={18}
                 />
             </TouchableOpacity>
         </View>

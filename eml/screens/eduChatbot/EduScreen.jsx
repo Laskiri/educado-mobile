@@ -134,7 +134,7 @@ export default function Edu() {
 						description={'Meu nome é Edu, e estou aqui para ajudá-lo a navegar neste aplicativo.'}
 					/>
 				</View>
-				<View className="flex-1 bg-white flex-end">
+				<View className="flex-1 flex-end">
 					<ScrollView ref={scrollViewRef} style={'flex-1'} className="pr-2.5">
 						{chatMessages.map((message, index) => (
 							message.sender === 'User' ? (
@@ -146,7 +146,7 @@ export default function Edu() {
 							) : (
 								<View key={index} style={{ alignSelf: 'flex-start', flexDirection: 'row', alignItems: 'center' }}>
 									<View>
-										<View className="p-2.5 pl-3 mb-1 flex-row rounded-t-3xl rounded-br-3xl max-w-[80%]">
+										<View className="p-2.5 pl-3 mb-1 flex-row rounded-t-3xl rounded-br-3xl max-w-[80%] ">
 											<View className="px-2">
 												<Icon
 													name="robot-outline"
@@ -159,6 +159,9 @@ export default function Edu() {
 												<Markdown>
 													{message.text}
 												</Markdown>
+												<View classname="w-max"> 
+													<FeedbackButtons aiText={message.text} userText={chatMessages[index - 1]?.text || ''} />
+												</View>
 											</View>
 											{message.audio && (
 												<View className="pl-2 self-center">
@@ -177,10 +180,15 @@ export default function Edu() {
 													</TouchableOpacity>
 												</View>
 											)}
+
+											
+	
 										</View>
-										<FeedbackButtons aiText={message.text} userText={chatMessages[index - 1]?.text || ''} />
+										
+										
 
 									</View>
+									
 								</View>	
 							)
 						))}
