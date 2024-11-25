@@ -55,14 +55,24 @@ export default function App(): React.JSX.Element {
   const scrollViewRef = useRef(null);
 
   const loadMoreData = async () => {
+    if (loading) return; // Prevent multiple fetches at the same time
     setLoading(true);
     try {
       const token = await AsyncStorage.getItem('@loginToken');
       if (!token) {
         throw new Error('User not authenticated');
       }
-      const { leaderboard } = await getLeaderboardDataAndUserRank(page, token);
-      setLeaderboardData((prevData) => [...prevData, ...leaderboard]);
+      const { leaderboard } = await getLeaderboardDataAndUserRank(page, token, 'all'); // Add valid time interval
+      if (leaderboard.length === 0) {
+        // No more data to fetch
+        setLoading(false);
+        return;
+      }
+      setLeaderboardData((prevData) => {
+        const newData = leaderboard.filter(item => !prevData.some(prevItem => prevItem.rank === item.rank));
+        return [...prevData, ...newData];
+      });
+      setPage((prevPage) => prevPage + 1);
     } catch (error) {
       console.error('Error loading more data:', error);
       Alert.alert('Error', error.message || 'Server could not be reached');
@@ -109,7 +119,6 @@ export default function App(): React.JSX.Element {
     const isCloseToBottom = layoutMeasurement.height + contentOffset.y >= contentSize.height - 50;
 
     if (isCloseToBottom && !loading) {
-      setPage((prevPage) => prevPage + 1);
       await loadMoreData();
     }
   };
