@@ -288,7 +288,7 @@ export const sendMessageToChatbot = async (userMessage) => {
 		});
 
 		if (response.status === 200) {
-			return response.data.message;
+			return response.data;
 		} else {
 			return 'Error: Try again.';
 		}

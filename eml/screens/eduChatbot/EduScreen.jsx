@@ -33,6 +33,23 @@ export default function Edu() {
 		]);
 	};
 
+	const handleSendMessage = async () => {
+		if (!userMessage) return;
+
+		setChatMessages([...chatMessages, { sender: 'User', text: userMessage }]);
+		setLoading(true);
+		setUserMessage('');
+
+		const chatbotResponse = await sendMessageToChatbot(userMessage);
+
+		setChatMessages((prevMessages) => [
+			...prevMessages,
+			{ sender: 'Chatbot', text: chatbotResponse.message, audio: chatbotResponse.audio },
+		]);
+
+		setLoading(false);
+	};
+
 	const playAudio = async (base64Audio, index) => {
 		try {
 			// Stop the currently playing audio if the same button is clicked
@@ -87,23 +104,6 @@ export default function Edu() {
 			setCurrentSound(null);
 			setCurrentlyPlaying(null);
 		}
-	};
-
-	const handleSendMessage = async () => {
-		if (!userMessage) return;
-
-		setChatMessages([...chatMessages, { sender: 'User', text: userMessage }]);
-		setLoading(true);
-		setUserMessage('');
-
-		const chatbotResponse = await sendMessageToChatbot(userMessage);
-
-		setChatMessages((prevMessages) => [
-			...prevMessages,
-			{ sender: 'Chatbot', text: chatbotResponse },
-		]);
-
-		setLoading(false);
 	};
 
 	useEffect(() => {
