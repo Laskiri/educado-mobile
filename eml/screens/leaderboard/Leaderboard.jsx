@@ -13,35 +13,41 @@ import { getLeaderboardDataAndUserRank } from '../../api/api';
 
 const defaultImage = require('./image.png');
 
-const TopLeaderboardItem = ({ rank, name, score, image, color, style }) => (
-  <View className={`bg-secondary rounded-md mb-2 items-center justify-center ${style}`}>
-    <ImageBackground className="w-12 h-12 rounded-full mb-2" source={image ? { uri: image } : defaultImage} resizeMode='cover' />
-    <View className={`w-6 h-6 rounded-full items-center justify-center mb-1`} style={{ backgroundColor: color }}>
-      <Text className="font-sans-bold text-xs text-black">{rank}</Text>
+const rankColors = {
+  1: '#FFA500', // Orange
+  2: '#1E90FF', // Blue
+  3: '#32CD32', // Green
+};
+
+const TopLeaderboardItem = ({ rank, name, score, image }) => (
+  <View className="bg-secondary" style={{ alignItems: 'center', justifyContent: 'center', marginBottom: 10, width: rank === 1 ? 120 : rank === 2 ? 100 : 80, height: rank === 1 ? 160 : rank === 2 ? 140 : 120, borderRadius: 10 }}>
+    <ImageBackground style={{ width: 60, height: 60, borderRadius: 30, marginBottom: 10 }} source={image ? { uri: image } : defaultImage} resizeMode='cover' />
+    <View style={{ width: 30, height: 30, borderRadius: 15, backgroundColor: rankColors[rank] || '#A9A9A9', alignItems: 'center', justifyContent: 'center', marginBottom: 5 }}>
+      <Text style={{ fontWeight: 'bold', fontSize: 14, color: '#000' }}>{rank}</Text>
     </View>
-    <Text className="font-sans-medium text-sm text-black mb-1">{name}</Text>
-    <Text className="font-sans-bold text-base text-primary_custom mb-1">{score}</Text>
+    <Text style={{ fontWeight: '500', fontSize: 16, color: '#000', marginBottom: 5 }}>{name}</Text>
+    <Text style={{ fontWeight: 'bold', fontSize: 18, color: '#FF6347', marginBottom: 5 }}>{score}</Text>
   </View>
 );
 
 const OtherLeaderboardItem = ({ rank, name, score, image }) => (
-  <View className="flex-row items-center bg-secondary rounded-md p-2 mb-2">
-    <Text className="font-sans-bold text-sm text-black mr-2">{rank}</Text>
-    <ImageBackground className="w-8 h-8 rounded-full mr-2" source={image ? { uri: image } : defaultImage} resizeMode='cover' />
-    <Text className="font-sans-medium text-sm text-black flex-1">{name}</Text>
-    <Text className="font-sans-bold text-sm text-primary_custom">{score}</Text>
+  <View className="bg-secondary" style={{ flexDirection: 'row', alignItems: 'center', borderRadius: 10, padding: 10, marginBottom: 10 }}>
+    <Text style={{ fontWeight: 'bold', fontSize: 14, color: '#000', marginRight: 10 }}>{rank}</Text>
+    <ImageBackground style={{ width: 40, height: 40, borderRadius: 20, marginRight: 10 }} source={image ? { uri: image } : defaultImage} resizeMode='cover' />
+    <Text style={{ fontWeight: '500', fontSize: 14, color: '#000', flex: 1 }}>{name}</Text>
+    <Text style={{ fontWeight: 'bold', fontSize: 14, color: '#FF6347' }}>{score}</Text>
   </View>
 );
 
 const LeaderboardSection = ({ title, topItems, otherItems }) => (
-  <View className="relative z-31 mt-5 mx-6">
-    <Text className="font-sans-bold text-lg text-black relative mt-4 ml-4">{title}</Text>
-    <View className="flex-row justify-around items-end mt-2">
-      <TopLeaderboardItem {...topItems[1]} style="w-24 h-36" />
-      <TopLeaderboardItem {...topItems[0]} style="w-28 h-40" />
-      <TopLeaderboardItem {...topItems[2]} style="w-20 h-32" />
+  <View style={{ marginTop: 20, marginHorizontal: 20 }}>
+    <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#000', marginBottom: 10 }}>{title}</Text>
+    <View style={{ flexDirection: 'row', justifyContent: 'space-around', alignItems: 'flex-end', marginBottom: 20 }}>
+      <TopLeaderboardItem {...topItems[1]} />
+      <TopLeaderboardItem {...topItems[0]} />
+      <TopLeaderboardItem {...topItems[2]} />
     </View>
-    <View className="mt-5">
+    <View>
       {otherItems.map((item, index) => (
         <OtherLeaderboardItem key={index} {...item} />
       ))}
@@ -57,16 +63,13 @@ export default function App(): React.JSX.Element {
   const scrollViewRef = useRef(null);
 
   const loadMoreData = async () => {
-    if (loading) return; // Prevent multiple fetches at the same time
+    if (loading) return;
     setLoading(true);
     try {
       const token = await AsyncStorage.getItem('@loginToken');
-      if (!token) {
-        throw new Error('User not authenticated');
-      }
-      const { leaderboard } = await getLeaderboardDataAndUserRank(page, token, 'all'); // Add valid time interval
+      if (!token) throw new Error('User not authenticated');
+      const { leaderboard } = await getLeaderboardDataAndUserRank(page, token, 'all');
       if (leaderboard.length === 0) {
-        // No more data to fetch
         setLoading(false);
         return;
       }
@@ -86,22 +89,17 @@ export default function App(): React.JSX.Element {
   const initializeLeaderboard = async () => {
     try {
       const token = await AsyncStorage.getItem('@loginToken');
-      if (!token) {
-        throw new Error('User not authenticated');
-      }
-      console.log('Fetching leaderboard data...');
-      const response = await getLeaderboardDataAndUserRank(1, token, 'all'); // Add valid time interval
-      console.log('Leaderboard data fetched:', response);
-      setLeaderboardData(response.leaderboard || []); // Ensure leaderboardData is an array
+      if (!token) throw new Error('User not authenticated');
+      const response = await getLeaderboardDataAndUserRank(1, token, 'all');
+      setLeaderboardData(response.leaderboard || []);
       setUserRank(response.rank);
       setLoading(false);
 
-      // Scroll to user rank
       if (scrollViewRef.current && response.rank) {
-        const pageToScroll = Math.ceil(response.rank / 30); // Assuming 30 items per page
+        const pageToScroll = Math.ceil(response.rank / 30);
         setPage(pageToScroll);
         scrollViewRef.current.scrollTo({
-          y: (response.rank - 1) * 50, // Assuming each item is 50px tall
+          y: (response.rank - 1) * 50,
           animated: true,
         });
       }
@@ -133,20 +131,16 @@ export default function App(): React.JSX.Element {
         onScroll={handleScroll}
         scrollEventThrottle={16}
       >
-        <View className="w-96 h-full bg-primary relative overflow-hidden mx-auto">
-          <View className="w-90 h-10 relative z-6 mt-4 ml-4">
-            <View className="w-8 h-8 absolute top-0 left-80 overflow-hidden">
-              <ImageBackground className="w-full h-full absolute top-1/2 left-0 overflow-hidden z-2" source={require('./image.png')} />
-              <ImageBackground className="w-full h-full absolute top-1/2 left-0 overflow-hidden z-2" source={require('./image.png')} />
-            </View>
-            <Text className="flex h-6 justify-start items-start font-sans-bold text-lg text-black absolute top-3 left-30 text-left z-6">Leaderboard</Text>
+        <View className="white" style={{ width: '100%', padding: 20 }}>
+          <View style={{ marginBottom: 20 }}>
+            <Text style={{ fontWeight: 'bold', fontSize: 24, color: '#000', textAlign: 'center' }}>Leaderboard</Text>
           </View>
           {leaderboardData.length > 0 ? (
-            <LeaderboardSection topItems={leaderboardData.slice(0, 3)} otherItems={leaderboardData.slice(3)} />
+            <LeaderboardSection title="Top Players" topItems={leaderboardData.slice(0, 3)} otherItems={leaderboardData.slice(3)} />
           ) : (
-            <Text className="text-center mt-10">No data available</Text>
+            <Text style={{ textAlign: 'center', marginTop: 20 }}>No data available</Text>
           )}
-          {loading && <ActivityIndicator size="large" color="#0000ff" />}
+          {loading && <ActivityIndicator size="large" color="#FF6347" />}
         </View>
       </ScrollView>
     </SafeAreaView>
