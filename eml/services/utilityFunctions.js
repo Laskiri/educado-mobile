@@ -188,9 +188,9 @@ export async function completeComponent(comp, courseId, isComplete) {
 
 	return { points, updatedStudent };
 }
-
+//TODO: Fix To return true or false depending on last section or not
 export function isCourseCompleted(student, courseId) {
-	return student.courses.some(course => course.courseId == courseId);
+	return student.courses.some(course => checkProgressCourse(course.Id) === 100);
 }
 
 export function isSectionCompleted(student, sectionId) {
@@ -331,6 +331,7 @@ export async function handleLastComponent(comp, course, navigation) {
 	const isThisTheLastSection = getLastSection === comp.parentSection;
 
 	if (isThisTheLastSection) {
+	    console.log('Handle Complete');
 		// If the course is completed, navigate to the complete course screen
 		navigation.reset({
 			index: 0,
@@ -345,6 +346,7 @@ export async function handleLastComponent(comp, course, navigation) {
 		});
 
 	} else {
+	    console.log('Handle not Complete');
 		navigation.reset({
 			index: 0,
 			routes: [
@@ -358,9 +360,8 @@ export async function handleLastComponent(comp, course, navigation) {
 			],
 		});
 	}
-
 	// For future reference
-	// if (isComplete) { 
+	// if (isComplete) {
 	// Code above with naviagtion
 	// } else {
 	//   console.log('Section not complete - navigate to retry exercises TBD');

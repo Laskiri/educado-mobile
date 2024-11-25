@@ -98,17 +98,19 @@ export default function CompleteSectionScreen() {
 	async function handleAllSectionsCompleted() {
 		const studentInfo = await getStudentInfo();
 
-		if (isCourseCompleted(studentInfo, parsedCourse.courseId)) {
+        if (isCourseCompleted(studentInfo, parsedCourse.courseId)) {
+            console.log('Completed');
 			navigation.reset({
 				index: 0,
 				routes: [
-					{ 
+					{
 						name: 'CompleteCourse',
 						params: { course: parsedCourse }
 					},
 				],
 			});
 		} else {
+            console.log('Not complete');
 			navigation.reset({
 				index: 1,
 				routes: [
