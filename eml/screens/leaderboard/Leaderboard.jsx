@@ -3,13 +3,18 @@ import { View, Text, StyleSheet, ScrollView, Image, ActivityIndicator, Alert } f
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getLeaderboardDataAndUserRank } from '../../api/api';
 
+const capitalize = (str) => {
+  if (!str) return '';
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+};
+
 const getInitials = (name) => {
   if (!name) return '';
   const nameParts = name.split(' ');
   if (nameParts.length >= 2) {
-    return `${nameParts[0][0]}${nameParts[1][0]}`;
+    return `${capitalize(nameParts[0][0])}${capitalize(nameParts[1][0])}`;
   }
-  return name[0];
+  return capitalize(name[0]);
 };
 
 const getSizeStyle = (rank) => {
@@ -17,7 +22,7 @@ const getSizeStyle = (rank) => {
     case 1:
       return { width: 100, height: 100, borderRadius: 50 };
     case 2:
-      return { width: 80, height: 80, borderRadius: 40 };
+      return { width: 70, height: 70, borderRadius: 35 };
     case 3:
       return { width: 60, height: 60, borderRadius: 30 };
     default:
@@ -25,11 +30,30 @@ const getSizeStyle = (rank) => {
   }
 };
 
-const truncateName = (name, maxLength = 10) => {
-  if (name.length > maxLength) {
-    return `${name.substring(0, maxLength)}...`;
+const getFontSizeStyle = (rank) => {
+  switch (rank) {
+    case 1:
+      return { fontSize: 40 }; // Increased font size for rank 1
+    case 2:
+      return { fontSize: 25 }; // Increased font size for rank 2
+    case 3:
+      return { fontSize: 15 }; // Increased font size for rank 3
+    default:
+      return { fontSize: 28 }; // Increased font size for other ranks
   }
-  return name;
+};
+
+const truncateName = (name, containerWidth, fontSize) => {
+  if (!name) return '';
+  const capitalized = name.split(' ').map(capitalize).join(' ');
+  const maxWidth = containerWidth - 60; // Adjust based on the layout
+  const charWidth = fontSize * 0.5; // Approximate width of a character
+  const maxChars = Math.floor(maxWidth / charWidth);
+
+  if (capitalized.length > maxChars) {
+    return `${capitalized.substring(0, maxChars)}...`;
+  }
+  return capitalized;
 };
 
 const TopLeaderboardUsers = ({ points, profilePicture, username, rank }) => (
@@ -40,7 +64,7 @@ const TopLeaderboardUsers = ({ points, profilePicture, username, rank }) => (
         {profilePicture ? (
           <Image source={{ uri: profilePicture }} style={[styles.profileImage, getSizeStyle(rank)]} />
         ) : (
-          <Text style={styles.un}>{getInitials(username)}</Text>
+          <Text style={[styles.un, getFontSizeStyle(rank)]}>{getInitials(username)}</Text>
         )}
         <View style={styles.rank}>
           <Text style={styles.rankText}>{rank}º</Text>
@@ -55,14 +79,16 @@ const LeaderboardList = ({ rank, points, profilePicture, username, highlight }) 
   <View style={styles.listRoot}>
     <View style={[styles.listContainer, highlight && { backgroundColor: '#186474' }]}>
       <Text style={[styles.listRank, highlight && { color: '#FAC12F' }]}>{rank}</Text>
-      <View style={styles.frame2273}>
+      <View style={[styles.frame2273, highlight && { borderColor: '#FAC12F' }]}>
         {profilePicture ? (
           <Image source={{ uri: profilePicture }} style={styles.listProfileImage} />
         ) : (
-          <Text style={[styles.un, highlight && { color: '#FAC12F' }]}>{getInitials(username)}</Text>
+          <Text style={[styles.un, highlight && { color: '#FFFFFF' }]}>{getInitials(username)}</Text>
         )}
       </View>
-      <Text style={[styles.listUserName, highlight && { color: '#FFFFFF' }]}>{truncateName(username)}</Text>
+      <Text style={[styles.listUserName, highlight && { color: '#FFFFFF' }]}>
+        {truncateName(username, 200, 18)} {/* Adjust containerWidth and fontSize as needed */}
+      </Text>
       <Text style={[styles.listPoints, highlight && { color: '#FFFFFF' }]}>{points} pts</Text>
     </View>
   </View>
@@ -187,6 +213,7 @@ export function LeaderboardScreen() {
 
   return (
     <View style={styles.container}>
+      <Text style={styles.rankingText}>Ranking</Text> 
       <ScrollView
         ref={scrollViewRef}
         contentInsetAdjustmentBehavior="never"
@@ -236,6 +263,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#f2f9fb', // Updated background color
+    paddingTop: 40, // Added padding to the top
   },
   topUsersContainer: {
     flexDirection: 'row',
@@ -275,7 +303,6 @@ const styles = StyleSheet.create({
     borderRadius: 35,
   },
   un: {
-    fontSize: 20,
     fontWeight: '700',
     fontFamily: 'Montserrat-Bold',
     color: '#FFFFFF',
@@ -334,8 +361,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 3,
-    borderColor: '#FAC12F',
-    backgroundColor: '#186474', // Updated ellipse color
+    borderColor: '#FFFFFF', // Default border color
+    backgroundColor: '#186474',
     marginHorizontal: 10,
   },
   listProfileImage: {
@@ -363,6 +390,13 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 24,
     marginVertical: 10,
+  },
+  rankingText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginVertical: 20,
+    textAlign: 'center',
+    color: '#333333',
   },
 });
 
