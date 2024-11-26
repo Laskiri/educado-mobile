@@ -252,7 +252,7 @@ export default function Edu() {
 								/>
 							</TouchableOpacity>
 						) : (
-							<RecButton onAudioResponse={handleAudioResponse} onLock={setLoading} />
+							<RecButton onAudioResponse={handleAudioResponse} onLock={setLoading} courses={courses} />
 						)}
 					</View>
 				</View>

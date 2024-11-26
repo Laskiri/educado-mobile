@@ -304,7 +304,7 @@ export const sendMessageToChatbot = async (userMessage, courses) => {
 	}
 };
 
-export const sendAudioToChatbot = async (audioUri) => {
+export const sendAudioToChatbot = async (audioUri, courses) => {
 	try {
 		console.log('Sending audio:', audioUri);
 
@@ -316,6 +316,8 @@ export const sendAudioToChatbot = async (audioUri) => {
 			name: 'audio.m4a', // You can use a generic name or dynamically extract it
 			type: 'audio/m4a', // Ensure this matches the audio type
 		});
+
+		formData.append('courses', JSON.stringify(courses));
 
 		// Send the formData via Axios
 		const serverResponse = await axios.post(url + '/api/ai/processAudio', formData, {
