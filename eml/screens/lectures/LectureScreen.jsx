@@ -23,7 +23,7 @@ export default function LectureScreen({ lectureObject, courseObject, currentInde
 			{lecture && course ?
 				<View className="w-full h-full flex-col justify-center items-center">
 
-					{lecture.video ?
+					{lecture.contentType === "video" ?
 						<VideoLectureScreen lectureObject={lecture} courseObject={course} isLastSlide={isLastSlide} />
 						:
 						<TextImageLectureScreen lectureObject={lecture} courseObject={course} isLastSlide={isLastSlide} />
