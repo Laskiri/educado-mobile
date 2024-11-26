@@ -153,10 +153,9 @@ export function LeaderboardScreen() {
   };
 
   const renderLeaderboard = () => {
-    const topUsers = leaderboardData.slice(0, 6);
     const remainingUsers = leaderboardData.slice(3);
 
-    if (currentUserRank <= 8) {
+    if (currentUserRank <= 11) {  
       return remainingUsers.slice(0, 27).map((user) => (
         <LeaderboardList
           key={`${user.rank}-${user.name}`} 
