@@ -153,13 +153,13 @@ export function LeaderboardScreen() {
   };
 
   const renderLeaderboard = () => {
-    const topUsers = leaderboardData.slice(0, 3);
+    const topUsers = leaderboardData.slice(0, 6);
     const remainingUsers = leaderboardData.slice(3);
 
     if (currentUserRank <= 8) {
       return remainingUsers.slice(0, 27).map((user) => (
         <LeaderboardList
-          key={`${user.rank}-${user.name}`} // Ensure unique keys
+          key={`${user.rank}-${user.name}`} 
           rank={user.rank}
           points={user.score}
           profilePicture={user.image}
@@ -168,7 +168,7 @@ export function LeaderboardScreen() {
         />
       ));
     } else {
-      const topSixUsers = remainingUsers.slice(0, 3);
+      const topSixUsers = remainingUsers.slice(0, 6);
       const currentUserIndex = remainingUsers.findIndex(user => user.rank === currentUserRank);
       const adjacentUsers = remainingUsers.slice(Math.max(currentUserIndex - 1, 0), Math.min(currentUserIndex + 11, remainingUsers.length));
       const additionalUsers = remainingUsers.slice(Math.min(currentUserIndex + 11, remainingUsers.length), Math.min(currentUserIndex + 11 + ((topSixUsers.length + adjacentUsers.length)), remainingUsers.length));
@@ -177,7 +177,7 @@ export function LeaderboardScreen() {
         <>
           {topSixUsers.map(user => (
             <LeaderboardList
-              key={`${user.rank}-${user.name}`} // Ensure unique keys
+              key={`${user.rank}-${user.name}`} 
               rank={user.rank}
               points={user.score}
               profilePicture={user.image}
