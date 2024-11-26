@@ -1,100 +1,80 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { View, Text, StyleSheet, ScrollView, Image, ActivityIndicator, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Image, ActivityIndicator, Alert, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getLeaderboardDataAndUserRank } from '../../api/api';
+import { useNavigation } from '@react-navigation/native';
+import DefaultTheme from '../../theme/colors'; // import the theme colors
 
-const capitalize = (str) => {
-  if (!str) return '';
-  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
-};
+const capitalize = (str) => str ? str.charAt(0).toUpperCase() + str.slice(1).toLowerCase() : '';
 
 const getInitials = (name) => {
   if (!name) return '';
   const nameParts = name.split(' ');
-  if (nameParts.length >= 2) {
-    return `${capitalize(nameParts[0][0])}${capitalize(nameParts[1][0])}`;
-  }
-  return capitalize(name[0]);
+  return nameParts.length >= 2 ? `${capitalize(nameParts[0][0])}${capitalize(nameParts[1][0])}` : capitalize(name[0]);
 };
 
 const getSizeStyle = (rank) => {
-  switch (rank) {
-    case 1:
-      return { width: 100, height: 100, borderRadius: 50 };
-    case 2:
-      return { width: 70, height: 70, borderRadius: 35 };
-    case 3:
-      return { width: 60, height: 60, borderRadius: 30 };
-    default:
-      return { width: 70, height: 70, borderRadius: 35 };
-  }
+  const sizes = { 1: 100, 2: 70, 3: 60, default: 70 };
+  const size = sizes[rank] || sizes.default;
+  return { width: size, height: size, borderRadius: size / 2 };
 };
 
 const getFontSizeStyle = (rank) => {
-  switch (rank) {
-    case 1:
-      return { fontSize: 40 }; // Increased font size for rank 1
-    case 2:
-      return { fontSize: 25 }; // Increased font size for rank 2
-    case 3:
-      return { fontSize: 15 }; // Increased font size for rank 3
-    default:
-      return { fontSize: 28 }; // Increased font size for other ranks
-  }
+  const fontSizes = { 1: 40, 2: 25, 3: 15, default: 28 };
+  return { fontSize: fontSizes[rank] || fontSizes.default };
 };
 
 const truncateName = (name, containerWidth, fontSize) => {
   if (!name) return '';
   const capitalized = name.split(' ').map(capitalize).join(' ');
-  const maxWidth = containerWidth - 60; // Adjust based on the layout
-  const charWidth = fontSize * 0.5; // Approximate width of a character
+  const maxWidth = containerWidth - 60;
+  const charWidth = fontSize * 0.5;
   const maxChars = Math.floor(maxWidth / charWidth);
-
-  if (capitalized.length > maxChars) {
-    return `${capitalized.substring(0, maxChars)}...`;
-  }
-  return capitalized;
+  return capitalized.length > maxChars ? `${capitalized.substring(0, maxChars)}...` : capitalized;
 };
 
-const TopLeaderboardUsers = ({ points, profilePicture, username, rank }) => (
+const TopLeaderboardUsers = ({ points, profilePicture, username, rank, highlight }) => (
   <View style={styles.topContainer}>
-    <Text style={styles.points}>{points} pts</Text>
+    <Text style={[styles.points, highlight && styles.highlightText]}>{points} pts</Text>
+
     <View style={styles.circleContainer}>
+      
       <View style={[styles.circle, getSizeStyle(rank)]}>
         {profilePicture ? (
           <Image source={{ uri: profilePicture }} style={[styles.profileImage, getSizeStyle(rank)]} />
         ) : (
-          <Text style={[styles.un, getFontSizeStyle(rank)]}>{getInitials(username)}</Text>
+          <Text style={[styles.un, getFontSizeStyle(rank), highlight && styles.highlightText]}>{getInitials(username)}</Text>
         )}
-        <View style={styles.rank}>
-          <Text style={styles.rankText}>{rank}º</Text>
+        <View style={[styles.rank]}>
+          <Text style={[styles.rankText]}>{rank}º</Text>
         </View>
       </View>
     </View>
-    <Text style={styles.userName}>{truncateName(username)}</Text>
+    <Text style={[styles.userName, highlight && styles.highlightText]}>{truncateName(username)}</Text>
   </View>
 );
 
 const LeaderboardList = ({ rank, points, profilePicture, username, highlight }) => (
   <View style={styles.listRoot}>
-    <View style={[styles.listContainer, highlight && { backgroundColor: '#186474' }]}>
-      <Text style={[styles.listRank, highlight && { color: '#FAC12F' }]}>{rank}</Text>
-      <View style={[styles.frame2273, highlight && { borderColor: '#FAC12F' }]}>
+    <View style={[styles.listContainer, highlight && styles.highlight]}>
+      <Text style={[styles.listRank, highlight && styles.highlightText]}>{rank}</Text>
+      <View style={[styles.frame2273, highlight && styles.highlightBorder]}>
         {profilePicture ? (
           <Image source={{ uri: profilePicture }} style={styles.listProfileImage} />
         ) : (
-          <Text style={[styles.un, highlight && { color: '#FFFFFF' }]}>{getInitials(username)}</Text>
+          <Text style={[styles.un, highlight && styles.highlightText]}>{getInitials(username)}</Text>
         )}
       </View>
-      <Text style={[styles.listUserName, highlight && { color: '#FFFFFF' }]}>
-        {truncateName(username, 200, 18)} {/* Adjust containerWidth and fontSize as needed */}
+      <Text style={[styles.listUserName, highlight && styles.highlightText]}>
+        {truncateName(username, 200, 18)}
       </Text>
-      <Text style={[styles.listPoints, highlight && { color: '#FFFFFF' }]}>{points} pts</Text>
+      <Text style={[styles.listPoints, highlight && styles.highlightText]}>{points} pts</Text>
     </View>
   </View>
 );
 
 export function LeaderboardScreen() {
+  const navigation = useNavigation();
   const [leaderboardData, setLeaderboardData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
@@ -108,10 +88,7 @@ export function LeaderboardScreen() {
       const token = await AsyncStorage.getItem('@loginToken');
       if (!token) throw new Error('User not authenticated');
       const { leaderboard } = await getLeaderboardDataAndUserRank(page, token, 'all', 12);
-      if (leaderboard.length === 0) {
-        setLoading(false);
-        return;
-      }
+      if (leaderboard.length === 0) return;
       setLeaderboardData((prevData) => {
         const newData = leaderboard.filter(item => !prevData.some(prevItem => prevItem.rank === item.rank));
         return [...prevData, ...newData];
@@ -119,9 +96,22 @@ export function LeaderboardScreen() {
       setPage((prevPage) => prevPage + 1);
     } catch (error) {
       console.error('Error loading more data:', error);
-      Alert.alert('Error', error.message || 'Server could not be reached'); 
+      Alert.alert('Error', error.message || 'Server could not be reached');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const refreshLeaderboard = async () => {
+    try {
+      const token = await AsyncStorage.getItem('@loginToken');
+      if (!token) throw new Error('User not authenticated');
+      const response = await getLeaderboardDataAndUserRank(1, token, 'all', 12);
+      setLeaderboardData(response.leaderboard || []);
+      setCurrentUserRank(response.currentUserRank);
+    } catch (error) {
+      console.error('Error refreshing leaderboard:', error);
+      Alert.alert('Error', error.message || 'Server could not be reached');
     }
   };
 
@@ -156,9 +146,9 @@ export function LeaderboardScreen() {
   const handleScroll = async (event) => {
     const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
     const isCloseToBottom = layoutMeasurement.height + contentOffset.y >= contentSize.height - 50;
-
     if (isCloseToBottom && !loading) {
       await loadMoreData();
+      await refreshLeaderboard();
     }
   };
 
@@ -167,9 +157,9 @@ export function LeaderboardScreen() {
     const remainingUsers = leaderboardData.slice(3);
 
     if (currentUserRank <= 8) {
-      return remainingUsers.slice(0, 9).map((user) => (
+      return remainingUsers.slice(0, 27).map((user) => (
         <LeaderboardList
-          key={user.rank}
+          key={`${user.rank}-${user.name}`} // Ensure unique keys
           rank={user.rank}
           points={user.score}
           profilePicture={user.image}
@@ -180,13 +170,14 @@ export function LeaderboardScreen() {
     } else {
       const topSixUsers = remainingUsers.slice(0, 3);
       const currentUserIndex = remainingUsers.findIndex(user => user.rank === currentUserRank);
-      const adjacentUsers = remainingUsers.slice(Math.max(currentUserIndex - 1, 0), Math.min(currentUserIndex + 18, remainingUsers.length));
+      const adjacentUsers = remainingUsers.slice(Math.max(currentUserIndex - 1, 0), Math.min(currentUserIndex + 11, remainingUsers.length));
+      const additionalUsers = remainingUsers.slice(Math.min(currentUserIndex + 11, remainingUsers.length), Math.min(currentUserIndex + 11 + ((topSixUsers.length + adjacentUsers.length)), remainingUsers.length));
 
       return (
         <>
           {topSixUsers.map(user => (
             <LeaderboardList
-              key={user.rank}
+              key={`${user.rank}-${user.name}`} // Ensure unique keys
               rank={user.rank}
               points={user.score}
               profilePicture={user.image}
@@ -196,12 +187,21 @@ export function LeaderboardScreen() {
           <Text style={styles.ellipsis}>⋮</Text>
           {adjacentUsers.map(user => (
             <LeaderboardList
-              key={user.rank}
+              key={`${user.rank}-${user.name}`} // Ensure unique keys
               rank={user.rank}
               points={user.score}
               profilePicture={user.image}
               username={user.name}
               highlight={user.rank === currentUserRank}
+            />
+          ))}
+          {additionalUsers.map(user => (
+            <LeaderboardList
+              key={`${user.rank}-${user.name}`} // Ensure unique keys
+              rank={user.rank}
+              points={user.score}
+              profilePicture={user.image}
+              username={user.name}
             />
           ))}
         </>
@@ -213,7 +213,12 @@ export function LeaderboardScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.rankingText}>Ranking</Text> 
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <Text style={styles.backButtonText}>{"<"}</Text>
+        </TouchableOpacity>
+        <Text style={styles.rankingText}>Ranking</Text>
+      </View>
       <ScrollView
         ref={scrollViewRef}
         contentInsetAdjustmentBehavior="never"
@@ -231,6 +236,7 @@ export function LeaderboardScreen() {
               profilePicture={topUsers[1].image}
               username={topUsers[1].name}
               rank={topUsers[1].rank}
+              highlight={topUsers[1].rank === currentUserRank}
             />
           )}
           {topUsers[0] && (
@@ -239,6 +245,7 @@ export function LeaderboardScreen() {
               profilePicture={topUsers[0].image}
               username={topUsers[0].name}
               rank={topUsers[0].rank}
+              highlight={topUsers[0].rank === currentUserRank}
             />
           )}
           {topUsers[2] && (
@@ -247,11 +254,12 @@ export function LeaderboardScreen() {
               profilePicture={topUsers[2].image}
               username={topUsers[2].name}
               rank={topUsers[2].rank}
+              highlight={topUsers[2].rank === currentUserRank}
             />
           )}
         </View>
         {renderLeaderboard()}
-        {loading && <ActivityIndicator size="large" color="#FF6347" />}
+        {loading && <ActivityIndicator size="large" color="#87CEEB" />}
       </ScrollView>
     </View>
   );
@@ -262,13 +270,36 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f2f9fb', // Updated background color
-    paddingTop: 40, // Added padding to the top
+    backgroundColor: DefaultTheme.bgSecondary, // use the theme color
+    paddingTop: 40,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
+    paddingHorizontal: 10,
+  },
+  backButton: {
+    position: 'absolute',
+    left: 10,
+  },
+  backButtonText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#333333',
+  },
+  rankingText: {
+    flex: 1,
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginVertical: 20,
+    textAlign: 'center',
+    color: '#333333',
   },
   topUsersContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    alignItems: 'flex-end',
+    alignItems: 'center', // Changed from 'flex-end' to 'center'
     marginBottom: 20,
     paddingHorizontal: 10,
   },
@@ -291,8 +322,8 @@ const styles = StyleSheet.create({
   circle: {
     width: 70,
     height: 70,
-    borderRadius: 35,
-    backgroundColor: '#186474', // Updated ellipse color
+    borderRadius: 50, 
+    backgroundColor: DefaultTheme.bgPrimary, 
     justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',
@@ -300,7 +331,7 @@ const styles = StyleSheet.create({
   profileImage: {
     width: '100%',
     height: '100%',
-    borderRadius: 35,
+    borderRadius: 50, 
   },
   un: {
     fontWeight: '700',
@@ -361,8 +392,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 3,
-    borderColor: '#FFFFFF', // Default border color
-    backgroundColor: '#186474',
+    borderColor: '#FFFFFF',
+    backgroundColor: DefaultTheme.bgPrimary, 
     marginHorizontal: 10,
   },
   listProfileImage: {
@@ -384,19 +415,18 @@ const styles = StyleSheet.create({
     color: '#333333',
   },
   highlight: {
-    backgroundColor: 'orange',
+    backgroundColor: DefaultTheme.bgPrimary, 
+  },
+  highlightText: {
+    color: '#FAC12F',
+  },
+  highlightBorder: {
+    borderColor: '#FAC12F',
   },
   ellipsis: {
     textAlign: 'center',
     fontSize: 24,
     marginVertical: 10,
-  },
-  rankingText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginVertical: 20,
-    textAlign: 'center',
-    color: '#333333',
   },
 });
 
