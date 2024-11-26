@@ -296,7 +296,7 @@ export const sendMessageToChatbot = async (userMessage) => {
 	}
 };
 
-export const getLeaderboardDataAndUserRank = async (page, token, timeInterval) => {
+export const getLeaderboardDataAndUserRank = async (page, token, timeInterval, limit = 12) => {
   try {
     const res = await axios.get(`${url}/api/students/leaderboard`, {
       headers: {
@@ -304,7 +304,8 @@ export const getLeaderboardDataAndUserRank = async (page, token, timeInterval) =
       },
       params: {
         page,
-        timeInterval // Add time interval parameter
+        timeInterval,
+        limit // Add limit parameter
       }
     });
     console.log('API response:', res.data); // Add debug log

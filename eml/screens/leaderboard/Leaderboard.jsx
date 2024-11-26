@@ -52,18 +52,18 @@ const TopLeaderboardUsers = ({ points, profilePicture, username, rank }) => (
 );
 
 const LeaderboardList = ({ rank, points, profilePicture, username, highlight }) => (
-  <View style={[styles.listRoot, highlight && styles.highlight]}>
-    <View style={styles.listContainer}>
-      <Text style={styles.listRank}>{rank}</Text>
+  <View style={styles.listRoot}>
+    <View style={[styles.listContainer, highlight && { backgroundColor: '#186474' }]}>
+      <Text style={[styles.listRank, highlight && { color: '#FAC12F' }]}>{rank}</Text>
       <View style={styles.frame2273}>
         {profilePicture ? (
           <Image source={{ uri: profilePicture }} style={styles.listProfileImage} />
         ) : (
-          <Text style={styles.un}>{getInitials(username)}</Text>
+          <Text style={[styles.un, highlight && { color: '#FAC12F' }]}>{getInitials(username)}</Text>
         )}
       </View>
-      <Text style={styles.listUserName}>{truncateName(username)}</Text>
-      <Text style={styles.listPoints}>{points} pts</Text>
+      <Text style={[styles.listUserName, highlight && { color: '#FFFFFF' }]}>{truncateName(username)}</Text>
+      <Text style={[styles.listPoints, highlight && { color: '#FFFFFF' }]}>{points} pts</Text>
     </View>
   </View>
 );
@@ -81,7 +81,7 @@ export function LeaderboardScreen() {
     try {
       const token = await AsyncStorage.getItem('@loginToken');
       if (!token) throw new Error('User not authenticated');
-      const { leaderboard } = await getLeaderboardDataAndUserRank(page, token, 'all');
+      const { leaderboard } = await getLeaderboardDataAndUserRank(page, token, 'all', 12);
       if (leaderboard.length === 0) {
         setLoading(false);
         return;
@@ -103,7 +103,7 @@ export function LeaderboardScreen() {
     try {
       const token = await AsyncStorage.getItem('@loginToken');
       if (!token) throw new Error('User not authenticated');
-      const response = await getLeaderboardDataAndUserRank(1, token, 'all');
+      const response = await getLeaderboardDataAndUserRank(1, token, 'all', 12);
       setLeaderboardData(response.leaderboard || []);
       setCurrentUserRank(response.currentUserRank);
       setLoading(false);
@@ -141,7 +141,7 @@ export function LeaderboardScreen() {
     const remainingUsers = leaderboardData.slice(3);
 
     if (currentUserRank <= 8) {
-      return remainingUsers.slice(0, 27).map((user) => (
+      return remainingUsers.slice(0, 9).map((user) => (
         <LeaderboardList
           key={user.rank}
           rank={user.rank}
@@ -152,9 +152,9 @@ export function LeaderboardScreen() {
         />
       ));
     } else {
-      const topSixUsers = remainingUsers.slice(0, 6);
+      const topSixUsers = remainingUsers.slice(0, 3);
       const currentUserIndex = remainingUsers.findIndex(user => user.rank === currentUserRank);
-      const adjacentUsers = remainingUsers.slice(Math.max(currentUserIndex - 1, 0), Math.min(currentUserIndex + 2, remainingUsers.length));
+      const adjacentUsers = remainingUsers.slice(Math.max(currentUserIndex - 1, 0), Math.min(currentUserIndex + 18, remainingUsers.length));
 
       return (
         <>
@@ -345,7 +345,7 @@ const styles = StyleSheet.create({
   },
   listUserName: {
     flex: 1,
-    fontFamily: 'Montserrat-Regular',
+    fontFamily: 'Montserrat-Bold',
     fontSize: 18,
     fontWeight: '400',
     color: '#333333',
