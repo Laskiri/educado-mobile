@@ -297,27 +297,27 @@ export const sendMessageToChatbot = async (userMessage) => {
 };
 
 export const getLeaderboardDataAndUserRank = async (page, token, timeInterval) => {
-	try {
-		const res = await axios.get(`${url}/api/students/leaderboard`, {
-			headers: {
-				Authorization: `Bearer ${token}`
-			},
-			params: {
-				page,
-				timeInterval // Add time interval parameter
-			}
-		});
-		console.log('API response:', res.data); // Add debug log
-		return {
-			leaderboard: res.data,
-			rank: res.data.findIndex(student => student.rank === 1) + 1 // Assuming rank 1 is the user
-		};
-	} catch (e) {
-		if (e?.response?.data != null) {
-			throw e.response.data;
-		} else {
-			throw e;
-		}
-	}
+  try {
+    const res = await axios.get(`${url}/api/students/leaderboard`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+      params: {
+        page,
+        timeInterval // Add time interval parameter
+      }
+    });
+    console.log('API response:', res.data); // Add debug log
+    return {
+      leaderboard: res.data.leaderboard,
+      currentUserRank: res.data.currentUserRank
+    };
+  } catch (e) {
+    if (e?.response?.data != null) {
+      throw e.response.data;
+    } else {
+      throw e;
+    }
+  }
 };
 

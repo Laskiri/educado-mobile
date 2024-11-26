@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import LoginScreen from './screens/login/Login';
 import RegisterScreen from './screens/register/Register';
@@ -28,6 +28,9 @@ import BaseScreen from './components/general/BaseScreen';
 import LeaderboardScreen from './screens/leaderboard/Leaderboard';
 import SubscribedToCourseScreen from './screens/courses/SubscribedToCourseScreen';
 import { DownloadProvider } from './services/DownloadService';
+import * as Font from 'expo-font';
+import AppLoading from 'expo-app-loading';
+
 const Stack = createNativeStackNavigator();
 
 function LeaderboardStack() {
@@ -64,7 +67,7 @@ function LoginStack() {
 		<Stack.Navigator initialRouteName={'Login'}>
 			<Stack.Screen
 				name="Login"
-				component={LoginScreen}
+				component={LeaderboardScreen}
 				options={{
 					headerShown: false,
 				}}
@@ -167,9 +170,21 @@ export function useWelcomeScreenLogic(loadingTime, onResult) {
 
 
 export default function App() {
-	const fontsLoaded = isFontsLoaded();
+	const [fontsLoaded, setFontsLoaded] = useState(false);
 	const [initialRoute, setInitialRoute] = useState('');
 	const [isLoading, setIsLoading] = useState(true);
+
+	useEffect(() => {
+		async function loadFonts() {
+			await Font.loadAsync({
+				'Montserrat-Regular': require('./assets/fonts/Montserrat-Regular.ttf'),
+				'Montserrat-Bold': require('./assets/fonts/Montserrat-Bold.ttf'),
+				'Montserrat-SemiBold': require('./assets/fonts/Montserrat-SemiBold.ttf'),
+			});
+			setFontsLoaded(true);
+		}
+		loadFonts();
+	}, []);
 
 	// Callback function to handle the results
 	const handleResult = (route, loading) => {
@@ -181,7 +196,7 @@ export default function App() {
 
 	// ************** Don't touch this code **************
 	if (!fontsLoaded) {
-		return null;
+		return <AppLoading />;
 	}
 
 	// Makes sure fonts are loaded before rendering the app

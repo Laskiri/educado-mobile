@@ -1,65 +1,78 @@
 import React, { useEffect, useState, useRef } from 'react';
-import {
-  View,
-  Text,
-  ImageBackground,
-  SafeAreaView,
-  ScrollView,
-  ActivityIndicator,
-  Alert,
-} from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Image, ActivityIndicator, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getLeaderboardDataAndUserRank } from '../../api/api';
 
-const defaultImage = require('./image.png');
-
-const rankColors = {
-  1: '#FFA500', // Orange
-  2: '#1E90FF', // Blue
-  3: '#32CD32', // Green
+const getInitials = (name) => {
+  if (!name) return '';
+  const nameParts = name.split(' ');
+  if (nameParts.length >= 2) {
+    return `${nameParts[0][0]}${nameParts[1][0]}`;
+  }
+  return name[0];
 };
 
-const TopLeaderboardItem = ({ rank, name, score, image }) => (
-  <View className={`bg-secondary items-center justify-center mb-2 ${rank === 1 ? 'w-30 h-40' : rank === 2 ? 'w-25 h-35' : 'w-20 h-30'} rounded-lg`}>
-    <ImageBackground className="w-10 h-10 rounded-full mr-2" source={image ? { uri: image } : defaultImage} resizeMode='cover' />
-    <View className="w-7 h-7 rounded-full items-center justify-center mb-1" style={{ backgroundColor: rankColors[rank] || '#A9A9A9' }}>
-      <Text className="font-bold text-sm text-black">{rank}</Text>
+const getSizeStyle = (rank) => {
+  switch (rank) {
+    case 1:
+      return { width: 100, height: 100, borderRadius: 50 };
+    case 2:
+      return { width: 80, height: 80, borderRadius: 40 };
+    case 3:
+      return { width: 60, height: 60, borderRadius: 30 };
+    default:
+      return { width: 70, height: 70, borderRadius: 35 };
+  }
+};
+
+const truncateName = (name, maxLength = 10) => {
+  if (name.length > maxLength) {
+    return `${name.substring(0, maxLength)}...`;
+  }
+  return name;
+};
+
+const TopLeaderboardUsers = ({ points, profilePicture, username, rank }) => (
+  <View style={styles.topContainer}>
+    <Text style={styles.points}>{points} pts</Text>
+    <View style={styles.circleContainer}>
+      <View style={[styles.circle, getSizeStyle(rank)]}>
+        {profilePicture ? (
+          <Image source={{ uri: profilePicture }} style={[styles.profileImage, getSizeStyle(rank)]} />
+        ) : (
+          <Text style={styles.un}>{getInitials(username)}</Text>
+        )}
+        <View style={styles.rank}>
+          <Text style={styles.rankText}>{rank}º</Text>
+        </View>
+      </View>
     </View>
-    <Text className="font-medium text-lg text-black mb-1">{name}</Text>
-    <Text className="font-bold text-xl text-red-500 mb-1">{score}</Text>
+    <Text style={styles.userName}>{truncateName(username)}</Text>
   </View>
 );
 
-const OtherLeaderboardItem = ({ rank, name, score, image }) => (
-  <View className="bg-secondary flex-row items-center rounded-lg p-2 mb-2">
-    <Text className="font-bold text-sm text-black mr-2">{rank}</Text>
-    <ImageBackground className="w-10 h-10 rounded-full mr-2" source={image ? { uri: image } : defaultImage} resizeMode='cover' />
-    <Text className="font-medium text-sm text-black flex-1">{name}</Text>
-    <Text className="font-bold text-sm text-red-500">{score}</Text>
-  </View>
-);
-
-const LeaderboardSection = ({ title, topItems, otherItems }) => (
-  <View style={{ marginTop: 20, marginHorizontal: 20 }}>
-    <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#000', marginBottom: 10 }}>{title}</Text>
-    <View style={{ flexDirection: 'row', justifyContent: 'space-around', alignItems: 'flex-end', marginBottom: 20 }}>
-      <TopLeaderboardItem {...topItems[1]} />
-      <TopLeaderboardItem {...topItems[0]} />
-      <TopLeaderboardItem {...topItems[2]} />
-    </View>
-    <View>
-      {otherItems.map((item, index) => (
-        <OtherLeaderboardItem key={index} {...item} />
-      ))}
+const LeaderboardList = ({ rank, points, profilePicture, username, highlight }) => (
+  <View style={[styles.listRoot, highlight && styles.highlight]}>
+    <View style={styles.listContainer}>
+      <Text style={styles.listRank}>{rank}</Text>
+      <View style={styles.frame2273}>
+        {profilePicture ? (
+          <Image source={{ uri: profilePicture }} style={styles.listProfileImage} />
+        ) : (
+          <Text style={styles.un}>{getInitials(username)}</Text>
+        )}
+      </View>
+      <Text style={styles.listUserName}>{truncateName(username)}</Text>
+      <Text style={styles.listPoints}>{points} pts</Text>
     </View>
   </View>
 );
 
-export default function App(): React.JSX.Element {
+export function LeaderboardScreen() {
   const [leaderboardData, setLeaderboardData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
-  const [userRank, setUserRank] = useState(null);
+  const [currentUserRank, setCurrentUserRank] = useState(null);
   const scrollViewRef = useRef(null);
 
   const loadMoreData = async () => {
@@ -80,7 +93,7 @@ export default function App(): React.JSX.Element {
       setPage((prevPage) => prevPage + 1);
     } catch (error) {
       console.error('Error loading more data:', error);
-      Alert.alert('Error', error.message || 'Server could not be reached');
+      Alert.alert('Error', error.message || 'Server could not be reached'); 
     } finally {
       setLoading(false);
     }
@@ -92,14 +105,14 @@ export default function App(): React.JSX.Element {
       if (!token) throw new Error('User not authenticated');
       const response = await getLeaderboardDataAndUserRank(1, token, 'all');
       setLeaderboardData(response.leaderboard || []);
-      setUserRank(response.rank);
+      setCurrentUserRank(response.currentUserRank);
       setLoading(false);
 
-      if (scrollViewRef.current && response.rank) {
-        const pageToScroll = Math.ceil(response.rank / 30);
+      if (scrollViewRef.current && response.currentUserRank) {
+        const pageToScroll = Math.ceil(response.currentUserRank / 30);
         setPage(pageToScroll);
         scrollViewRef.current.scrollTo({
-          y: (response.rank - 1) * 50,
+          y: (response.currentUserRank - 1) * 50,
           animated: true,
         });
       }
@@ -123,32 +136,234 @@ export default function App(): React.JSX.Element {
     }
   };
 
+  const renderLeaderboard = () => {
+    const topUsers = leaderboardData.slice(0, 3);
+    const remainingUsers = leaderboardData.slice(3);
+
+    if (currentUserRank <= 8) {
+      return remainingUsers.slice(0, 27).map((user) => (
+        <LeaderboardList
+          key={user.rank}
+          rank={user.rank}
+          points={user.score}
+          profilePicture={user.image}
+          username={user.name}
+          highlight={user.rank === currentUserRank}
+        />
+      ));
+    } else {
+      const topSixUsers = remainingUsers.slice(0, 6);
+      const currentUserIndex = remainingUsers.findIndex(user => user.rank === currentUserRank);
+      const adjacentUsers = remainingUsers.slice(Math.max(currentUserIndex - 1, 0), Math.min(currentUserIndex + 2, remainingUsers.length));
+
+      return (
+        <>
+          {topSixUsers.map(user => (
+            <LeaderboardList
+              key={user.rank}
+              rank={user.rank}
+              points={user.score}
+              profilePicture={user.image}
+              username={user.name}
+            />
+          ))}
+          <Text style={styles.ellipsis}>⋮</Text>
+          {adjacentUsers.map(user => (
+            <LeaderboardList
+              key={user.rank}
+              rank={user.rank}
+              points={user.score}
+              profilePicture={user.image}
+              username={user.name}
+              highlight={user.rank === currentUserRank}
+            />
+          ))}
+        </>
+      );
+    }
+  };
+
+  const topUsers = leaderboardData.slice(0, 3);
+
   return (
-    <SafeAreaView style={{ backgroundColor: 'white', flex: 1 }}>
+    <View style={styles.container}>
       <ScrollView
         ref={scrollViewRef}
-        contentInsetAdjustmentBehavior='automatic'
+        contentInsetAdjustmentBehavior="never"
         onScroll={handleScroll}
         scrollEventThrottle={16}
+        showsVerticalScrollIndicator={false}
+        bounces={false}
+        alwaysBounceVertical={false}
+        overScrollMode="never"
       >
-        <View className="white w-full p-5">
-          <View className="mb-5">
-            <Text className="font-bold text-2xl text-black text-center">Leaderboard</Text>
-          </View>
-          {leaderboardData.length > 0 ? (
-            <LeaderboardSection title="Top Players" topItems={leaderboardData.slice(0, 3)} otherItems={leaderboardData.slice(3)} />
-          ) : (
-            <Text className="text-center mt-5">No data available</Text>
+        <View style={styles.topUsersContainer}>
+          {topUsers[1] && (
+            <TopLeaderboardUsers
+              points={topUsers[1].score}
+              profilePicture={topUsers[1].image}
+              username={topUsers[1].name}
+              rank={topUsers[1].rank}
+            />
           )}
-          {loading && <ActivityIndicator size="large" color="#FF6347" />}
+          {topUsers[0] && (
+            <TopLeaderboardUsers
+              points={topUsers[0].score}
+              profilePicture={topUsers[0].image}
+              username={topUsers[0].name}
+              rank={topUsers[0].rank}
+            />
+          )}
+          {topUsers[2] && (
+            <TopLeaderboardUsers
+              points={topUsers[2].score}
+              profilePicture={topUsers[2].image}
+              username={topUsers[2].name}
+              rank={topUsers[2].rank}
+            />
+          )}
         </View>
+        {renderLeaderboard()}
+        {loading && <ActivityIndicator size="large" color="#FF6347" />}
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
 
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f2f9fb', // Updated background color
+  },
+  topUsersContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'flex-end',
+    marginBottom: 20,
+    paddingHorizontal: 10,
+  },
+  topContainer: {
+    width: 120,
+    alignItems: 'center',
+    paddingVertical: 10,
+    borderRadius: 10,
+  },
+  points: {
+    fontSize: 16,
+    fontWeight: '700',
+    fontFamily: 'Montserrat-SemiBold',
+    color: '#333333',
+    marginBottom: 8,
+  },
+  circleContainer: {
+    marginBottom: 8,
+  },
+  circle: {
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+    backgroundColor: '#186474', // Updated ellipse color
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative',
+  },
+  profileImage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 35,
+  },
+  un: {
+    fontSize: 20,
+    fontWeight: '700',
+    fontFamily: 'Montserrat-Bold',
+    color: '#FFFFFF',
+  },
+  rank: {
+    position: 'absolute',
+    bottom: -10,
+    backgroundColor: '#FAC12F',
+    borderRadius: 12,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  rankText: {
+    fontSize: 12,
+    fontWeight: '700',
+    fontFamily: 'Montserrat-Bold',
+    color: '#2F4858',
+  },
+  userName: {
+    fontSize: 16,
+    fontWeight: '700',
+    fontFamily: 'Montserrat-SemiBold',
+    color: '#333333',
+  },
+  listRoot: {
+    paddingHorizontal: 15,
+    alignSelf: 'stretch',
+  },
+  listContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
+    padding: 10,
+    marginBottom: 0,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 0,
+  },
+  listRank: {
+    minWidth: 40,
+    textAlign: 'center',
+    fontFamily: 'Montserrat-SemiBold',
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#333333',
+  },
+  frame2273: {
+    width: 51,
+    height: 51,
+    borderRadius: 25.5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 3,
+    borderColor: '#FAC12F',
+    backgroundColor: '#186474', // Updated ellipse color
+    marginHorizontal: 10,
+  },
+  listProfileImage: {
+    width: 45,
+    height: 45,
+    borderRadius: 22.5,
+  },
+  listUserName: {
+    flex: 1,
+    fontFamily: 'Montserrat-Regular',
+    fontSize: 18,
+    fontWeight: '400',
+    color: '#333333',
+  },
+  listPoints: {
+    fontFamily: 'Montserrat-Regular',
+    fontSize: 18,
+    fontWeight: '400',
+    color: '#333333',
+  },
+  highlight: {
+    backgroundColor: 'orange',
+  },
+  ellipsis: {
+    textAlign: 'center',
+    fontSize: 24,
+    marginVertical: 10,
+  },
+});
 
-
-
-
-
+export default LeaderboardScreen;
