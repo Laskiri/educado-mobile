@@ -38,12 +38,10 @@ export default function VideoLectureScreen({ lectureObject, courseObject, isLast
 	const [videoUrl, setVideoUrl] = useState(null);
 
 
-	// THIS IS TO BE CHANGED
-	// THE FIRST PARAMETER OF GETVIDEOSTREAMURL SHOULD BE THE CONTENT OF THE VIDEO LECTURE
-	// THE VIDEO LECTURE HASN'T BEEN UPDATED YET BUT IT WILL BE SOON
-	// BE SURE TO CHECK THAT THE CONTENT IS INDEED A CORRECT FILENAME
 	useEffect(() => {
-		const _videoUrl = getVideoStreamUrl("screenRecording10", '720');
+		console.log(lectureObject._id); // Temporary check to see if its the correct id
+		const fileName = lectureObject._id + '_l';
+		const _videoUrl = getVideoStreamUrl(fileName, '720');
 		//test if video is available for download from internet
 		setVideoUrl(_videoUrl);
 	}, []);
