@@ -73,7 +73,7 @@ describe('<SectionCard />', () => {
     const mockOnPress = jest.fn();
 
     // Render the SectionCard component
-    const { getByText, getByTestId } = render(
+    const { getByText} = render(
       <SectionCard
         section={mockData.section}
         progress={mockData.progress}
