@@ -189,7 +189,7 @@ export async function completeComponent(comp, courseId, isComplete) {
 	return { points, updatedStudent };
 }
 //TODO: Fix To return true or false depending on last section or not
-export function isCourseCompleted(student, courseId) {
+export function isCourseCompleted(student) {
 	return student.courses.some(course => checkProgressCourse(course.Id) === 100);
 }
 
@@ -312,16 +312,16 @@ export function findIndexOfUncompletedComp(student, courseId, sectionId) {
 }
 
 export async function handleLastComponent(comp, course, navigation) {
- 	// Generate certificate
- 	const courseId = course.courseId;
- 	const userId = await StorageService.getUserId();
- 	generateCertificate(courseId, userId);
+	// Generate certificate
+	const courseId = course.courseId;
+	const userId = await StorageService.getUserId();
+	generateCertificate(courseId, userId);
 
 	// get the full course from DB, to check what section we are in
- 	const getCurrentCourse = await api.getCourse(course.courseId);
+	const getCurrentCourse = await api.getCourse(course.courseId);
 
 	// If the section is the last one, the course is completed
- 	const getLastSection = getCurrentCourse.sections[getCurrentCourse.sections.length - 1];
+	const getLastSection = getCurrentCourse.sections[getCurrentCourse.sections.length - 1];
 
 	//Check if the section is the last one
 	const isThisTheLastSection = getLastSection === comp.parentSection;
