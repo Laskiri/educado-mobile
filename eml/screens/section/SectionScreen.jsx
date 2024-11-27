@@ -18,7 +18,6 @@ export default function SectionScreen({ route }) {
     const navigation = useNavigation();
     async function loadComponents(id) {
 		const componentsData = await StorageService.getComponentList(id);
-        //console.log(componentsData);
 		setComponents(componentsData);
 	}
 
