@@ -6,7 +6,7 @@ const timeoutInMs = 1200;
 
 
 // move these to .env file next sprint
-const url = 'http://192.168.0.244:8888';
+const url = URL;
 export const certificateUrl = CERTIFICATE_URL;
 
 
