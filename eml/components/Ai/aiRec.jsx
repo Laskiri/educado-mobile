@@ -81,6 +81,16 @@ export default function RecButton({ onAudioResponse, onLock, courses }) {
 
 
 RecButton.propTypes = {
-	onAudioResponse: PropTypes.func.isRequired, // Must be a function and is required
+	onAudioResponse: PropTypes.func, // Must be a function and is required
 	onLock: PropTypes.func, // Optional function
+	courses: PropTypes.arrayOf(
+		PropTypes.shape({
+			title: PropTypes.string,
+			category: PropTypes.string,
+			rating: PropTypes.number,
+			description: PropTypes.string,
+			estimatedHours: PropTypes.number,
+			difficulty: PropTypes.number,
+		})
+	),
 };

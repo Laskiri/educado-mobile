@@ -8,7 +8,7 @@ const timeoutInMs = 1200;
 // move these to .env file next sprint
 const url = URL; // Change this to your LOCAL IP address when testing.
 export const certificateUrl = CERTIFICATE_URL;
-console.log("apiUrl: " + url + "certificateUrl: " + certificateUrl) 
+console.log('apiUrl: ' + url + 'certificateUrl: ' + certificateUrl); 
 
 /* Commented out for avoiding linting errors :))
  * TODO: move IP address to .env file !!!
@@ -282,11 +282,11 @@ export const getBucketImage = async (fileName) => {
 
 
 export const sendMessageToChatbot = async (userMessage, courses) => {
-    try {
-        const response = await axios.post(url + '/api/ai', {
-            userInput: userMessage,
+	try {
+		const response = await axios.post(url + '/api/ai', {
+			userInput: userMessage,
 			courses: courses,
-        });
+		});
 
 		if (response.status === 200) {
 			return response.data;
@@ -335,28 +335,28 @@ export const sendAudioToChatbot = async (audioUri, courses) => {
 
 export const sendFeedbackToBackend = async (userPrompt, chatbotResponse, feedback) => {
 	try {
-	  const response = await fetch(url + '/api/ai/feedback', {
-		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify({
-		  userPrompt,        // The user's original input
-		  chatbotResponse,   // The chatbot's response to the user
-		  feedback,          // Thumbs-up (true) or thumbs-down (false)
-		}),
-	  });
+		const response = await fetch(url + '/api/ai/feedback', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({
+				userPrompt,        // The user's original input
+				chatbotResponse,   // The chatbot's response to the user
+				feedback,          // Thumbs-up (true) or thumbs-down (false)
+			}),
+		});
   
-	  const data = await response.json();
-  
-	  if (response.ok) {
-		console.log('Feedback successfully sent to backend:', data.message);
-		return { success: true, data };
-	  } else {
-		console.error('Failed to send feedback:', data.error);
-		return { success: false, error: data.error };
-	  }
+		const data = await response.json();
+	
+		if (response.ok) {
+			console.log('Feedback successfully sent to backend:', data.message);
+			return { success: true, data };
+		} else {
+			console.error('Failed to send feedback:', data.error);
+			return { success: false, error: data.error };
+		}
 	} catch (error) {
-	  console.error('Error submitting feedback:', error.message);
-	  return { success: false, error: error.message };
+		console.error('Error submitting feedback:', error.message);
+		return { success: false, error: error.message };
 	}
-  };
+};
   

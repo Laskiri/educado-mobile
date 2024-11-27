@@ -12,15 +12,14 @@ import { sendMessageToChatbot, getCourses } from '../../api/api.js';
 
 
 export default function Edu() {
-  const [isOnline, setIsOnline] = useState(false);
-  const [userMessage, setUserMessage] = useState('');
-  const [chatMessages, setChatMessages] = useState([]);
-  const [courses, setCourses] = useState([]);
-  const [currentlyPlaying, setCurrentlyPlaying] = useState(null); // Tracks which audio is playing
-  const [currentSound, setCurrentSound] = useState(null); // Stores the current Audio.Sound instance
-  const scrollViewRef = useRef(null);
-  const [loading, setLoading] = useState(false);
-  const [loadingDots, setLoadingDots] = useState('');
+	const [userMessage, setUserMessage] = useState('');
+	const [chatMessages, setChatMessages] = useState([]);
+	const [courses, setCourses] = useState([]);
+	const [currentlyPlaying, setCurrentlyPlaying] = useState(null); // Tracks which audio is playing
+	const [currentSound, setCurrentSound] = useState(null); // Stores the current Audio.Sound instance
+	const scrollViewRef = useRef(null);
+	const [loading, setLoading] = useState(false);
+	const [loadingDots, setLoadingDots] = useState('');
 
 	const handleAudioResponse = (audioResponse) => {
 		const trimmedUserResponse = audioResponse.message.trim().replace(/[\n\s]+$/, '');
@@ -125,22 +124,22 @@ export default function Edu() {
 	}, [loading]);
 
 	const fetchCourses = async () => {
-		setCourses([])
+		setCourses([]);
 		const tempCourses = await getCourses();
 		tempCourses.forEach(element => {
-		  if (element.status == 'published'){
-			setCourses((prevCourses) => [
-			  ...prevCourses,
-			  { title: element.title, category: element.category, rating: element.rating, description: element.description, estimatedHours: element.estimatedHours, difficulty: element.difficulty},
-			]);  
-		  }
+			if (element.status == 'published'){
+				setCourses((prevCourses) => [
+					...prevCourses,
+					{ title: element.title, category: element.category, rating: element.rating, description: element.description, estimatedHours: element.estimatedHours, difficulty: element.difficulty},
+				]);  
+			}
 		});
-	  };
-	  
-	  useEffect(() => {
+	};
+
+	useEffect(() => {
 		fetchCourses();
-		console.log("got courses")
-	  }, []);
+		console.log('got courses');
+	}, []);
 
 	return (
 		<>
