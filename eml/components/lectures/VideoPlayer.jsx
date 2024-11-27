@@ -40,7 +40,7 @@ const CustomExpoVideoPlayer = forwardRef(({ onStatusUpdate, videoUrl, isMuted = 
 				isMuted={isMuted}
 				resizeMode="cover"
 				shouldPlay={isPlaying}
-				isLooping={true}
+				isLooping={false}
 				onPlaybackStatusUpdate={onStatusUpdate}
 				style={styles.video}
 			/>

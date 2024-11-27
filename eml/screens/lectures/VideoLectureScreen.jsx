@@ -16,16 +16,18 @@ export default function VideoLectureScreen({ lectureObject, courseObject, isLast
 	const navigation = useNavigation();
 
 	const videoRef = useRef(null);
-	const [isPlaying, setIsPlaying] = useState(false); // Keep track of playback status
+	const [isPlaying, setIsPlaying] = useState(true); // Keep track of playback status
 	const [positionMillis, setPositionMillis] = useState(0);
 	const [durationMillis, setDurationMillis] = useState(0);
 	const [isMuted, setIsMuted] = useState(false); // Keep track of mute status
-
+    const [videoFinished, setVideoFinished] = useState(false); // Track if the video has finished
 
 	const onStatusUpdate = (status) => {
 		setPositionMillis(status.positionMillis || 0);
 		setDurationMillis(status.durationMillis || 0);
-
+		if (status.didJustFinish) {
+            setVideoFinished(true);
+        }
 	};
 
 	const handleContinue = async () => {
@@ -108,7 +110,7 @@ export default function VideoLectureScreen({ lectureObject, courseObject, isLast
 	}, [isPlaying]);
 
 
-	const [currentResolution, setCurrentResolution] = useState('360');
+	const [currentResolution, setCurrentResolution] = useState('480');
 
 	const [allResolutions] = useState([
 		'1080',
@@ -151,7 +153,6 @@ export default function VideoLectureScreen({ lectureObject, courseObject, isLast
 
 			<View className="absolute w-full h-full p-5">
 				<View className="w-full h-full flex-col justify-end items-center bg-opacity-20" >
-
 					{isLastSlide ?
 						<View className="px-6 mb-3 w-screen">
 							<StandardButton
@@ -216,6 +217,30 @@ export default function VideoLectureScreen({ lectureObject, courseObject, isLast
 					</View>
 				</View>
 			)}
+			{videoFinished && (
+                    <View className="absolute inset-0 flex justify-center items-center">
+						<StandardButton
+						props={{
+							buttonText: 'Concluir e continuar',
+								onPress: () => {
+								handleContinue();
+							}
+						}}
+						style={{  }}
+						/>
+                    <StandardButton
+                        props={{
+                            buttonText: 'Assistir novamente',
+                            onPress: () => {
+                                videoRef.current.replayAsync();
+                                setVideoFinished(false);
+                            }
+                        }}
+						style={{ textDecorationLine: 'underline', backgroundColor: 'transparent' }}
+						
+						/>
+                </View>
+            )}
 		</View>
 	);
 }
