@@ -61,5 +61,5 @@ export default function SectionCard({ section, progress, onPress }) {
 SectionCard.propTypes = {
 	section: PropTypes.object,
 	progress: PropTypes.number,
-	onPress: PropTypes.Function
+	onPress: PropTypes.func,
 };
