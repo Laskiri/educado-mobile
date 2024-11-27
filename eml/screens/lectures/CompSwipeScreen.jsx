@@ -38,7 +38,7 @@ const ComponentType = {
  * @returns 
  */
 export default function CompSwipeScreen({ route }) {
-	const { section, parsedCourse } = route.params;
+	const { section, parsedCourse, parsedComponentIndex} = route.params;
 	const [loading, setLoading] = useState(true);
 	const [currentLectureType, setCurrentLectureType] = useState(LectureType.TEXT);
 	const [index, setIndex] = useState(0);
@@ -50,7 +50,7 @@ export default function CompSwipeScreen({ route }) {
 	useEffect(() => {
 		async function fetchData() {
 			try {
-				let initialIndex = findIndexOfUncompletedComp(await getStudentInfo(), parsedCourse.courseId, section.sectionId);
+				let initialIndex = parsedComponentIndex ? parsedComponentIndex : findIndexOfUncompletedComp(await getStudentInfo(), parsedCourse.courseId, section.sectionId);
 
 				if (initialIndex === -1) {
 					initialIndex = 0;

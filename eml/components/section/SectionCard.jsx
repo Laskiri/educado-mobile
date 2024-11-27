@@ -12,9 +12,10 @@ import PropTypes from 'prop-types';
  * @param {Object} section - The section object containing the section data.
  * @param {Object} course - The course object containing the course data.
  * @param {Number} progress - The progress containing the student's progress.
+ * @param {Function} onPress - The callback function to navigate
  * @returns {JSX.Element} - The SectionCard component.
  */
-export default function SectionCard({ section, course, progress }) {
+export default function SectionCard({ section, course, progress, onPress }) {
 
 
 	const navigation = useNavigation();
@@ -47,10 +48,13 @@ export default function SectionCard({ section, course, progress }) {
 
 	return (
 		<View>
-			<Pressable testID="collapsible" onPress={toggleDropdown} className="bg-secondary border-[1px] border-lightGray rounded-lg shadow-lg shadow-opacity-[0.3] mb-[15] mx-[18] overflow-hidden elevation-[8]">
-				<View className={'flex-row items-center justify-between px-[25] py-[15] ' + backgroundColor}>
-                    <View className={'flex-column'}>
-                        <Text className="text-[16px] font-bold text-projectBlack flex-[1]">
+			<TouchableOpacity
+				className="bg-secondary border-[1px] border-lightGray rounded-lg shadow-lg shadow-opacity-[0.3] mb-[15] mx-[18] overflow-hidden elevation-[8]"
+				onPress={onPress}
+			>
+				<View className="flex-row items-center justify-between px-[25] py-[15]">
+					<View>
+						<Text className="text-[16px] font-bold text-projectBlack flex-[1]">
                             {section.title}
                         </Text>
                         <Text className={`mr-[10] ${progressTextColor}`}>
@@ -65,29 +69,16 @@ export default function SectionCard({ section, course, progress }) {
                                 /> : ""
                             )}
                         </Text>
-                    </View>
+					</View>
 					<MaterialCommunityIcons
-						testID={isOpen ? 'chevron-up' : 'chevron-down'}
-						name={isOpen ? 'chevron-up' : 'chevron-down'}
+						testID="chevron-right"
+						name="chevron-right"
 						size={25}
 						color="gray"
 					/>
 				</View>
-
-				<Collapsible collapsed={!isOpen}>
-					<View className="h-[1] bg-disable" />
-					<Text className="mx-[20] my-[10]">{section.description}</Text>
-					<View className="w-[100%]">
-						<TouchableOpacity className="w-[100%] h-[300] items-center justify-center relative"
-							onPress={handleImagePress}>
-							<Image source={require('../../assets/images/sectionThumbnail.png')} className="w-[100%] h-[300] object-cover" />
-							<View className="absolute z-[1]">
-								<MaterialCommunityIcons name="play-circle-outline" size={100} color="lightblue" />
-							</View>
-						</TouchableOpacity>
-					</View>
-				</Collapsible>
-			</Pressable>
+			</TouchableOpacity>
+			
 		</View>
 	);
 }

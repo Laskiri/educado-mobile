@@ -115,7 +115,7 @@ export default function CompleteSectionScreen() {
 				routes: [
 					{ name: 'HomeStack' },
 					{
-						name: 'Section',
+						name: 'CourseOverview',
 						params: { course: parsedCourse },
 					},
 				],

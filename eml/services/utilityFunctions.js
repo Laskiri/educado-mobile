@@ -308,6 +308,8 @@ export function findIndexOfUncompletedComp(student, courseId, sectionId) {
 		return -1; // or any other appropriate value to indicate no components
 	}
 
+	console.log(section.components.findIndex(component => !component.isComplete));
+
 	return section.components.findIndex(component => !component.isComplete);
 }
 
