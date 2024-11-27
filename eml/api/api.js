@@ -291,6 +291,11 @@ export const sendMessageToChatbot = async (userMessage) => {
 			return 'Error: Try again.';
 		}
 	} catch (error) {
+		if (error.response && error.response.status === 429) {
+			// Handle rate-limiting error
+			return error.response.data.error || 'Slow down! Too many requests.';
+		}
+
 		console.warn('Axios error:', error);
 		return 'Error: Try again.';
 	}
@@ -321,3 +326,29 @@ export const getLeaderboardDataAndUserRank = async (page, token, timeInterval, l
 	}
 };
 
+export const sendAudioToChatbot = async (audioUri) => {
+	try {
+		console.log('Sending audio:', audioUri);
+
+		// Fetch the file from the URI as a blob
+
+		const formData = new FormData();
+		formData.append('audio', {
+			uri: audioUri,
+			name: 'audio.m4a', // You can use a generic name or dynamically extract it
+			type: 'audio/m4a', // Ensure this matches the audio type
+		});
+
+		// Send the formData via Axios
+		const serverResponse = await axios.post(url + '/api/ai/processAudio', formData, {
+			headers: {
+				'Content-Type': 'multipart/form-data',
+			},
+		});
+
+		return serverResponse.data;
+	} catch (error) {
+		console.error('Error sending audio data:', error);
+		throw error;
+	}
+};
