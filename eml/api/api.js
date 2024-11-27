@@ -8,8 +8,6 @@ const timeoutInMs = 1200;
 // move these to .env file next sprint
 const url = URL; // Change this to your LOCAL IP address when testing.
 export const certificateUrl = CERTIFICATE_URL;
-console.log(URL);
-console.log(CERTIFICATE_URL);
 
 
 /* Commented out for avoiding linting errors :))
