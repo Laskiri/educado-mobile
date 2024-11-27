@@ -226,7 +226,7 @@ export default function Edu() {
 									color="primary_custom"
 									size={20}
 								/>
-								<Text>Edu is thinking{loadingDots}</Text>
+								<Text>Edu está pensando{loadingDots}</Text>
 							</View>
 						)}
 					</ScrollView>

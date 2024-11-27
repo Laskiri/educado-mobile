@@ -291,7 +291,7 @@ export const sendMessageToChatbot = async (userMessage, courses) => {
 		if (response.status === 200) {
 			return response.data;
 		} else {
-			return 'Error: Try again.';
+			return 'Erro: Tente novamente.';
 		}
 	} catch (error) {
 		if (error.response && error.response.status === 429) {
@@ -300,7 +300,7 @@ export const sendMessageToChatbot = async (userMessage, courses) => {
 		}
 
 		console.warn('Axios error:', error);
-		return 'Error: Try again.';
+		return 'Erro: Tente novamente.';
 	}
 };
 
