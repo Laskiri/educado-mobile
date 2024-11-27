@@ -132,6 +132,7 @@ export default function ProfileComponent() {
 					/>
 					
 					<ProfileNavigationButton label='Editar perfil' testId={'editProfileNav'} onPress={() => navigation.navigate('EditProfile')}></ProfileNavigationButton>
+					<ProfileNavigationButton label='Tabela de classificação' onPress={() => navigation.navigate('LeaderboardStack')}></ProfileNavigationButton>
 					<ProfileNavigationButton label='Certificados' onPress={() => navigation.navigate('Certificate')}></ProfileNavigationButton>
 
 					{/* Download page is not implemented yet. However, download works and can be accessed on home page when offline */}

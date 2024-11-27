@@ -6,9 +6,6 @@ import CustomProgressBar from '../exercise/Progressbar';
 import PropTypes from 'prop-types';
 import { Button } from '@rneui/base';
 const ProfileStatsBox = ({ streak, points, leaderboardPosition, level, drawProgressBarOnly }) => {
-	const navigation = useNavigation();
-	const route = useRoute();
-	
 	// Props
 	ProfileStatsBox.propTypes = {
 		streak: PropTypes.number,	// Optional, not provided if drawProgressBarOnly = true
@@ -52,9 +49,9 @@ const ProfileStatsBox = ({ streak, points, leaderboardPosition, level, drawProgr
 
 						{/* Points */}
 						<View className='flex-1 flex-col bg-badgesPurple items-center rounded-lg py-2 mx-2 w-24 h-16'>
-							<Button onPress={() => navigation.navigate('LeaderboardStack')}>
-								<Image source={require('../../assets/images/profileCoin.png')} />
-							</Button>	
+						
+							<Image source={require('../../assets/images/profileCoin.png')} />
+						
 							<Text className='text-projectWhite font-sans-bold mt-2' numberOfLines={1} adjustsFontSizeToFit>
 								{points} pontos
 							</Text> 
