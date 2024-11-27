@@ -296,16 +296,16 @@ export const sendMessageToChatbot = async (userMessage) => {
 	}
 };
 
-export const getLeaderboardDataAndUserRank = async (page, token, timeInterval, limit = 80) => {
+export const getLeaderboardDataAndUserRank = async (page, token, timeInterval, limit = 80, userId) => {
 	try {
-		const res = await axios.get(`${url}/api/students/leaderboard`, {
+		const res = await axios.post(`${url}/api/students/leaderboard`, {
+			userId, // Include user ID in the request body
+			page,
+			timeInterval,
+			limit
+		}, {
 			headers: {
 				Authorization: `Bearer ${token}`
-			},
-			params: {
-				page,
-				timeInterval,
-				limit
 			}
 		});
 		return {

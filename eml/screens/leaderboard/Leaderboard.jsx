@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getLeaderboardDataAndUserRank } from '../../api/api';
 import { useNavigation } from '@react-navigation/native';
 import DefaultTheme from '../../theme/colors'; // import the theme colors
+import { getUserInfo } from '../../services/StorageService'; // import getUserInfo
 
 const capitalize = (str) => str ? str.charAt(0).toUpperCase() + str.slice(1).toLowerCase() : '';
 
@@ -87,7 +88,8 @@ export function LeaderboardScreen() {
     try {
       const token = await AsyncStorage.getItem('@loginToken');
       if (!token) throw new Error('User not authenticated');
-      const { leaderboard } = await getLeaderboardDataAndUserRank(page, token, 'all', 12);
+      const userInfo = await getUserInfo(); // Get user info
+      const { leaderboard } = await getLeaderboardDataAndUserRank(page, token, 'all', 12, userInfo.id); // Pass user ID
       if (leaderboard.length === 0) return;
       setLeaderboardData((prevData) => {
         const newData = leaderboard.filter(item => !prevData.some(prevItem => prevItem.rank === item.rank));
@@ -106,7 +108,8 @@ export function LeaderboardScreen() {
     try {
       const token = await AsyncStorage.getItem('@loginToken');
       if (!token) throw new Error('User not authenticated');
-      const response = await getLeaderboardDataAndUserRank(1, token, 'all', 12);
+      const userInfo = await getUserInfo(); // Get user info
+      const response = await getLeaderboardDataAndUserRank(1, token, 'all', 12, userInfo.id); // Pass user ID
       setLeaderboardData(response.leaderboard || []);
       setCurrentUserRank(response.currentUserRank);
     } catch (error) {
@@ -119,7 +122,8 @@ export function LeaderboardScreen() {
     try {
       const token = await AsyncStorage.getItem('@loginToken');
       if (!token) throw new Error('User not authenticated');
-      const response = await getLeaderboardDataAndUserRank(1, token, 'all', 12);
+      const userInfo = await getUserInfo(); // Get user info
+      const response = await getLeaderboardDataAndUserRank(1, token, 'all', 12, userInfo.id); // Pass user ID
       setLeaderboardData(response.leaderboard || []);
       setCurrentUserRank(response.currentUserRank);
       setLoading(false);
