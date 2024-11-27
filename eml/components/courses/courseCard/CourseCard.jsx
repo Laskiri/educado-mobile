@@ -21,7 +21,6 @@ export default function CourseCard({ course, isOnline}) {
 	const navigation = useNavigation();
 	const [studentProgress, setStudentProgress] = useState(0);
 
-
 	const checkDownload = async () => {
 		setDownloaded(await checkCourseStoredLocally(course.courseId));
 	};
@@ -53,7 +52,7 @@ export default function CourseCard({ course, isOnline}) {
 					<Text className="text-[18px] text-projectBlack flex-1 self-center font-montserrat-semi-bold">
 						{course.title ? course.title : 'Título do curso'}
 					</Text>
-					<View className="flex-2 pr-6">
+					<View className="flex-row items-center">
 						<DownloadCourseButton course={course} disabled={isDisabled}/>
 					</View>
 				</View>
