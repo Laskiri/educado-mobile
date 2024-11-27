@@ -35,7 +35,7 @@ const truncateName = (name, containerWidth, fontSize) => {
 
 const TopLeaderboardUsers = ({ points, profilePicture, username, rank, highlight }) => (
   <View style={styles.topContainer}>
-    <Text style={[styles.points, highlight && styles.highlightText]}>{points} pts</Text>
+    <Text style={[styles.points]}>{points} pts</Text>
 
     <View style={styles.circleContainer}>
       
@@ -43,14 +43,14 @@ const TopLeaderboardUsers = ({ points, profilePicture, username, rank, highlight
         {profilePicture ? (
           <Image source={{ uri: profilePicture }} style={[styles.profileImage, getSizeStyle(rank)]} />
         ) : (
-          <Text style={[styles.un, getFontSizeStyle(rank), highlight && styles.highlightText]}>{getInitials(username)}</Text>
+          <Text style={[styles.un, getFontSizeStyle(rank)]}>{getInitials(username)}</Text>
         )}
         <View style={[styles.rank]}>
           <Text style={[styles.rankText]}>{rank}º</Text>
         </View>
       </View>
     </View>
-    <Text style={[styles.userName, highlight && styles.highlightText]}>{truncateName(username)}</Text>
+    <Text style={[styles.userName]}>{truncateName(username)}</Text>
   </View>
 );
 
@@ -65,7 +65,7 @@ const LeaderboardList = ({ rank, points, profilePicture, username, highlight }) 
           <Text style={[styles.un, highlight && styles.highlightText]}>{getInitials(username)}</Text>
         )}
       </View>
-      <Text style={[styles.listUserName, highlight && styles.highlightText]}>
+      <Text style={[styles.listUserName, highlight && styles.highlightText, highlight && styles.boldText]}>
         {truncateName(username, 200, 18)}
       </Text>
       <Text style={[styles.listPoints, highlight && styles.highlightText]}>{points} pts</Text>
@@ -155,7 +155,7 @@ export function LeaderboardScreen() {
   const renderLeaderboard = () => {
     const remainingUsers = leaderboardData.slice(3);
 
-    if (currentUserRank <= 11) {  
+    if (currentUserRank <= 30) {
       return remainingUsers.slice(0, 27).map((user) => (
         <LeaderboardList
           key={`${user.rank}-${user.name}`} 
@@ -167,14 +167,13 @@ export function LeaderboardScreen() {
         />
       ));
     } else {
-      const topSixUsers = remainingUsers.slice(0, 6);
+      const topTenUsers = remainingUsers.slice(0, 7); /// How many users to show before skipping, Remember to -3 cuz we skip the first 3
       const currentUserIndex = remainingUsers.findIndex(user => user.rank === currentUserRank);
-      const adjacentUsers = remainingUsers.slice(Math.max(currentUserIndex - 1, 0), Math.min(currentUserIndex + 11, remainingUsers.length));
-      const additionalUsers = remainingUsers.slice(Math.min(currentUserIndex + 11, remainingUsers.length), Math.min(currentUserIndex + 11 + ((topSixUsers.length + adjacentUsers.length)), remainingUsers.length));
+      const adjacentUsers = remainingUsers.slice(Math.max(currentUserIndex - 1, 0), Math.min(currentUserIndex + 2, remainingUsers.length));
 
       return (
         <>
-          {topSixUsers.map(user => (
+          {topTenUsers.map(user => (
             <LeaderboardList
               key={`${user.rank}-${user.name}`} 
               rank={user.rank}
@@ -192,15 +191,6 @@ export function LeaderboardScreen() {
               profilePicture={user.image}
               username={user.name}
               highlight={user.rank === currentUserRank}
-            />
-          ))}
-          {additionalUsers.map(user => (
-            <LeaderboardList
-              key={`${user.rank}-${user.name}`} // Ensure unique keys
-              rank={user.rank}
-              points={user.score}
-              profilePicture={user.image}
-              username={user.name}
             />
           ))}
         </>
@@ -402,10 +392,13 @@ const styles = StyleSheet.create({
   },
   listUserName: {
     flex: 1,
-    fontFamily: 'Montserrat-Bold',
+    fontFamily: 'Montserrat-Regular',
     fontSize: 18,
     fontWeight: '400',
     color: '#333333',
+  },
+  boldText: {
+    fontWeight: '700',
   },
   listPoints: {
     fontFamily: 'Montserrat-Regular',
@@ -417,10 +410,10 @@ const styles = StyleSheet.create({
     backgroundColor: DefaultTheme.bgPrimary, 
   },
   highlightText: {
-    color: '#FAC12F',
+    color: '#FFFFFF',
   },
   highlightBorder: {
-    borderColor: '#FAC12F',
+    borderColor: '#FFFFFF',
   },
   ellipsis: {
     textAlign: 'center',
