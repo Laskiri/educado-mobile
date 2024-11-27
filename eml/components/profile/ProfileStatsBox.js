@@ -1,10 +1,8 @@
 import React, { Fragment } from 'react';
 import { View, Text, Image } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
 
 import CustomProgressBar from '../exercise/Progressbar';
 import PropTypes from 'prop-types';
-import { Button } from '@rneui/base';
 const ProfileStatsBox = ({ streak, points, leaderboardPosition, level, drawProgressBarOnly }) => {
 	// Props
 	ProfileStatsBox.propTypes = {

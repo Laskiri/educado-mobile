@@ -10,7 +10,6 @@ import ExerciseScreen from './screens/excercise/ExerciseScreen';
 import { TailwindProvider } from 'tailwindcss-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SectionScreen from './screens/section/SectionScreen';
-import { isFontsLoaded } from './constants/Fonts';
 import LoadingScreen from './components/loading/Loading';
 import WelcomeScreen from './screens/welcome/Welcome';
 import CompleteSectionScreen from './screens/section/CompleteSection';
