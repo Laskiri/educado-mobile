@@ -312,26 +312,21 @@ export function findIndexOfUncompletedComp(student, courseId, sectionId) {
 }
 
 export async function handleLastComponent(comp, course, navigation) {
-	// Generate certificate
-	const courseId = course.courseId;
-	const userId = await StorageService.getUserId();
-	generateCertificate(courseId, userId);
-
-	// For future reference 
-	// const student = await StorageService.getStudentInfo();
-	// const isComplete = isSectionCompleted(student, comp.parentSection);
+ 	// Generate certificate
+ 	const courseId = course.courseId;
+ 	const userId = await StorageService.getUserId();
+ 	generateCertificate(courseId, userId);
 
 	// get the full course from DB, to check what section we are in
-	const getCurrentCourse = await api.getCourse(course.courseId);
+ 	const getCurrentCourse = await api.getCourse(course.courseId);
 
 	// If the section is the last one, the course is completed
-	const getLastSection = getCurrentCourse.sections[getCurrentCourse.sections.length - 1];
+ 	const getLastSection = getCurrentCourse.sections[getCurrentCourse.sections.length - 1];
 
-	// Check if the section is the last one
+	//Check if the section is the last one
 	const isThisTheLastSection = getLastSection === comp.parentSection;
 
 	if (isThisTheLastSection) {
-	    console.log('Handle Complete');
 		// If the course is completed, navigate to the complete course screen
 		navigation.reset({
 			index: 0,
@@ -344,9 +339,7 @@ export async function handleLastComponent(comp, course, navigation) {
 				},
 			],
 		});
-
 	} else {
-	    console.log('Handle not Complete');
 		navigation.reset({
 			index: 0,
 			routes: [
@@ -360,12 +353,6 @@ export async function handleLastComponent(comp, course, navigation) {
 			],
 		});
 	}
-	// For future reference
-	// if (isComplete) {
-	// Code above with naviagtion
-	// } else {
-	//   console.log('Section not complete - navigate to retry exercises TBD');
-	// }
 }
 
 export async function resetOnboarding(uniqueKeys) {
