@@ -190,8 +190,10 @@ CompSwipeScreen.propTypes = {
 		params: PropTypes.shape({
 			section: PropTypes.object.isRequired,
 			parsedCourse: PropTypes.object.isRequired,
+			parsedComponentIndex: PropTypes.number
 		}).isRequired,
 	}).isRequired,
 };
+	
 
 export default CompSwipeScreen;
