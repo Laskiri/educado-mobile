@@ -16,6 +16,17 @@ const STUDENT_INFO = '@studentInfo';
 const LOGIN_TOKEN = '@loginToken';
 const lectureVideoPath = FileSystem.documentDirectory + 'lectureVideos/';
 let isOnline = true;
+let hasStudiedToday = false;
+
+// Get hasStudiedToday
+export async function getHasStudiedToday() {
+	return JSON.parse(await AsyncStorage.getItem(hasStudiedToday));
+}
+
+// Set hasStudiedToday
+export async function setHasStudiedToday(hasStudiedToday) {
+	await AsyncStorage.setItem(hasStudiedToday);
+}
 
 /**
  * Updates the network status.

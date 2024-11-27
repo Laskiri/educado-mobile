@@ -43,9 +43,7 @@ const ExerciseScreen = ({ componentList, exerciseObject, sectionObject, courseOb
 	const [points, setPoints] = useState(10);
 	const [attempts, setAttempts] = useState(0);
 
-	const handleReviewAnswer = async (isAnswerCorrect, answerIndex) => {
-		handleStudyStreak();
-		
+	const handleReviewAnswer = async (isAnswerCorrect, answerIndex) => {		
 		setSelectedAnswer(answerIndex);
 		if (buttonText === null) {
 			setButtonText('Continuar');
@@ -72,6 +70,7 @@ const ExerciseScreen = ({ componentList, exerciseObject, sectionObject, courseOb
 
 			if (isAnswerCorrect && isLastComponent) {
 				try {
+					handleStudyStreak();
 					await handleLastComponent(exerciseObject, courseObject, navigation);
 				} catch (error) {
 					console.error('Error handling last component:', error);

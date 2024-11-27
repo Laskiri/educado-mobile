@@ -12,6 +12,7 @@ import tailwindConfig from '../../tailwind.config';
 import { completeComponent, findIndexOfUncompletedComp } from '../../services/utilityFunctions';
 import { getComponentList, getStudentInfo } from '../../services/StorageService';
 import { updateStudyStreak } from '../../api/userApi';
+import { setHasStudiedToday, hasStudiedToday } from '../../services/StorageService';
 
 const LectureType = {
 	TEXT: 'text',
@@ -48,7 +49,10 @@ const CompSwipeScreen = ({ route }) => {
 	
 	async function handleStudyStreak() {
 		try {
-			await updateStudyStreak(studentId);
+			if (!hasStudiedToday) {
+				await updateStudyStreak(studentId);
+				setHasStudiedToday(true);
+			}
 		}
 		catch (error) {
 			console.error('Error updating study streak: ' + error);
@@ -115,8 +119,9 @@ const CompSwipeScreen = ({ route }) => {
 	};
 
 	const handleIndexChange = async (_index) => {
+		handleStudyStreak();
 		const currentSlide = combinedLecturesAndExercises[_index];
-
+		
 		if (currentSlide.type === ComponentType.EXERCISE) {
 			setScrollEnabled(false);
 		} else {
@@ -124,7 +129,7 @@ const CompSwipeScreen = ({ route }) => {
 			setCurrentLectureType(currentLectureType);
 			setScrollEnabled(true);
 		}
-
+		
 		if (_index > 0) {
 			const lastSlide = combinedLecturesAndExercises[_index - 1];
 			try {

@@ -10,18 +10,20 @@ import Text from '../../components/general/Text';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import LoadingScreen from '../../components/loading/Loading';
 import * as StorageService from '../../services/StorageService';
+import { setHasStudiedToday } from '../../services/StorageService';
 import { useFocusEffect } from '@react-navigation/native';
 
 /**
  * Login screen component containing a login form and possibilities of resetting password or registering a new user.
  * @param {Object} props not used in this component as of now
- */
+*/
 export default function Login() {
-
+	
 	const [loading, setLoading] = useState(true);
 	const navigation = useNavigation();
 	const route = useRoute();
 	const previousScreen = route.params?.previousScreen || 'WelcomeStack';
+	// const [hasStudiedToday, setHasStudiedToday] = useState(false);
 
 	/**
    * TODO: Refactor error to use new error handling system
@@ -36,6 +38,8 @@ export default function Login() {
 				StorageService.updateStoredCourses();
 				await AsyncStorage.setItem('loggedIn', 'true');
 				navigation.navigate('HomeStack');
+				setHasStudiedToday(false);
+				// await AsyncStorage.setItem('hasStudiedToday', 'false');
 			} else {
 				setLoading(false);
 			}

@@ -53,10 +53,10 @@ const VideoLectureScreen = ({ lectureObject, courseObject, isLastSlide, onContin
 	};
 
 	const handleContinuePress = async () => {
-		handleStudyStreak();
 		
 		if (isLastSlide) {
 			try {
+				handleStudyStreak();
 				await completeComponent(lectureObject, courseObject.courseId, true);
 				handleLastComponent(lectureObject, courseObject, navigation);
 			} catch (error) {
