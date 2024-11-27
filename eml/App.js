@@ -67,7 +67,7 @@ function LoginStack() {
 		<Stack.Navigator initialRouteName={'Login'}>
 			<Stack.Screen
 				name="Login"
-				component={LeaderboardScreen}
+				component={LoginScreen}
 				options={{
 					headerShown: false,
 				}}
