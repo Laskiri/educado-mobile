@@ -29,7 +29,7 @@ import LeaderboardScreen from './screens/leaderboard/Leaderboard';
 import SubscribedToCourseScreen from './screens/courses/SubscribedToCourseScreen';
 import { DownloadProvider } from './services/DownloadService';
 import * as Font from 'expo-font';
-import AppLoading from 'expo-app-loading';
+import * as SplashScreen from 'expo-splash-screen';
 
 const Stack = createNativeStackNavigator();
 
@@ -186,6 +186,17 @@ export default function App() {
 		loadFonts();
 	}, []);
 
+	useEffect(() => {
+		async function prepare() {
+			if (!fontsLoaded) {
+				await SplashScreen.preventAutoHideAsync();
+			} else {
+				await SplashScreen.hideAsync();
+			}
+		}
+		prepare();
+	}, [fontsLoaded]);
+
 	// Callback function to handle the results
 	const handleResult = (route, loading) => {
 		setInitialRoute(route);
@@ -196,7 +207,7 @@ export default function App() {
 
 	// ************** Don't touch this code **************
 	if (!fontsLoaded) {
-		return <AppLoading />;
+		return null;
 	}
 
 	// Makes sure fonts are loaded before rendering the app

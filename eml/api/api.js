@@ -308,7 +308,6 @@ export const getLeaderboardDataAndUserRank = async (page, token, timeInterval, l
 				limit
 			}
 		});
-		console.log('Full API response:', res.data); // Log the full API response
 		return {
 			leaderboard: res.data.leaderboard,
 			currentUserRank: res.data.currentUserRank
