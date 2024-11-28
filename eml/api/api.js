@@ -8,7 +8,6 @@ const timeoutInMs = 1200;
 // move these to .env file next sprint
 const url = URL; // Change this to your LOCAL IP address when testing.
 export const certificateUrl = CERTIFICATE_URL;
-console.log('apiUrl: ' + url + 'certificateUrl: ' + certificateUrl); 
 
 /* Commented out for avoiding linting errors :))
  * TODO: move IP address to .env file !!!
@@ -296,7 +295,7 @@ export const sendMessageToChatbot = async (userMessage, courses) => {
 	} catch (error) {
 		if (error.response && error.response.status === 429) {
 			// Handle rate-limiting error
-			return error.response.data.error || 'Slow down! Too many requests.';
+			return error.response.data.error || 'Acalme-se! Muitas solicitações.';
 		}
 
 		console.warn('Axios error:', error);
@@ -306,10 +305,6 @@ export const sendMessageToChatbot = async (userMessage, courses) => {
 
 export const sendAudioToChatbot = async (audioUri, courses) => {
 	try {
-		console.log('Sending audio:', audioUri);
-
-		// Fetch the file from the URI as a blob
-
 		const formData = new FormData();
 		formData.append('audio', {
 			uri: audioUri,
@@ -348,7 +343,6 @@ export const sendFeedbackToBackend = async (userPrompt, chatbotResponse, feedbac
 		const data = await response.json();
 	
 		if (response.ok) {
-			console.log('Feedback successfully sent to backend:', data.message);
 			return { success: true, data };
 		} else {
 			console.error('Failed to send feedback:', data.error);

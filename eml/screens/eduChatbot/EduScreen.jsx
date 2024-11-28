@@ -89,7 +89,6 @@ export default function Edu() {
 			// Handle playback completion
 			sound.setOnPlaybackStatusUpdate((status) => {
 				if (status.didJustFinish) {
-					console.log('Playback finished, unloading sound...');
 					sound.unloadAsync(); // Unload the sound
 					setCurrentSound(null);
 					setCurrentlyPlaying(null);

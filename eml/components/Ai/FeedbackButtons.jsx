@@ -8,12 +8,11 @@ const FeedbackButtons = ({ aiText, userText }) => {
 	const [selectedFeedback, setSelectedFeedback] = useState(null);
 
 	const handleFeedback = async (type) => {
-		const feedback = type === 'thumbsUp'; // thumbsUp -> true, thumbsDown -> false
 		setSelectedFeedback(type); // Update UI state to show the selected feedback
 
 		try {
 			// Call the API function
-			const result = await sendFeedbackToBackend(userText, aiText, feedback);
+			const result = await sendFeedbackToBackend(userText, aiText, type);
 			if (result.success) {
 				console.log('Feedback sent successfully!');
 			} else {
@@ -29,7 +28,7 @@ const FeedbackButtons = ({ aiText, userText }) => {
 			{selectedFeedback === null && (
 				<>
 					<TouchableOpacity 
-						onPress={() => handleFeedback('thumbsUp')} 
+						onPress={() => handleFeedback(true)} 
 						className="mr-1"
 					>
 						<Icon
@@ -40,7 +39,7 @@ const FeedbackButtons = ({ aiText, userText }) => {
 						/>
 					</TouchableOpacity>
 					<TouchableOpacity 
-						onPress={() => handleFeedback('thumbsDown')}
+						onPress={() => handleFeedback(false)}
 					>
 						<Icon
 							name="thumb-down-outline"
@@ -51,7 +50,7 @@ const FeedbackButtons = ({ aiText, userText }) => {
 					</TouchableOpacity>
 				</>
 			)}
-			{selectedFeedback === 'thumbsUp' && (
+			{selectedFeedback === true && (
 				<Icon
 					name="thumb-up"
 					type="material-community"
@@ -59,7 +58,7 @@ const FeedbackButtons = ({ aiText, userText }) => {
 					size={18}
 				/>
 			)}
-			{selectedFeedback === 'thumbsDown' && (
+			{selectedFeedback === false && (
 				<Icon
 					name="thumb-down"
 					type="material-community"
