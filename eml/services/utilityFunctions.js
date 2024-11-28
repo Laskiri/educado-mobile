@@ -188,7 +188,7 @@ export async function completeComponent(comp, courseId, isComplete) {
 
 	return { points, updatedStudent };
 }
-//TODO: Fix To return true or false depending on last section or not
+
 export function isCourseCompleted(student) {
 	return student.courses.some(course => checkProgressCourse(course.Id) === 100);
 }
