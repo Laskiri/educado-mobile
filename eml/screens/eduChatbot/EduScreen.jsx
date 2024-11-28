@@ -129,7 +129,14 @@ export default function Edu() {
 			if (element.status == 'published'){
 				setCourses((prevCourses) => [
 					...prevCourses,
-					{ title: element.title, category: element.category, rating: element.rating, description: element.description, estimatedHours: element.estimatedHours, difficulty: element.difficulty},
+					{ 
+						title: element.title || '', 
+						category: element.category || '', 
+						rating: element.rating || 0, 
+						description: element.description || '', 
+						estimatedHours: element.estimatedHours || 0, 
+						difficulty: element.difficulty || 0
+					},
 				]);  
 			}
 		});
