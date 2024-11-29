@@ -29,21 +29,28 @@ export default function SectionCard({ section, progress, onPress }) {
 			>
 				<View className="flex-row items-center justify-between px-[25] py-[15]">
 					<View>
-						<Text className="text-[16px] font-bold text-projectBlack flex-[1]">
+						<Text className="text-[16px] font-montserrat-bold text-projectBlack mb-2">
 							{section.title}
 						</Text>
-						<Text className={`mr-[10] ${progressTextColor}`}>
-							{/* progress */}
-							{progress}/{section.components.length} {progressText}
-							{(isComplete ?
-								<MaterialCommunityIcons
-									testID={'check-circle'}
-									name={'check-circle'}
-									size={16}
-									color="green"
-								/> : ''
-							)}
-						</Text>
+
+						<View className="flex-row items-center">
+							<Text className={`text-[14px] font-montserrat ${progressTextColor}`}>
+								{/* progress */}
+								{progress}/{section.components.length} {progressText}
+								
+							</Text>
+							<View className="ml-2">
+								{(isComplete &&
+									<MaterialCommunityIcons
+										testID={'check-circle'}
+										name={'check-circle'}
+										size={14}
+										color="green"
+										
+									/>
+								)}
+							</View>
+						</View>
 					</View>
 					<MaterialCommunityIcons
 						testID="chevron-right"
