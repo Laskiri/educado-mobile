@@ -6,12 +6,12 @@ const timeoutInMs = 1200;
 
 
 // move these to .env file next sprint
-const url = URL; // Change this to your LOCAL IP address when testing.
+const url = URL;
 export const certificateUrl = CERTIFICATE_URL;
 
 /* Commented out for avoiding linting errors :))
  * TODO: move IP address to .env file !!!
-const testUrl = 'http://localhost:8888';
+const testUrl = 'http://localhost:8888';In 
 const testExpo = 'http://172.30.211.57:8888'; 
 const digitalOcean = 'http://207.154.213.68:8888';
 */
@@ -181,8 +181,6 @@ export const unSubscribeToCourse = async (userId, courseId) => {
 	}
 };
 
-
-
 export const giveFeedback = async (courseId, feedbackData) => {
 	const { rating, feedbackText, feedbackOptions } = feedbackData;
 	try {
@@ -286,7 +284,7 @@ export const sendMessageToChatbot = async (userMessage, courses) => {
 			userInput: userMessage,
 			courses: courses,
 		});
-
+	
 		if (response.status === 200) {
 			return response.data;
 		} else {
@@ -353,4 +351,28 @@ export const sendFeedbackToBackend = async (userPrompt, chatbotResponse, feedbac
 		return { success: false, error: error.message };
 	}
 };
-  
+
+export const getLeaderboardDataAndUserRank = async ({ page, token, timeInterval, limit = 80, userId }) => {
+	try {
+		const res = await axios.post(`${url}/api/students/leaderboard`, {
+			userId, // Include user ID in the request body
+			page,
+			timeInterval,
+			limit
+		}, {
+			headers: {
+				Authorization: `Bearer ${token}`
+			}
+		});
+		return {
+			leaderboard: res.data.leaderboard,
+			currentUserRank: res.data.currentUserRank
+		};
+	} catch (e) {
+		if (e?.response?.data != null) {
+			throw e.response.data;
+		} else {
+			throw e;
+		}
+	}
+};

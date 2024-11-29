@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import LoginScreen from './screens/login/Login';
 import RegisterScreen from './screens/register/Register';
@@ -11,7 +11,6 @@ import { TailwindProvider } from 'tailwindcss-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CourseOverviewScreen from './screens/courses/CourseOverviewScreen';
 import SectionScreen from './screens/section/SectionScreen';
-import { isFontsLoaded } from './constants/Fonts';
 import LoadingScreen from './components/loading/Loading';
 import WelcomeScreen from './screens/welcome/Welcome';
 import CompleteSectionScreen from './screens/section/CompleteSection';
@@ -26,10 +25,28 @@ import CertificateScreen from './screens/certificate/CertificateScreen';
 import CompleteCourseScreen from './screens/courses/CompleteCourse';
 import CameraScreen from './screens/camera/CameraScreen';
 import BaseScreen from './components/general/BaseScreen';
+import LeaderboardScreen from './screens/leaderboard/Leaderboard';
 import SubscribedToCourseScreen from './screens/courses/SubscribedToCourseScreen';
 import { DownloadProvider } from './services/DownloadService';
+import * as Font from 'expo-font';
+import * as SplashScreen from 'expo-splash-screen';
 
 const Stack = createNativeStackNavigator();
+
+function LeaderboardStack() {
+	return (
+		<Stack.Navigator initialRouteName={'Leaderboard'}>
+			<Stack.Screen
+				name="Leaderboard"
+				component={LeaderboardScreen}
+				options={{
+					headerShown: false,
+				}}
+			/>
+		</Stack.Navigator>
+	);
+}
+
 
 function WelcomeStack() {
 	return (
@@ -158,9 +175,32 @@ export function useWelcomeScreenLogic(loadingTime, onResult) {
 
 
 export default function App() {
-	const fontsLoaded = isFontsLoaded();
+	const [fontsLoaded, setFontsLoaded] = useState(false);
 	const [initialRoute, setInitialRoute] = useState('');
 	const [isLoading, setIsLoading] = useState(true);
+
+	useEffect(() => {
+		async function loadFonts() {
+			await Font.loadAsync({
+				'Montserrat-Regular': require('./assets/fonts/Montserrat-Regular.ttf'),
+				'Montserrat-Bold': require('./assets/fonts/Montserrat-Bold.ttf'),
+				'Montserrat-SemiBold': require('./assets/fonts/Montserrat-SemiBold.ttf'),
+			});
+			setFontsLoaded(true);
+		}
+		loadFonts();
+	}, []);
+
+	useEffect(() => {
+		async function prepare() {
+			if (!fontsLoaded) {
+				await SplashScreen.preventAutoHideAsync();
+			} else {
+				await SplashScreen.hideAsync();
+			}
+		}
+		prepare();
+	}, [fontsLoaded]);
 
 	// Callback function to handle the results
 	const handleResult = (route, loading) => {
@@ -189,6 +229,11 @@ export default function App() {
 					<DownloadProvider>
 						<NavigationContainer>
 							<Stack.Navigator initialRouteName={initialRoute}>
+								<Stack.Screen
+									name="LeaderboardStack"
+									component={LeaderboardStack}
+									options={{ headerShown: false }}
+								/>
 								<Stack.Screen
 									name="WelcomeStack"
 									component={WelcomeStack}
