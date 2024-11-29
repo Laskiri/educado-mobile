@@ -6,6 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import DefaultTheme from '../../theme/colors'; // import the theme colors
 import { getUserInfo } from '../../services/StorageService'; // import getUserInfo
 import PropTypes from 'prop-types'; // import PropTypes
+import LeaveButton from '../../components/exercise/LeaveButton'; // import LeaveButton
 
 const capitalize = (str) => str ? str.charAt(0).toUpperCase() + str.slice(1).toLowerCase() : '';
 
@@ -224,10 +225,9 @@ export function LeaderboardScreen() {
 	return (
 		<View style={styles.container}>
 			<View style={styles.header}>
-				<TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-					<Text style={styles.backButtonText}>{'<'}</Text>
-				</TouchableOpacity>
+				<LeaveButton navigationPlace="ProfileHome" /> 
 				<Text style={styles.rankingText}>Ranking</Text>
+				<View style={styles.headerSpacer} />
 			</View>
 			<ScrollView
 				ref={scrollViewRef}
@@ -280,7 +280,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: 'center',
 		alignItems: 'center',
-		backgroundColor: DefaultTheme.bgSecondary, // use the theme color
+		backgroundColor: DefaultTheme.bgSecondary,
 		paddingTop: 40,
 	},
 	header: {
@@ -289,27 +289,21 @@ const styles = StyleSheet.create({
 		width: '100%',
 		paddingHorizontal: 10,
 	},
-	backButton: {
-		position: 'absolute',
-		left: 10,
-	},
-	backButtonText: {
-		fontSize: 24,
-		fontWeight: 'bold',
-		color: '#333333',
+	headerSpacer: {
+		width: 50, 
 	},
 	rankingText: {
-		flex: 1,
 		fontSize: 24,
 		fontWeight: 'bold',
-		marginVertical: 20,
+		marginVertical: 10,
 		textAlign: 'center',
 		color: '#333333',
+		flex: 1, 
 	},
 	topUsersContainer: {
 		flexDirection: 'row',
 		justifyContent: 'space-around',
-		alignItems: 'center', // Changed from 'flex-end' to 'center'
+		alignItems: 'center', 
 		marginBottom: 20,
 		paddingHorizontal: 10,
 	},
