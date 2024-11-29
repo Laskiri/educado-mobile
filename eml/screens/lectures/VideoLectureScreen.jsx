@@ -39,27 +39,16 @@ export default function VideoLectureScreen({ lectureObject, courseObject, isLast
 
 
 	useEffect(() => {
-		console.log(lectureObject._id); // Temporary check to see if its the correct id
-		const fileName = lectureObject._id + '_l';
-		const _videoUrl = getVideoStreamUrl(fileName, '720');
-		//test if video is available for download from internet
+		console.log(lectureObject._id); // Temporary check to see if its the correct id 
+		const fileName = lectureObject._id;
+		const _videoUrl = getVideoStreamUrl(fileName, '480');
 		setVideoUrl(_videoUrl);
 	}, []);
 
-	/* This block does nothing?
-    useEffect(() => {
-      if (videoRef.current) {
-      }
-    }, [videoRef]);
-  */
-
 	const handlePress = () => {
-
-
 		if (!videoRef.current) {
 			return;
 		}
-
 
 		setIsPlaying(!isPlaying);
 	};
@@ -69,33 +58,7 @@ export default function VideoLectureScreen({ lectureObject, courseObject, isLast
 		setIsMuted(!isMuted);
 	};
 
-	/* check if video url is valid
-  useEffect(() => {
-    const _videoUrl = getVideoDownloadUrl(lecture._id, "180p");
-
-    //check for video url validity maybe not needed
-    // fetch(_videoUrl, {
-    //     method: 'HEAD'
-    // })
-    //     .then(response => {
-    //         if (response.ok) {
-    //             // HTTP status between 200-299 or equals 304.
-    //             setVideoUrl(_videoUrl);
-    //         } else {
-    //             console.error('Video URL is not valid');
-    //             Alert.alert("Error", "The video is corrupted. Please try again later", "OK");
-    //         }
-    //     })
-    //     .catch(error => {
-    //         Alert.alert("Error", "The video is corrupted. Please try again later", "OK");
-    //     });
-  }, []);
-  */
-
-
-
 	//Animation vars
-
 	const [showPlayPauseIcon, setShowPlayPauseIcon] = useState(false);
 
 	useEffect(() => {
@@ -120,12 +83,6 @@ export default function VideoLectureScreen({ lectureObject, courseObject, isLast
 	const handleResolutionChange = (newRes) => {
 		setCurrentResolution(newRes);
 	};
-
-	// useEffect(() => {
-	// 	getVideoURL(lectureObject.video, currentResolution).then((result)=>{
-	// 		setVideoUrl(result);
-	// 	});
-	// }, [currentResolution]);
 
 	return (
 
