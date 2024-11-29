@@ -351,4 +351,28 @@ export const sendFeedbackToBackend = async (userPrompt, chatbotResponse, feedbac
 		return { success: false, error: error.message };
 	}
 };
-  
+
+export const getLeaderboardDataAndUserRank = async ({ page, token, timeInterval, limit = 80, userId }) => {
+	try {
+		const res = await axios.post(`${url}/api/students/leaderboard`, {
+			userId, // Include user ID in the request body
+			page,
+			timeInterval,
+			limit
+		}, {
+			headers: {
+				Authorization: `Bearer ${token}`
+			}
+		});
+		return {
+			leaderboard: res.data.leaderboard,
+			currentUserRank: res.data.currentUserRank
+		};
+	} catch (e) {
+		if (e?.response?.data != null) {
+			throw e.response.data;
+		} else {
+			throw e;
+		}
+	}
+};

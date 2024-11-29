@@ -1,8 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { View, Text, StyleSheet, ScrollView, Image, ActivityIndicator, Alert, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Image, ActivityIndicator, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getLeaderboardDataAndUserRank } from '../../api/api';
-import { useNavigation } from '@react-navigation/native';
 import DefaultTheme from '../../theme/colors'; // import the theme colors
 import { getUserInfo } from '../../services/StorageService'; // import getUserInfo
 import PropTypes from 'prop-types'; // import PropTypes
@@ -93,7 +92,6 @@ LeaderboardList.propTypes = {
 };
 
 export function LeaderboardScreen() {
-	const navigation = useNavigation();
 	const [leaderboardData, setLeaderboardData] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [page, setPage] = useState(1);
@@ -107,7 +105,7 @@ export function LeaderboardScreen() {
 			const token = await AsyncStorage.getItem('@loginToken');
 			if (!token) throw new Error('User not authenticated');
 			const userInfo = await getUserInfo(); // Get user info
-			const { leaderboard } = await getLeaderboardDataAndUserRank(page, token, 'all', 12, userInfo.id); // Pass user ID
+			const { leaderboard } = await getLeaderboardDataAndUserRank({ page, token, timeInterval: 'all', limit: 12, userId: userInfo.id }); // Pass user ID
 			if (leaderboard.length === 0) return;
 			setLeaderboardData((prevData) => {
 				const newData = leaderboard.filter(item => !prevData.some(prevItem => prevItem.rank === item.rank));
@@ -127,7 +125,7 @@ export function LeaderboardScreen() {
 			const token = await AsyncStorage.getItem('@loginToken');
 			if (!token) throw new Error('User not authenticated');
 			const userInfo = await getUserInfo(); // Get user info
-			const response = await getLeaderboardDataAndUserRank(1, token, 'all', 12, userInfo.id); // Pass user ID
+			const response = await getLeaderboardDataAndUserRank({ page: 1, token, timeInterval: 'all', limit: 12, userId: userInfo.id }); // Pass user ID
 			setLeaderboardData(response.leaderboard || []);
 			setCurrentUserRank(response.currentUserRank);
 		} catch (error) {
@@ -141,7 +139,7 @@ export function LeaderboardScreen() {
 			const token = await AsyncStorage.getItem('@loginToken');
 			if (!token) throw new Error('User not authenticated');
 			const userInfo = await getUserInfo(); // Get user info
-			const response = await getLeaderboardDataAndUserRank(1, token, 'all', 12, userInfo.id); // Pass user ID
+			const response = await getLeaderboardDataAndUserRank({ page: 1, token, timeInterval: 'all', limit: 12, userId: userInfo.id }); // Pass user ID
 			setLeaderboardData(response.leaderboard || []);
 			setCurrentUserRank(response.currentUserRank);
 			setLoading(false);
