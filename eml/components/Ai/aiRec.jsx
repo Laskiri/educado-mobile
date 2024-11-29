@@ -5,7 +5,7 @@ import { sendAudioToChatbot } from '../../api/api.js';
 import { Icon } from '@rneui/themed';
 import PropTypes from 'prop-types';
 
-export default function RecButton({ onAudioResponse, onLock }) {
+export default function RecButton({ onAudioResponse, onLock, courses }) {
 	const [recording, setRecording] = useState(null);
 
 	const startRecording = async () => {
@@ -47,7 +47,7 @@ export default function RecButton({ onAudioResponse, onLock }) {
 				console.log('Recording saved at:', uri);
 
 				// Send the audio to the chatbot
-				const result = await sendAudioToChatbot(uri);
+				const result = await sendAudioToChatbot(uri, courses);
 				// Notify parent that recording has stopped
 				if (onLock) {
 					onLock(false);
@@ -81,6 +81,16 @@ export default function RecButton({ onAudioResponse, onLock }) {
 
 
 RecButton.propTypes = {
-	onAudioResponse: PropTypes.func.isRequired, // Must be a function and is required
+	onAudioResponse: PropTypes.func, // Must be a function and is required
 	onLock: PropTypes.func, // Optional function
+	courses: PropTypes.arrayOf(
+		PropTypes.shape({
+			title: PropTypes.string,
+			category: PropTypes.string,
+			rating: PropTypes.number,
+			description: PropTypes.string,
+			estimatedHours: PropTypes.number,
+			difficulty: PropTypes.number,
+		})
+	),
 };

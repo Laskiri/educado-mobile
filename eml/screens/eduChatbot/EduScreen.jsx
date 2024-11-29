@@ -3,15 +3,18 @@ import { View, TextInput, ScrollView, Text, TouchableOpacity } from 'react-nativ
 import BaseScreen from '../../components/general/BaseScreen';
 import IconHeader from '../../components/general/IconHeader';
 import RecButton from '../../components/Ai/aiRec';
+import FeedbackButtons from '../../components/Ai/FeedbackButtons';
 import { Icon } from '@rneui/themed';
 import Markdown from 'react-native-markdown-display';
 import { Audio } from 'expo-av';
 import * as FileSystem from 'expo-file-system';
-import { sendMessageToChatbot } from '../../api/api.js';
+import { sendMessageToChatbot, getCourses } from '../../api/api.js';
+
 
 export default function Edu() {
 	const [userMessage, setUserMessage] = useState('');
 	const [chatMessages, setChatMessages] = useState([]);
+	const [courses, setCourses] = useState([]);
 	const [currentlyPlaying, setCurrentlyPlaying] = useState(null); // Tracks which audio is playing
 	const [currentSound, setCurrentSound] = useState(null); // Stores the current Audio.Sound instance
 	const scrollViewRef = useRef(null);
@@ -29,6 +32,22 @@ export default function Edu() {
 			...prevMessages,
 			{ sender: 'Chatbot', text: trimmedAiResponse, audio: audioResponse.audio },
 		]);
+	};
+
+	const handleSendMessage = async () => {
+		if (!userMessage) return;
+
+		setChatMessages([...chatMessages, { sender: 'User', text: userMessage }]);
+		setLoading(true);
+		setUserMessage('');
+		const chatbotResponse = await sendMessageToChatbot(userMessage, courses);
+
+		setChatMessages((prevMessages) => [
+			...prevMessages,
+			{ sender: 'Chatbot', text: chatbotResponse.message, audio: chatbotResponse.audio },
+		]);
+
+		setLoading(false);
 	};
 
 	const playAudio = async (base64Audio, index) => {
@@ -70,7 +89,6 @@ export default function Edu() {
 			// Handle playback completion
 			sound.setOnPlaybackStatusUpdate((status) => {
 				if (status.didJustFinish) {
-					console.log('Playback finished, unloading sound...');
 					sound.unloadAsync(); // Unload the sound
 					setCurrentSound(null);
 					setCurrentlyPlaying(null);
@@ -85,23 +103,6 @@ export default function Edu() {
 			setCurrentSound(null);
 			setCurrentlyPlaying(null);
 		}
-	};
-
-	const handleSendMessage = async () => {
-		if (!userMessage) return;
-
-		setChatMessages([...chatMessages, { sender: 'User', text: userMessage }]);
-		setLoading(true);
-		setUserMessage('');
-
-		const chatbotResponse = await sendMessageToChatbot(userMessage);
-
-		setChatMessages((prevMessages) => [
-			...prevMessages,
-			{ sender: 'Chatbot', text: chatbotResponse },
-		]);
-
-		setLoading(false);
 	};
 
 	useEffect(() => {
@@ -120,6 +121,32 @@ export default function Edu() {
 			setLoadingDots('');
 		}
 	}, [loading]);
+
+	const fetchCourses = async () => {
+		setCourses([]);
+		const tempCourses = await getCourses();
+		tempCourses.forEach(element => {
+			if (element.status == 'published'){
+				setCourses((prevCourses) => [
+					...prevCourses,
+					{ 
+						title: element.title || '', 
+						category: element.category || '', 
+						rating: element.rating || 0, 
+						description: element.description || '', 
+						estimatedHours: element.estimatedHours || 0, 
+						difficulty: element.difficulty || 0
+					},
+				]);  
+			}
+		});
+	};
+
+	useEffect(() => {
+		fetchCourses();
+		console.log('got courses');
+	}, []);
+
 	return (
 		<>
 			<BaseScreen className="h-screen flex flex-col">
@@ -132,7 +159,7 @@ export default function Edu() {
 						description={'Meu nome é Edu, e estou aqui para ajudá-lo a navegar neste aplicativo.'}
 					/>
 				</View>
-				<View className="flex-1 bg-white flex-end">
+				<View className="flex-1 flex-end">
 					<ScrollView ref={scrollViewRef} style={'flex-1'} className="pr-2.5">
 						{chatMessages.map((message, index) => (
 							message.sender === 'User' ? (
@@ -143,39 +170,51 @@ export default function Edu() {
 								</View>
 							) : (
 								<View key={index} style={{ alignSelf: 'flex-start', flexDirection: 'row', alignItems: 'center' }}>
-									<View className="p-2.5 pl-3 mb-1 flex-row rounded-t-3xl rounded-br-3xl max-w-[80%]">
-										<View className="px-2">
-											<Icon
-												name="robot-outline"
-												type="material-community"
-												color="black"
-												size={20}
-											/>
-										</View>
-										<View className="w-full">
-											<Markdown>
-												{message.text}
-											</Markdown>
-										</View>
-										{message.audio && (
-											<View className="pl-2 self-center">
-												<TouchableOpacity
-													onPress={() => playAudio(message.audio, index)}
-													className=""
-												>
-													<Icon
-														name={
-															currentlyPlaying === index ? 'stop-circle-outline' : 'play-circle-outline'
-														}
-														type="material-community"
-														color="black"
-														size={32}
-													/>
-												</TouchableOpacity>
+									<View>
+										<View className="p-2.5 pl-3 mb-1 flex-row rounded-t-3xl rounded-br-3xl max-w-[80%] ">
+											<View className="px-2">
+												<Icon
+													name="robot-outline"
+													type="material-community"
+													color="black"
+													size={20}
+												/>
 											</View>
-										)}
+											<View className="w-full">
+												<Markdown>
+													{message.text}
+												</Markdown>
+												<View classname="w-max"> 
+													<FeedbackButtons aiText={message.text} userText={chatMessages[index - 1]?.text || ''} />
+												</View>
+											</View>
+											{message.audio && (
+												<View className="pl-2 self-center">
+													<TouchableOpacity
+														onPress={() => playAudio(message.audio, index)}
+														className=""
+													>
+														<Icon
+															name={
+																currentlyPlaying === index ? 'stop-circle-outline' : 'play-circle-outline'
+															}
+															type="material-community"
+															color="black"
+															size={32}
+														/>
+													</TouchableOpacity>
+												</View>
+											)}
+
+											
+	
+										</View>
+										
+										
+
 									</View>
-								</View>
+									
+								</View>	
 							)
 						))}
 						{loading && (
@@ -192,7 +231,7 @@ export default function Edu() {
 									color="primary_custom"
 									size={20}
 								/>
-								<Text>Edu is thinking{loadingDots}</Text>
+								<Text>Edu está pensando{loadingDots}</Text>
 							</View>
 						)}
 					</ScrollView>
@@ -218,7 +257,7 @@ export default function Edu() {
 								/>
 							</TouchableOpacity>
 						) : (
-							<RecButton onAudioResponse={handleAudioResponse} onLock={setLoading} />
+							<RecButton onAudioResponse={handleAudioResponse} onLock={setLoading} courses={courses} />
 						)}
 					</View>
 				</View>
