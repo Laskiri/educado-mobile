@@ -17,11 +17,10 @@ const TextImageLectureScreen = ({ lectureObject, courseObject, isLastSlide, onCo
 
 	const handleContinue = async () => {
 		try {
-			
 			await completeComponent(lectureObject, courseObject.courseId, true);
 			if (isLastSlide) {
-				handleLastComponent(lectureObject, courseObject, navigation);
 				handleStudyStreak();
+				handleLastComponent(lectureObject, courseObject, navigation);
 			} else {
 				onContinue();
 			}

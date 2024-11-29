@@ -9,10 +9,9 @@ import ProgressTopBar from './ProgressTopBar';
 import LectureScreen from './LectureScreen';
 import ExerciseScreen from '../excercise/ExerciseScreen';
 import tailwindConfig from '../../tailwind.config';
-import { completeComponent, findIndexOfUncompletedComp } from '../../services/utilityFunctions';
-import { getComponentList, getStudentInfo } from '../../services/StorageService';
+import { completeComponent, findIndexOfUncompletedComp, differenceInDays } from '../../services/utilityFunctions';
+import { getComponentList, getStudentInfo, updateLastStudyDate } from '../../services/StorageService';
 import { updateStudyStreak } from '../../api/userApi';
-import { setHasStudiedToday, hasStudiedToday } from '../../services/StorageService';
 
 const LectureType = {
 	TEXT: 'text',
@@ -45,17 +44,30 @@ const CompSwipeScreen = ({ route }) => {
 	const [combinedLecturesAndExercises, setCombinedLecturesAndExercises] = useState([]);
 	const swiperRef = useRef(null);
 	const [resetKey, setResetKey] = useState(0);
-	const [studentId, setStudentId] = useState(null);
-	
+	const [studentId, setStudentId] = useState('');
+	const [lastStudyDate, setLastStudyDate] = useState('1970-01-01T00:00:00.000Z');
+
+	/**
+	 * Handles student study streak update process.
+	 * Checks difference in days between lastStudyDate and today.
+	 * If difference is greater than 0 it updates: studyStreak and lastStudyDate 
+	 * both in database, local storage and this local state.
+	 */
 	async function handleStudyStreak() {
-		try {
-			if (!hasStudiedToday) {
-				await updateStudyStreak(studentId);
-				setHasStudiedToday(true);
+		try {		
+			const today = new Date();
+			const dayDifference = differenceInDays(new Date(lastStudyDate), today);	
+			
+			// Update study streak if it has not already been updated today
+			if (dayDifference > 0) {
+				await updateStudyStreak(studentId);	// Database
+				console.log("DB was called");
+				updateLastStudyDate(today);	// Local storage
+				setLastStudyDate(today);
 			}
 		}
 		catch (error) {
-			console.error('Error updating study streak: ' + error);
+			console.error('Error handling study streak: ' + error);
 		}
 	}
 
@@ -64,6 +76,8 @@ const CompSwipeScreen = ({ route }) => {
 			try {
 				const studentInfo = await getStudentInfo();
 				setStudentId(studentInfo._id);
+				setLastStudyDate(studentInfo.lastStudyDate);
+
 				let initialIndex = findIndexOfUncompletedComp(studentInfo, parsedCourse.courseId, section.sectionId);
 
 				if (initialIndex === -1) {

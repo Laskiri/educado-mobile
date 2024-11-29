@@ -13,20 +13,10 @@ const USER_ID = '@userId';
 const STUDENT_ID = '@studentId';
 const USER_INFO = '@userInfo';
 const STUDENT_INFO = '@studentInfo';
+const LAST_STUDY_DATE = '@lastStudyDate';
 const LOGIN_TOKEN = '@loginToken';
 const lectureVideoPath = FileSystem.documentDirectory + 'lectureVideos/';
 let isOnline = true;
-let hasStudiedToday = false;
-
-// Get hasStudiedToday
-export async function getHasStudiedToday() {
-	return JSON.parse(await AsyncStorage.getItem(hasStudiedToday));
-}
-
-// Set hasStudiedToday
-export async function setHasStudiedToday(hasStudiedToday) {
-	await AsyncStorage.setItem(hasStudiedToday);
-}
 
 /**
  * Updates the network status.
@@ -86,7 +76,6 @@ export const isLoginTokenValid = async () => {
 	}
 };
 
-
 /** STUDENT **/
 /**
  * Retrieves and stores student information for a given user ID.
@@ -131,6 +120,21 @@ export const getStudentProfilePhoto = async () => {
 export const updateStudentInfo = async (studentInfo) => {
 	await AsyncStorage.setItem(STUDENT_INFO, JSON.stringify(studentInfo));
 };
+
+export const updateLastStudyDate = async (newStudyDate) => {
+	// Retrieve current studentInfo 
+	const studentInfo = JSON.parse(await AsyncStorage.getItem(STUDENT_INFO));
+
+	if (studentInfo) {
+		// Update lastStudyDate field in studentInfo
+		studentInfo.lastStudyDate = newStudyDate;
+
+		// Save updated studentInfo
+		await AsyncStorage.setItem(STUDENT_INFO, JSON.stringify(studentInfo));
+	}
+};
+
+/** USER **/
 
 /**
  * Retrieves user information from AsyncStorage.
