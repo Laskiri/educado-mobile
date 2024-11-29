@@ -86,15 +86,12 @@ exports[`<SectionCard /> renders SectionCard correctly 1`] = `
                 },
                 {
                   "fontFamily": "Montserrat-Bold",
-                  "fontWeight": "700",
                 },
                 {
                   "color": "#383838",
                 },
                 {
-                  "flexBasis": 0,
-                  "flexGrow": 1,
-                  "flexShrink": 1,
+                  "marginBottom": 8,
                 },
               ],
             ]
@@ -102,34 +99,59 @@ exports[`<SectionCard /> renders SectionCard correctly 1`] = `
         >
           test section
         </Text>
-        <Text
+        <View
           style={
             [
               {
-                "fontFamily": "Montserrat-Regular",
+                "flexDirection": "row",
               },
               {
-                "color": "#383838",
+                "alignItems": "center",
               },
-              {
-                "fontSize": 16,
-              },
+            ]
+          }
+        >
+          <Text
+            style={
               [
                 {
-                  "marginRight": 10,
+                  "fontFamily": "Montserrat-Regular",
                 },
                 {
                   "color": "#383838",
                 },
-              ],
-            ]
-          }
-        >
-          /
-          0
-           
-          Não iniciado
-        </Text>
+                {
+                  "fontSize": 16,
+                },
+                [
+                  {
+                    "fontSize": 14,
+                  },
+                  {
+                    "fontFamily": "Montserrat-Regular",
+                  },
+                  {
+                    "color": "#383838",
+                  },
+                ],
+              ]
+            }
+          >
+            /
+            0
+             
+            Não iniciado
+          </Text>
+          <View
+            style={
+              [
+                {
+                  "marginLeft": 8,
+                },
+              ]
+            }
+          />
+        </View>
       </View>
       <Text
         allowFontScaling={false}
