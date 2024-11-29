@@ -9,6 +9,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import ExerciseScreen from './screens/excercise/ExerciseScreen';
 import { TailwindProvider } from 'tailwindcss-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import CourseOverviewScreen from './screens/courses/CourseOverviewScreen';
 import SectionScreen from './screens/section/SectionScreen';
 import LoadingScreen from './components/loading/Loading';
 import WelcomeScreen from './screens/welcome/Welcome';
@@ -120,9 +121,14 @@ function CourseStack() {
 				}}
 			/>
 			<Stack.Screen
+				name="CourseOverview"
+				component={CourseOverviewScreen}
+				initialParams={{ course_id: '' }}
+				options={{ headerShown: false }}
+			/>
+			<Stack.Screen
 				name="Section"
 				component={SectionScreen}
-				initialParams={{ course_id: '' }}
 				options={{ headerShown: false }}
 			/>
 			<Stack.Screen
@@ -249,9 +255,14 @@ export default function App() {
 									options={{ headerShown: false }}
 								/>
 								<Stack.Screen
+									name={'CourseOverview'}
+									component={CourseOverviewScreen}
+									initialParams={{ course_id: '' }}
+									options={{ headerShown: false }}
+								/>
+								<Stack.Screen
 									name={'Section'}
 									component={SectionScreen}
-									initialParams={{ course_id: '' }}
 									options={{ headerShown: false }}
 								/>
 								<Stack.Screen
