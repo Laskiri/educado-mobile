@@ -14,6 +14,7 @@ import { checkProgressCourse, checkProgressSection } from '../../services/utilit
 import ContinueSection from '../../components/section/ContinueSectionButton';
 import Tooltip from '../../components/onboarding/onboarding';
 import ImageNotFound from '../../assets/images/imageNotFound.png';
+import DownloadCourseButton from '../../components/courses/courseCard/DownloadCourseButton';
 
 export default function CourseOverviewScreen({ route }) {
 	CourseOverviewScreen.propTypes = {
@@ -134,9 +135,7 @@ export default function CourseOverviewScreen({ route }) {
 									{course.title}
 								</Text>
 								{/* TODO: Button to download course should be implemented */}
-								<TouchableOpacity>
-									<MaterialCommunityIcons name="cloud-download-outline" size={30} color="gray"/>
-								</TouchableOpacity>
+								<DownloadCourseButton course={course} disabled={true}/>
 							</View>
 							{/* Progress Bar */}
 							<View className="flex justify-center h-6 border-y-[1px] border-lightGray rounded-sm ">

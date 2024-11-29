@@ -48,7 +48,7 @@ const CompSwipeScreen = ({ route }) => {
 		const fetchData = async () => {
 			try {
 				const studentInfo = await getStudentInfo();
-				let initialIndex = parsedComponentIndex ? parsedComponentIndex : findIndexOfUncompletedComp(studentInfo, parsedCourse.courseId, section.sectionId);
+				let initialIndex =  parsedComponentIndex ?? findIndexOfUncompletedComp(studentInfo, parsedCourse.courseId, section.sectionId);
 
 				if (initialIndex === -1) {
 					initialIndex = 0;
