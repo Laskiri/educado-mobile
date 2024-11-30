@@ -36,7 +36,7 @@ const ComponentType = {
  * Props:			- route: The route object, which contains the section object and the course object
  */
 const CompSwipeScreen = ({ route }) => {
-	const { section, parsedCourse } = route.params;
+	const { section, parsedCourse, parsedComponentIndex} = route.params;
 	const [loading, setLoading] = useState(true);
 	const [currentLectureType, setCurrentLectureType] = useState(LectureType.TEXT);
 	const [index, setIndex] = useState(0);
@@ -81,7 +81,7 @@ const CompSwipeScreen = ({ route }) => {
 				setStudentId(studentInfo._id);
 				setLastStudyDate(studentInfo.lastStudyDate);
 
-				let initialIndex = findIndexOfUncompletedComp(studentInfo, parsedCourse.courseId, section.sectionId);
+				let initialIndex =  parsedComponentIndex ?? findIndexOfUncompletedComp(studentInfo, parsedCourse.courseId, section.sectionId);
 
 				if (initialIndex === -1) {
 					initialIndex = 0;
@@ -226,8 +226,10 @@ CompSwipeScreen.propTypes = {
 		params: PropTypes.shape({
 			section: PropTypes.object.isRequired,
 			parsedCourse: PropTypes.object.isRequired,
+			parsedComponentIndex: PropTypes.number
 		}).isRequired,
 	}).isRequired,
 };
+	
 
 export default CompSwipeScreen;

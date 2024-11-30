@@ -42,7 +42,7 @@ export default function CourseCard({ course, isOnline}) {
 		<Pressable testID="courseCard"
 			className={layout}
 			onPress={() => layout === enabledUI ?
-				navigation.navigate('Section', {
+				navigation.navigate('CourseOverview', {
 					course: course,
 				}) : null
 			}
@@ -71,7 +71,7 @@ export default function CourseCard({ course, isOnline}) {
 					<CustomProgressBar width={56} progress={studentProgress} height={1} />
 					<Pressable className="z-[1]"
 						onPress={() => {layout === enabledUI ?
-							navigation.navigate('Section', {
+							navigation.navigate('CourseOverview', {
 								course: course,
 							}) : null;
 						}}
