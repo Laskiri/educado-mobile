@@ -299,7 +299,7 @@ export const updateStudyStreak = async (studentId) => {
 	try {
 		const res = await client.patch(
 			`/api/students/${studentId}/updateStudyStreak`);
-		return res.data;
+		return res.status;
 	} 
 	catch (error) {
 		console.error('Error Message: ' + error.message);

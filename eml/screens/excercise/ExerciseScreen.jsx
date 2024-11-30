@@ -194,6 +194,7 @@ ExerciseScreen.propTypes = {
 	courseObject: PropTypes.object.isRequired,
 	onContinue: PropTypes.func.isRequired,
 	componentList: PropTypes.array.isRequired,
+	handleStudyStreak: PropTypes.func.isRequired
 };
 
 export default ExerciseScreen;

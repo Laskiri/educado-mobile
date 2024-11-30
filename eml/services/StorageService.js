@@ -7,13 +7,11 @@ import * as FileSystem from 'expo-file-system';
 import jwt from 'expo-jwt';
 import Constants from 'expo-constants';
 
-
 const SUB_COURSE_LIST = '@subCourseList';
 const USER_ID = '@userId';
 const STUDENT_ID = '@studentId';
 const USER_INFO = '@userInfo';
 const STUDENT_INFO = '@studentInfo';
-const LAST_STUDY_DATE = '@lastStudyDate';
 const LOGIN_TOKEN = '@loginToken';
 const lectureVideoPath = FileSystem.documentDirectory + 'lectureVideos/';
 let isOnline = true;

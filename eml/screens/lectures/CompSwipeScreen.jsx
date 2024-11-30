@@ -60,8 +60,11 @@ const CompSwipeScreen = ({ route }) => {
 			
 			// Update study streak if it has not already been updated today
 			if (dayDifference > 0) {
-				await updateStudyStreak(studentId);	// Database
-				console.log("DB was called");
+				const statusCode = await updateStudyStreak(studentId);	// Database
+				
+				if (statusCode !== 200) 
+					throw new Error();
+
 				updateLastStudyDate(today);	// Local storage
 				setLastStudyDate(today);
 			}

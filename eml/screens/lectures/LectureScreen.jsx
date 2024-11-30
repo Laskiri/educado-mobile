@@ -52,6 +52,7 @@ LectureScreen.propTypes = {
 	courseObject: PropTypes.object.isRequired,
 	isLastSlide: PropTypes.bool.isRequired,
 	onContinue: PropTypes.func.isRequired,
+	handleStudyStreak: PropTypes.func.isRequired
 };
 
 export default LectureScreen;
