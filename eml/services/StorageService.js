@@ -770,7 +770,7 @@ export async function getLectureVideo(videoName) {
 	}
 }
 
-async function storeLectureVideo(videoName) {
+export async function storeLectureVideo(videoName) {
 	try {
 		// Get video data from API
 		const videoData = await api.getBucketVideo(videoName);
@@ -791,7 +791,7 @@ async function storeLectureVideo(videoName) {
 	}
 }
 
-async function deleteLectureVideo(videoName) {
+export async function deleteLectureVideo(videoName) {
 	try {
 		const filePath = `${lectureVideoPath}${videoName}.mp4`;
 
