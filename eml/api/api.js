@@ -252,6 +252,7 @@ export const getBucketImage = async (fileName) => {
 			`${url}/api/bucket/${fileName}`,
 			{
 				responseType: 'arraybuffer',
+				accept: 'image/jpeg',
 			});
 
 		let fileType = fileName.split('.').pop();
@@ -263,7 +264,7 @@ export const getBucketImage = async (fileName) => {
 		}
 
 		// Convert the image to base64
-		const image = `data:image/${fileType};base64,${Buffer.from(res.data, 'base64')}`;
+		const image = `data:image/${fileType};base64,${Buffer.from(res.data, 'binary').toString('base64')}`;
 		return image;
 	} catch (err) {
 		if (err?.response?.data != null) {
