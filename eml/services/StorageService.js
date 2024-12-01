@@ -639,11 +639,6 @@ export const storeCourseLocally = async (courseID) => {
 					} catch {
 						await AsyncStorage.setItem('I' + component.component._id, defaultImage.base64);
 					}
-				} else if (component.component.video) {
-
-					//Stores videos
-					await makeDirectory();
-					await FileSystem.writeAsStringAsync(lectureVideoPath + component.component.video + '.json', await api.getBucketImage(component.component.video));
 				}
 			}
 
@@ -689,8 +684,6 @@ export const deleteLocallyStoredCourse = async (courseID) => {
 				}
 				if (component.component.image) {
 					await AsyncStorage.removeItem('I' + component._id);
-				} else if (component.component.video) {
-					await FileSystem.deleteAsync(lectureVideoPath + component.component.video + '.json');
 				}
 			}
 		}
