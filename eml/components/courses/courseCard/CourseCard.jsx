@@ -69,43 +69,45 @@ export default function CourseCard({ course, isOnline}) {
 		>
 			<View>
 				<ImageBackground source={{uri: coverImage}}>
-					{coverImage && <View className="rounded-lg" style={{height:200}}/> }
-					<View className="p-[5%] bg-projectWhite opacity-90">
-						<View className="flex flex-col">
-							<View className="flex-row items-start justify-between px-[1%] py-[1%]">
-								<Text className="text-[18px] text-projectBlack flex-1 self-center font-montserrat-semi-bold">
-									{course.title ? course.title : 'Título do curso'}
-								</Text>
-								<View className="flex-row items-center">
-									<DownloadCourseButton course={course} disabled={isDisabled}/>
+					{coverImage && <View className="rounded-lg" style={{height:110}}/> }
+					<View className="relative">
+						<View className="absolute top-0 left-0 right-0 bottom-0 bg-projectWhite opacity-95" />
+						<View className="p-[5%]">
+							<View className="flex flex-col">
+								<View className="flex-row items-start justify-between px-[1%] py-[1%]">
+									<Text className="text-[18px] text-projectBlack flex-1 self-center font-montserrat-semi-bold">
+										{course.title ? course.title : 'Título do curso'}
+									</Text>
+									<View className="flex-row items-center">
+										<DownloadCourseButton course={course} disabled={isDisabled}/>
+									</View>
 								</View>
 							</View>
-						</View>
-						<View className="h-[1] bg-disable m-[2%]" />
-						<View className="flex-row flex-wrap items-center justify-start">
-							<View className="flex-row items-center">
-								<MaterialCommunityIcons size={18} name={determineIcon(course.category)} color={'gray'}></MaterialCommunityIcons>
-								<Text className="mx-[2.5%] my-[3%]">{determineCategory(course.category)}</Text>
+							<View className="h-[1] bg-disable m-[2%]" />
+							<View className="flex-row flex-wrap items-center justify-start">
+								<View className="flex-row items-center">
+									<MaterialCommunityIcons size={18} name={determineIcon(course.category)} color={'gray'}></MaterialCommunityIcons>
+									<Text className="mx-[2.5%] my-[3%]">{determineCategory(course.category)}</Text>
+								</View>
+								<View className="flex-row items-center">
+									<MaterialCommunityIcons size={18} name="clock" color={'gray'}></MaterialCommunityIcons>
+									<Text className="mx-[2.5%] my-[3%]">{course.estimatedHours ? formatHours(course.estimatedHours) : 'duração'}</Text>
+								</View>
 							</View>
 							<View className="flex-row items-center">
-								<MaterialCommunityIcons size={18} name="clock" color={'gray'}></MaterialCommunityIcons>
-								<Text className="mx-[2.5%] my-[3%]">{course.estimatedHours ? formatHours(course.estimatedHours) : 'duração'}</Text>
+								<CustomProgressBar width={56} progress={studentProgress} height={1} />
+								<Pressable className="z-[1]"
+									onPress={() => {layout === enabledUI ?
+										navigation.navigate('CourseOverview', {
+											course: course,
+										}) : null;
+									}}
+								>
+									<MaterialCommunityIcons size={28} name="play-circle" color={tailwindConfig.theme.colors.primary_custom}></MaterialCommunityIcons>
+								</Pressable>
 							</View>
-						</View>
-						<View className="flex-row items-center">
-							<CustomProgressBar width={56} progress={studentProgress} height={1} />
-							<Pressable className="z-[1]"
-								onPress={() => {layout === enabledUI ?
-									navigation.navigate('CourseOverview', {
-										course: course,
-									}) : null;
-								}}
-							>
-								<MaterialCommunityIcons size={28} name="play-circle" color={tailwindConfig.theme.colors.primary_custom}></MaterialCommunityIcons>
-							</Pressable>
 						</View>
 					</View>
-
 				</ImageBackground>
 			</View>
 		</Pressable>
