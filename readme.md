@@ -58,7 +58,6 @@ expo start
   - URL = 'http://192.168.0.102:8888'
   - CERTIFICATE_URL = 'http://192.168.0.102:8080'
 
-```
 - Open the directory eml in terminal
 - Write and run the following in the terminal:
   ```
