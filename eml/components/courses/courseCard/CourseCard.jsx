@@ -1,5 +1,5 @@
 import { View, Pressable, ImageBackground } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import Text from '../../../components/general/Text';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -22,6 +22,7 @@ export default function CourseCard({ course, isOnline}) {
 	const navigation = useNavigation();
 	const [studentProgress, setStudentProgress] = useState(0);
 	const [coverImage, setCoverImage] = useState(null);
+	const prevCourseId = useRef(null);
 
 	const checkDownload = async () => {
 		setDownloaded(await checkCourseStoredLocally(course.courseId));
@@ -33,22 +34,24 @@ export default function CourseCard({ course, isOnline}) {
 		setStudentProgress(progress);
 	}; checkProgress();
 
-
 	useEffect(() => {
-		if (coverImage === null && course !== null) {
-			const fetchImage = async () => {
-				try {
-					const image = await getBucketImage(course.courseId+ '_c');
-					if (typeof image === 'string') {
-						setCoverImage(image);
-					} else {
-						throw new Error();
-					}
-				} catch (error) {
-					console.log(error);
+		const fetchImage = async () => {
+			try {
+				const image = await getBucketImage(course.courseId + '_c');
+				if (typeof image === 'string') {
+					setCoverImage(image);
+				} else {
+					throw new Error();
 				}
-			};
+			} catch (error) {
+				console.log(error);
+			}
+		};
+
+		if (course !== null && course.courseId !== prevCourseId.current) {
+			setCoverImage(null); // Reset coverImage state
 			fetchImage();
+			prevCourseId.current = course.courseId;
 		}
 	}, [course]);
 
