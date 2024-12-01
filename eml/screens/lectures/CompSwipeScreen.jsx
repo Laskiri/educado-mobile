@@ -10,7 +10,7 @@ import LectureScreen from './LectureScreen';
 import ExerciseScreen from '../excercise/ExerciseScreen';
 import tailwindConfig from '../../tailwind.config';
 import { completeComponent, findIndexOfUncompletedComp, differenceInDays } from '../../services/utilityFunctions';
-import { getComponentList, getStudentInfo, updateLastStudyDate } from '../../services/StorageService';
+import { getComponentList, getStudentInfo, updateLocalStudyStreak } from '../../services/StorageService';
 import { updateStudyStreak } from '../../api/userApi';
 
 const LectureType = {
@@ -65,7 +65,7 @@ const CompSwipeScreen = ({ route }) => {
 				if (statusCode !== 200) 
 					throw new Error();
 
-				updateLastStudyDate(today);	// Local storage
+				updateLocalStudyStreak(today);	// Local storage
 				setLastStudyDate(today);
 			}
 		}

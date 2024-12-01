@@ -119,12 +119,13 @@ export const updateStudentInfo = async (studentInfo) => {
 	await AsyncStorage.setItem(STUDENT_INFO, JSON.stringify(studentInfo));
 };
 
-export const updateLastStudyDate = async (newStudyDate) => {
+// Increment studyStreak and update lastStudyDate
+export const updateLocalStudyStreak = async (newStudyDate) => {
 	// Retrieve current studentInfo 
 	const studentInfo = JSON.parse(await AsyncStorage.getItem(STUDENT_INFO));
 
 	if (studentInfo) {
-		// Update lastStudyDate field in studentInfo
+		studentInfo.studyStreak += 1;
 		studentInfo.lastStudyDate = newStudyDate;
 
 		// Save updated studentInfo
