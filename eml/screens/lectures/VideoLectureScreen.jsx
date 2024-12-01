@@ -92,8 +92,7 @@ export default function VideoLectureScreen({ lectureObject, courseObject, isLast
 		<View className="relative">
 
 			{/* Video - currently just black image */}
-			<View className="w-full h-full bg-projectBlack" >
-
+			<View className={`w-full h-full bg-projectBlack ${videoFinished ? 'opacity-50' : 'opacity-100'}`}>
 				<View className="w-full h-full bg-projectBlack" >
 					{videoUrl ?
 						<CustomExpoVideoPlayer
@@ -111,7 +110,8 @@ export default function VideoLectureScreen({ lectureObject, courseObject, isLast
 
 			<View className="absolute w-full h-full p-5">
 				<View className="w-full h-full flex-col justify-end items-center bg-opacity-20" >
-					{isLastSlide ?
+					// Not needed as there is a continue button at the end of the video
+				{/* {isLastSlide ?
 						<View className="px-6 mb-3 w-screen">
 							<StandardButton
 								props={{
@@ -122,7 +122,7 @@ export default function VideoLectureScreen({ lectureObject, courseObject, isLast
 								}}
 							/>
 						</View>
-						: null}
+						: null} */}
 
 					{/* Lecture information */}
 
@@ -149,7 +149,9 @@ export default function VideoLectureScreen({ lectureObject, courseObject, isLast
 
 						{/* Video Progress Bar Component */}
 						{/* <VideoProgressBar elapsedMs={positionMillis} totalMs={durationMillis} videoRef={videoRef} /> */}
-						<ReactSliderProgress elapsedMs={positionMillis} totalMs={durationMillis} videoRef={videoRef} />
+						{!videoFinished && ( // When the video is finished, the progress bar is not shown
+    						<ReactSliderProgress elapsedMs={positionMillis} totalMs={durationMillis} videoRef={videoRef} />
+						)}
 
 
 
