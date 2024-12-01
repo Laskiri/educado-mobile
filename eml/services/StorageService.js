@@ -7,7 +7,6 @@ import * as FileSystem from 'expo-file-system';
 import jwt from 'expo-jwt';
 import Constants from 'expo-constants';
 
-
 const SUB_COURSE_LIST = '@subCourseList';
 const USER_ID = '@userId';
 const STUDENT_ID = '@studentId';
@@ -75,7 +74,6 @@ export const isLoginTokenValid = async () => {
 	}
 };
 
-
 /** STUDENT **/
 /**
  * Retrieves and stores student information for a given user ID.
@@ -120,6 +118,21 @@ export const getStudentProfilePhoto = async () => {
 export const updateStudentInfo = async (studentInfo) => {
 	await AsyncStorage.setItem(STUDENT_INFO, JSON.stringify(studentInfo));
 };
+
+export const updateLastStudyDate = async (newStudyDate) => {
+	// Retrieve current studentInfo 
+	const studentInfo = JSON.parse(await AsyncStorage.getItem(STUDENT_INFO));
+
+	if (studentInfo) {
+		// Update lastStudyDate field in studentInfo
+		studentInfo.lastStudyDate = newStudyDate;
+
+		// Save updated studentInfo
+		await AsyncStorage.setItem(STUDENT_INFO, JSON.stringify(studentInfo));
+	}
+};
+
+/** USER **/
 
 /**
  * Retrieves user information from AsyncStorage.

@@ -4,7 +4,6 @@ import { URL, CERTIFICATE_URL } from '@env';
 
 const timeoutInMs = 1200;
 
-
 // move these to .env file next sprint
 const url = URL;
 export const certificateUrl = CERTIFICATE_URL;

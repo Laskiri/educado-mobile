@@ -30,7 +30,7 @@ Props:			- exerciseObject: The exercise object, which contains the question and 
 				when the exercise is completed and it is the last component in the section, the student is taken to the section complete screen
 */
 
-const ExerciseScreen = ({ componentList, exerciseObject, sectionObject, courseObject, onContinue }) => {
+const ExerciseScreen = ({ componentList, exerciseObject, sectionObject, courseObject, onContinue, handleStudyStreak }) => {
 	const tailwindConfig = require('../../tailwind.config.js');
 	const projectColors = tailwindConfig.theme.colors;
 	const navigation = useNavigation();
@@ -43,7 +43,7 @@ const ExerciseScreen = ({ componentList, exerciseObject, sectionObject, courseOb
 	const [points, setPoints] = useState(10);
 	const [attempts, setAttempts] = useState(0);
 
-	const handleReviewAnswer = async (isAnswerCorrect, answerIndex) => {
+	const handleReviewAnswer = async (isAnswerCorrect, answerIndex) => {		
 		setSelectedAnswer(answerIndex);
 		if (buttonText === null) {
 			setButtonText('Continuar');
@@ -70,6 +70,7 @@ const ExerciseScreen = ({ componentList, exerciseObject, sectionObject, courseOb
 
 			if (isAnswerCorrect && isLastComponent) {
 				try {
+					handleStudyStreak();
 					await handleLastComponent(exerciseObject, courseObject, navigation);
 				} catch (error) {
 					console.error('Error handling last component:', error);
@@ -193,6 +194,7 @@ ExerciseScreen.propTypes = {
 	courseObject: PropTypes.object.isRequired,
 	onContinue: PropTypes.func.isRequired,
 	componentList: PropTypes.array.isRequired,
+	handleStudyStreak: PropTypes.func.isRequired
 };
 
 export default ExerciseScreen;

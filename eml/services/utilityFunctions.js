@@ -104,6 +104,34 @@ export function getUpdatedDate(courseDate) {
 }
 
 /**
+ * Calculates the complete difference in days between two dates, ignoring the time of day. 
+ * E.g., the difference in days between monday 23:59 and tuesday 00:01 is still 1 day. 
+ * @param {Date} startDate - First day to compare.
+ * @param {Date} endDate - Second day to compare.
+ * @returns {number} - The complete difference in days between the two specified dates.
+ * @throws {Error} - Throws an error if specified dates are invalid or not instances of Date.
+ */
+export function differenceInDays(startDate, endDate) {
+	// Instance check
+	if (!(startDate instanceof Date) || !(endDate instanceof Date))
+		throw new Error('startDate/endDate is not a Date instance!');
+
+	// Validity check
+	if (isNaN(startDate.getTime()) || isNaN(endDate.getTime()))
+		throw new Error('startDate/endDate is not a valid date!');
+
+	// Get dates without time by setting the time to midnight
+	const startDateMidnight = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+	const endDateMidnight = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
+    
+	// Calculate the difference in milliseconds, and convert it to days
+	const differenceInMs = endDateMidnight - startDateMidnight;
+	const differenceInDays = differenceInMs / (1000 * 60 * 60 * 24);
+
+	return differenceInDays;
+}
+
+/**
 * Determines if the two arrays of courses are different and require an update.
 * @param {Array} courses1 - The first array of courses, typically representing the current state.
 * @param {Array} courses2 - The second array of courses, typically representing the new fetched data.
