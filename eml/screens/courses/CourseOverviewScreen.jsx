@@ -15,6 +15,7 @@ import ContinueSection from '../../components/section/ContinueSectionButton';
 import Tooltip from '../../components/onboarding/onboarding';
 import ImageNotFound from '../../assets/images/imageNotFound.png';
 import DownloadCourseButton from '../../components/courses/courseCard/DownloadCourseButton';
+import { getBucketImage } from '../../api/api';
 
 export default function CourseOverviewScreen({ route }) {
 	CourseOverviewScreen.propTypes = {
@@ -27,6 +28,7 @@ export default function CourseOverviewScreen({ route }) {
 	const [sectionProgress, setSectionProgress] = useState({});
 	const [currentSection, setCurrentSection] = useState(null);
 	const [isVisible, setIsVisible] = useState(false);
+	const [coverImage, setCoverImage] = useState(null);
 
 	async function loadSections(id) {
 		const sectionData = await StorageService.getSectionList(id);
@@ -92,6 +94,24 @@ export default function CourseOverviewScreen({ route }) {
 		return update;
 	}, [navigation]);
 
+	useEffect(() => {
+		if (!coverImage && course) {
+			const fetchImage = async () => {
+				try {
+					const image = await getBucketImage(course.courseId+ '_c');
+					if (typeof image === 'string') {
+						setCoverImage(image);
+					} else {
+						throw new Error();
+					}
+				} catch (error) {
+					console.error(error);
+				}
+			};
+			fetchImage();
+		}
+	}, [course]);
+
 	const unsubAlert = () =>
 		Alert.alert('Cancelar subscrição', 'Tem certeza?', [
 			{
@@ -120,13 +140,20 @@ export default function CourseOverviewScreen({ route }) {
 		<>
 			{/* Back Button */}
 			<TouchableOpacity className="absolute top-10 left-5 pr-3 z-10" onPress={() => navigation.navigate('Meus cursos')}>
-				<MaterialCommunityIcons name="chevron-left" size={25} color="black" />
+				<MaterialCommunityIcons name="chevron-left" style={{backgroundColor: 'rgba(255,255,255,0.5)', borderRadius: 50}} size={25} color="black"  />
 			</TouchableOpacity>
 			<ScrollView className="bg-secondary" showsVerticalScrollIndicator={false}>
 				<View className="flex flex-row flex-wrap justify-between bg-secondary">
 					<View className="flex w-full items-center">
 						<View className="flex items-center w-full justify-between">
-							<Image class="h-full max-w-full" source={ImageNotFound}/>
+							{coverImage ? 
+								<Image class="h-full max-w-full"
+									source={{uri: coverImage}}
+									style={{width: '100%', height: 296, resizeMode: 'cover'}}
+								/>
+								:
+								<Image class="h-full max-w-full" source={ImageNotFound}/>
+							}
 						</View>
 						<View className="flex p-[14px] w-[293px] rounded-xl mt-[-10%] bg-projectWhite">
 							<View className="flex flex-row justify-between">
