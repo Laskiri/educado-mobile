@@ -38,10 +38,13 @@ export default function VideoLectureScreen({ lectureObject, courseObject, isLast
 	const [videoUrl, setVideoUrl] = useState(null);
 
 
+	// The things commented are to be uncommented when transcoding service is updated to handle resolutions
 	useEffect(() => {
-		console.log(lectureObject._id); // Temporary check to see if its the correct id 
-		const fileName = lectureObject._id;
-		const _videoUrl = getVideoStreamUrl(fileName, '480');
+		const fileName = lectureObject._id + "_l";
+		// const _videoUrl = getVideoStreamUrl(fileName, '360');
+		const _videoUrl = getVideoStreamUrl(fileName);
+		// console.log(_videoUrl);
+		// setVideoUrl(_videoUrl);
 		setVideoUrl(_videoUrl);
 	}, []);
 
@@ -70,19 +73,19 @@ export default function VideoLectureScreen({ lectureObject, courseObject, isLast
 		return () => clearTimeout(timer);
 	}, [isPlaying]);
 
+	// Currently not in use, should be used later for changing video resolution
+	// const [currentResolution, setCurrentResolution] = useState('360');
 
-	const [currentResolution, setCurrentResolution] = useState('480');
+	// const [allResolutions] = useState([
+	// 	'1080',
+	// 	'720',
+	// 	'480',
+	// 	'360',
+	// ]);
 
-	const [allResolutions] = useState([
-		'1080',
-		'720',
-		'480',
-		'360',
-	]);
-
-	const handleResolutionChange = (newRes) => {
-		setCurrentResolution(newRes);
-	};
+	// const handleResolutionChange = (newRes) => {
+	// 	setCurrentResolution(newRes);
+	// };
 
 	return (
 
@@ -136,9 +139,10 @@ export default function VideoLectureScreen({ lectureObject, courseObject, isLast
 								isMuted={isMuted}
 								onVolumeClick={handleMutepress}
 								onPlayClick={handlePress}
-								currentResolution={currentResolution}
-								allResolutions={allResolutions}
-								onResolutionChange={(newRes) => handleResolutionChange(newRes)} />
+								// currentResolution={currentResolution}
+								// allResolutions={allResolutions}
+								// onResolutionChange={(newRes) => handleResolutionChange(newRes)}
+								/>
 						</View>
 
 						<View className="h-[3vh]" />
