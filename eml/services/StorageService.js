@@ -780,7 +780,8 @@ export async function storeLectureVideo(videoName) {
 		return filePath;
 	} catch (error) {
 		console.log('Error storing video:', error);
-		handleError(error, 'storeLectureVideo');
+		// Once the new version of transcoding service is deployed this can be uncommented.
+		// handleError(error, 'storeLectureVideo');
 	}
 }
 
