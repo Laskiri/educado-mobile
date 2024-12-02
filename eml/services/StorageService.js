@@ -7,7 +7,6 @@ import * as FileSystem from 'expo-file-system';
 import jwt from 'expo-jwt';
 import Constants from 'expo-constants';
 
-
 const SUB_COURSE_LIST = '@subCourseList';
 const USER_ID = '@userId';
 const STUDENT_ID = '@studentId';
@@ -75,7 +74,6 @@ export const isLoginTokenValid = async () => {
 	}
 };
 
-
 /** STUDENT **/
 /**
  * Retrieves and stores student information for a given user ID.
@@ -120,6 +118,22 @@ export const getStudentProfilePhoto = async () => {
 export const updateStudentInfo = async (studentInfo) => {
 	await AsyncStorage.setItem(STUDENT_INFO, JSON.stringify(studentInfo));
 };
+
+// Increment studyStreak and update lastStudyDate
+export const updateLocalStudyStreak = async (newStudyDate) => {
+	// Retrieve current studentInfo 
+	const studentInfo = JSON.parse(await AsyncStorage.getItem(STUDENT_INFO));
+
+	if (studentInfo) {
+		studentInfo.studyStreak += 1;
+		studentInfo.lastStudyDate = newStudyDate;
+
+		// Save updated studentInfo
+		await AsyncStorage.setItem(STUDENT_INFO, JSON.stringify(studentInfo));
+	}
+};
+
+/** USER **/
 
 /**
  * Retrieves user information from AsyncStorage.
@@ -562,8 +576,8 @@ export const unsubscribe = async (courseId) => {
 /** Downloading course **/
 
 //create a new folder to store videos if it does not already exist.
-export const makeDirectory = () => {
-	FileSystem.makeDirectoryAsync(lectureVideoPath, { intermediates: true });
+export const makeDirectory = async () => {
+	await FileSystem.makeDirectoryAsync(lectureVideoPath, { intermediates: true });
 };
 
 /**
@@ -623,7 +637,13 @@ export const storeCourseLocally = async (courseID) => {
 			let componentList = await api.getComponents(section._id);
 			await AsyncStorage.setItem('C' + section._id, JSON.stringify(componentList));
 			for (let component of componentList) {
-				if (component.type === 'lecture') { continue; }
+				if (component.type === 'lecture') { 
+					if (component.component.contentType === 'video') {
+						await makeDirectory();
+						await storeLectureVideo(component.component._id + '_l');
+					}
+					continue; 
+				}
 				if (component.component.image) {
 
 					//Stores images
@@ -678,10 +698,11 @@ export const deleteLocallyStoredCourse = async (courseID) => {
 				if (component.type !== 'lecture') {
 					continue;
 				}	
+				if (component.lectureType === 'video') {
+					await deleteLectureVideo(component.component._id + '_l');
+				}
 				if (component.component.image) {
 					await AsyncStorage.removeItem('I' + component._id);
-				} else if (component.component.video) {
-					await FileSystem.deleteAsync(lectureVideoPath + component.component.video + '.json');
 				}
 			}
 		}
@@ -742,5 +763,53 @@ function handleError(error, functionName) {
 		throw new Error(`Error in ${functionName}: ${error.response.data}`);
 	} else {
 		throw new Error(`Error in ${functionName}: ${error}`);
+	}
+}
+
+export async function getLectureVideo(videoName) {
+	const filePath = `${lectureVideoPath}${videoName}.mp4`;
+
+	try {
+		const fileInfo = await FileSystem.getInfoAsync(filePath);
+
+		if (!fileInfo.exists) {
+			throw new Error('File does not exist');
+		}
+
+		return filePath;
+	} catch (error) {
+		return null;
+	}
+}
+
+export async function storeLectureVideo(videoName) {
+	try {
+		// Get video data from API
+		const videoData = await api.getBucketVideo(videoName);
+
+		if (!videoData) {
+			throw new Error('No video data');
+		}
+
+		const filePath = `${lectureVideoPath}${videoName}.mp4`;
+
+		// Store video in file system
+		await FileSystem.writeAsStringAsync(filePath, videoData, { encoding: FileSystem.EncodingType.Base64 });
+
+		return filePath;
+	} catch (error) {
+		console.log('Error storing video:', error);
+		// Once the new version of transcoding service is deployed this can be uncommented.
+		// handleError(error, 'storeLectureVideo');
+	}
+}
+
+export async function deleteLectureVideo(videoName) {
+	try {
+		const filePath = `${lectureVideoPath}${videoName}.mp4`;
+
+		await FileSystem.deleteAsync(filePath);
+	} catch (error) {
+		handleError(error, 'deleteLectureVideo');
 	}
 }

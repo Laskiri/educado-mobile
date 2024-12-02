@@ -1,13 +1,13 @@
 import React, { Fragment } from 'react';
 import { View, Text, Image } from 'react-native';
+
 import CustomProgressBar from '../exercise/Progressbar';
 import PropTypes from 'prop-types';
 
-const ProfileStatsBox = ({ streak, points, leaderboardPosition, level, drawProgressBarOnly }) => {
-	
+const ProfileStatsBox = ({ studyStreak, points, leaderboardPosition, level, drawProgressBarOnly }) => {
 	// Props
 	ProfileStatsBox.propTypes = {
-		streak: PropTypes.number,	// Optional, not provided if drawProgressBarOnly = true
+		studyStreak: PropTypes.number,	// Optional, not provided if drawProgressBarOnly = true
 		points: PropTypes.number.isRequired,
 		leaderboardPosition: PropTypes.number,	// Optional, not provided if drawProgressBarOnly = true
 		level: PropTypes.number.isRequired,
@@ -16,7 +16,7 @@ const ProfileStatsBox = ({ streak, points, leaderboardPosition, level, drawProgr
 
 	// Default values for optional props
 	ProfileStatsBox.defaultProps = {
-		streak: 0,
+		studyStreak: 0,
 		leaderboardPosition: 0
 	};
 
@@ -27,6 +27,8 @@ const ProfileStatsBox = ({ streak, points, leaderboardPosition, level, drawProgr
 	// e.g., 42 pts. (out of 100) = 42% progress, 128 pts. (out of 200) = 28% progress, etc.
 	const levelProgressPercentage = points % 100;
 
+	
+		
 	return (
 		<View className='border rounded-lg border-lightGray p-4'>
 			
@@ -36,17 +38,19 @@ const ProfileStatsBox = ({ streak, points, leaderboardPosition, level, drawProgr
 				<Fragment>
 					<View className='flex-row justify-between items-center mb-4'>
 
-						{/* Streak (number of days in a row with points gained) */}
+						{/* Study streak (number of days in a row with study activity) */}
 						<View className='flex-1 flex-col bg-badgesGreen items-center rounded-lg py-2 w-24 h-16'>
 							<Image source={require('../../assets/images/profileFlame.png')} />
 							<Text className='text-projectWhite font-sans-bold mt-2' numberOfLines={1} adjustsFontSizeToFit>
-								{streak} dia seguido
+								{studyStreak} dia seguido
 							</Text>
 						</View>
 
 						{/* Points */}
 						<View className='flex-1 flex-col bg-badgesPurple items-center rounded-lg py-2 mx-2 w-24 h-16'>
+						
 							<Image source={require('../../assets/images/profileCoin.png')} />
+						
 							<Text className='text-projectWhite font-sans-bold mt-2' numberOfLines={1} adjustsFontSizeToFit>
 								{points} pontos
 							</Text> 

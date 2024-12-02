@@ -13,7 +13,7 @@ import { useNavigation } from '@react-navigation/native';
 import { completeComponent, handleLastComponent } from '../../services/utilityFunctions';
 import { getVideoURL } from '../../services/StorageService';
 
-const VideoLectureScreen = ({ lectureObject, courseObject, isLastSlide, onContinue }) => {
+const VideoLectureScreen = ({ lectureObject, courseObject, isLastSlide, onContinue, handleStudyStreak }) => {
 	const navigation = useNavigation();
 	const videoRef = useRef(null);
 	const [isPlaying, setIsPlaying] = useState(false);
@@ -53,8 +53,10 @@ const VideoLectureScreen = ({ lectureObject, courseObject, isLastSlide, onContin
 	};
 
 	const handleContinuePress = async () => {
+		
 		if (isLastSlide) {
 			try {
+				handleStudyStreak();
 				await completeComponent(lectureObject, courseObject.courseId, true);
 				handleLastComponent(lectureObject, courseObject, navigation);
 			} catch (error) {
@@ -199,6 +201,7 @@ VideoLectureScreen.propTypes = {
 	courseObject: PropTypes.object.isRequired,
 	isLastSlide: PropTypes.bool.isRequired,
 	onContinue: PropTypes.func.isRequired,
+	handleStudyStreak: PropTypes.func.isRequired
 };
 
 export default VideoLectureScreen;

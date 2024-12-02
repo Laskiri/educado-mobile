@@ -13,7 +13,7 @@ const AccessCourseButton = ({ course }) => {
 	const navigation = useNavigation();
 
 	const handlePress = () => {
-		navigation.navigate('Section', {
+		navigation.navigate('CourseOverview', {
 			course: course
 		});
 	};

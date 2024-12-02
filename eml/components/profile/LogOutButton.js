@@ -43,7 +43,7 @@ export default function LogOutButton(props) {
 		]);
 
 	return (
-		<View className="items-center flex py-[12%]">
+		<View className="items-center flex py-[6%]">
 			<TouchableOpacity onPress={logoutAlert}>
 				<View className='items-center flex flex-row'>
 					<MaterialCommunityIcons

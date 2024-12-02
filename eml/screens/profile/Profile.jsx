@@ -27,7 +27,7 @@ export default function ProfileComponent() {
 	const navigation = useNavigation();
 	const [studentLevel, setStudentLevel] = useState(0);
 	const [totalPoints, setTotalPoints] = useState(0);
-	const [streak, setStreak] = useState(0);	// Number of days in a row with points gained
+	const [studyStreak, setStudyStreak] = useState(0);	// Number of days in a row with study activity
 	const [leaderboardPosition, setLeaderboardPosition] = useState(0);
 	const [isVisible, setIsVisible] = useState(false);
 
@@ -59,7 +59,7 @@ export default function ProfileComponent() {
 			if (fetchedStudent !== null) {
 				setStudentLevel(fetchedStudent.level);
 				setTotalPoints(fetchedStudent.points);
-				setStreak(0);				// 0 is a placeholder for now
+				setStudyStreak(fetchedStudent.studyStreak);
 				setLeaderboardPosition(0);	// 0 is a placeholder for now
 			}
 		} 
@@ -109,7 +109,7 @@ export default function ProfileComponent() {
 				<View className='flex flex-col pt-[20%] px-[5%] pb-[5%] bg-secondary'>
 					<UserInfo firstName={firstName} lastName={lastName} email={email} photo={photo}></UserInfo>
 					<ProfileStatsBox 
-						streak={streak || 0}
+						studyStreak={studyStreak || 0}
 						points={totalPoints || 0} 
 						leaderboardPosition={leaderboardPosition || 0}
 						level={studentLevel || 0} 
@@ -132,6 +132,7 @@ export default function ProfileComponent() {
 					/>
 					
 					<ProfileNavigationButton label='Editar perfil' testId={'editProfileNav'} onPress={() => navigation.navigate('EditProfile')}></ProfileNavigationButton>
+					<ProfileNavigationButton label='Tabela de classificação' onPress={() => navigation.navigate('LeaderboardStack')}></ProfileNavigationButton>
 					<ProfileNavigationButton label='Certificados' onPress={() => navigation.navigate('Certificate')}></ProfileNavigationButton>
 
 					{/* Download page is not implemented yet. However, download works and can be accessed on home page when offline */}

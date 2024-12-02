@@ -11,8 +11,8 @@ exports[`LogOutButton render should render correctly 1`] = `
         "display": "flex",
       },
       {
-        "paddingBottom": "12%",
-        "paddingTop": "12%",
+        "paddingBottom": "6%",
+        "paddingTop": "6%",
       },
     ]
   }
