@@ -4,7 +4,6 @@ import { URL, CERTIFICATE_URL } from '@env';
 
 const timeoutInMs = 1200;
 
-
 // move these to .env file next sprint
 const url = URL;
 export const certificateUrl = CERTIFICATE_URL;
@@ -247,7 +246,6 @@ export const getLectureById = async (lectureId) => {
 
 };
 
-
 export const getBucketImage = async (fileName) => {
 	try {
 		const res = await axios.get(
@@ -276,6 +274,27 @@ export const getBucketImage = async (fileName) => {
 	}
 };
 
+export const getBucketVideo = async (fileName) => {
+	try {
+		const res = await axios.get(
+			`${url}/api/bucket/${fileName}`,
+			{
+				responseType: 'arraybuffer',
+				accept: 'video/mp4',
+			});
+
+		console.log('res.data', res.data);
+
+		const video = `data:video/mp4;base64,${Buffer.from(res.data, 'binary').toString('base64')}`;
+		return video;
+	} catch (err) {
+		if (err?.response?.data != null) {
+			throw err.response.data;
+		} else {
+			throw err;
+		}
+	}
+};
 
 export const sendMessageToChatbot = async (userMessage, courses) => {
 	try {

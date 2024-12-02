@@ -10,7 +10,7 @@ import Text from '../../components/general/Text';
 import * as StorageService from '../../services/StorageService';
 import { completeComponent, handleLastComponent } from '../../services/utilityFunctions';
 
-const TextImageLectureScreen = ({ lectureObject, courseObject, isLastSlide, onContinue }) => {
+const TextImageLectureScreen = ({ lectureObject, courseObject, isLastSlide, onContinue, handleStudyStreak }) => {
 	const [imageUrl, setImageUrl] = useState(null);
 	const [paragraphs, setParagraphs] = useState(null);
 	const navigation = useNavigation();
@@ -19,6 +19,7 @@ const TextImageLectureScreen = ({ lectureObject, courseObject, isLastSlide, onCo
 		try {
 			await completeComponent(lectureObject, courseObject.courseId, true);
 			if (isLastSlide) {
+				handleStudyStreak();
 				handleLastComponent(lectureObject, courseObject, navigation);
 			} else {
 				onContinue();
@@ -144,6 +145,7 @@ TextImageLectureScreen.propTypes = {
 	courseObject: PropTypes.object.isRequired,
 	isLastSlide: PropTypes.bool.isRequired,
 	onContinue: PropTypes.func.isRequired,
+	handleStudyStreak: PropTypes.func.isRequired
 };
 
 export default TextImageLectureScreen;

@@ -9,8 +9,9 @@ import ProgressTopBar from './ProgressTopBar';
 import LectureScreen from './LectureScreen';
 import ExerciseScreen from '../excercise/ExerciseScreen';
 import tailwindConfig from '../../tailwind.config';
-import { completeComponent, findIndexOfUncompletedComp } from '../../services/utilityFunctions';
-import { getComponentList, getStudentInfo } from '../../services/StorageService';
+import { completeComponent, findIndexOfUncompletedComp, differenceInDays } from '../../services/utilityFunctions';
+import { getComponentList, getStudentInfo, updateLocalStudyStreak } from '../../services/StorageService';
+import { updateStudyStreak } from '../../api/userApi';
 
 const LectureType = {
 	TEXT: 'text',
@@ -43,11 +44,43 @@ const CompSwipeScreen = ({ route }) => {
 	const [combinedLecturesAndExercises, setCombinedLecturesAndExercises] = useState([]);
 	const swiperRef = useRef(null);
 	const [resetKey, setResetKey] = useState(0);
+	const [studentId, setStudentId] = useState('');
+	const [lastStudyDate, setLastStudyDate] = useState('1970-01-01T00:00:00.000Z');
+
+	/**
+	 * Handles student study streak update process.
+	 * Checks difference in days between lastStudyDate and today.
+	 * If difference is greater than 0 it updates: studyStreak and lastStudyDate 
+	 * both in database, local storage and this local state.
+	 */
+	async function handleStudyStreak() {
+		try {		
+			const today = new Date();
+			const dayDifference = differenceInDays(new Date(lastStudyDate), today);	
+			
+			// Update study streak if it has not already been updated today
+			if (dayDifference > 0) {
+				const statusCode = await updateStudyStreak(studentId);	// Database
+				
+				if (statusCode !== 200) 
+					throw new Error();
+
+				updateLocalStudyStreak(today);	// Local storage
+				setLastStudyDate(today);
+			}
+		}
+		catch (error) {
+			console.error('Error handling study streak: ' + error);
+		}
+	}
 
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
 				const studentInfo = await getStudentInfo();
+				setStudentId(studentInfo._id);
+				setLastStudyDate(studentInfo.lastStudyDate);
+
 				let initialIndex =  parsedComponentIndex ?? findIndexOfUncompletedComp(studentInfo, parsedCourse.courseId, section.sectionId);
 
 				if (initialIndex === -1) {
@@ -103,8 +136,9 @@ const CompSwipeScreen = ({ route }) => {
 	};
 
 	const handleIndexChange = async (_index) => {
+		handleStudyStreak();
 		const currentSlide = combinedLecturesAndExercises[_index];
-
+		
 		if (currentSlide.type === ComponentType.EXERCISE) {
 			setScrollEnabled(false);
 		} else {
@@ -112,7 +146,7 @@ const CompSwipeScreen = ({ route }) => {
 			setCurrentLectureType(currentLectureType);
 			setScrollEnabled(true);
 		}
-
+		
 		if (_index > 0) {
 			const lastSlide = combinedLecturesAndExercises[_index - 1];
 			try {
@@ -166,6 +200,7 @@ const CompSwipeScreen = ({ route }) => {
 									courseObject={parsedCourse}
 									isLastSlide={_index === combinedLecturesAndExercises.length - 1}
 									onContinue={handleLectureContinue} // Pass handleLectureContinue here
+									handleStudyStreak={handleStudyStreak}
 								/>
 							) : (
 								<ExerciseScreen
@@ -175,6 +210,7 @@ const CompSwipeScreen = ({ route }) => {
 									sectionObject={section}
 									courseObject={parsedCourse}
 									onContinue={(isCorrect) => handleExerciseContinue(isCorrect)}
+									handleStudyStreak={handleStudyStreak}
 								/>
 							)
 						))}

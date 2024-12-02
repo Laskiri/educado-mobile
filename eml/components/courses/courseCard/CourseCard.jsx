@@ -24,6 +24,7 @@ export default function CourseCard({ course, isOnline}) {
 	const [coverImage, setCoverImage] = useState(null);
 	const prevCourseId = useRef(null);
 
+
 	const checkDownload = async () => {
 		setDownloaded(await checkCourseStoredLocally(course.courseId));
 	};
@@ -52,6 +53,7 @@ export default function CourseCard({ course, isOnline}) {
 			setCoverImage(null); // Reset coverImage state
 			fetchImage();
 			prevCourseId.current = course.courseId;
+
 		}
 	}, [course]);
 
