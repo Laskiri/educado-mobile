@@ -11,6 +11,7 @@ import { getStudentInfo } from '../../services/StorageService';
 import { findCompletedSection, isCourseCompleted } from '../../services/utilityFunctions';
 import PropTypes from 'prop-types';
 
+
 /* 
 Description: 	This screen is displayed when the student completes a section. 
 				It displays the points earned in the section, an animation, and a button to continue. 
@@ -98,23 +99,13 @@ export default function CompleteSectionScreen() {
 	async function handleAllSectionsCompleted() {
 		const studentInfo = await getStudentInfo();
 
-		if (isCourseCompleted(studentInfo, parsedCourse.courseId)) {
-			navigation.reset({
-				index: 0,
-				routes: [
-					{ 
-						name: 'CompleteCourse',
-						params: { course: parsedCourse }
-					},
-				],
-			});
-		} else {
+		if (!isCourseCompleted(studentInfo, parsedCourse.courseId)) {
 			navigation.reset({
 				index: 1,
 				routes: [
 					{ name: 'HomeStack' },
 					{
-						name: 'Section',
+						name: 'CourseOverview',
 						params: { course: parsedCourse },
 					},
 				],

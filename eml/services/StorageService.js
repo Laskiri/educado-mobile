@@ -7,7 +7,6 @@ import * as FileSystem from 'expo-file-system';
 import jwt from 'expo-jwt';
 import Constants from 'expo-constants';
 
-
 const SUB_COURSE_LIST = '@subCourseList';
 const USER_ID = '@userId';
 const STUDENT_ID = '@studentId';
@@ -75,7 +74,6 @@ export const isLoginTokenValid = async () => {
 	}
 };
 
-
 /** STUDENT **/
 /**
  * Retrieves and stores student information for a given user ID.
@@ -120,6 +118,22 @@ export const getStudentProfilePhoto = async () => {
 export const updateStudentInfo = async (studentInfo) => {
 	await AsyncStorage.setItem(STUDENT_INFO, JSON.stringify(studentInfo));
 };
+
+// Increment studyStreak and update lastStudyDate
+export const updateLocalStudyStreak = async (newStudyDate) => {
+	// Retrieve current studentInfo 
+	const studentInfo = JSON.parse(await AsyncStorage.getItem(STUDENT_INFO));
+
+	if (studentInfo) {
+		studentInfo.studyStreak += 1;
+		studentInfo.lastStudyDate = newStudyDate;
+
+		// Save updated studentInfo
+		await AsyncStorage.setItem(STUDENT_INFO, JSON.stringify(studentInfo));
+	}
+};
+
+/** USER **/
 
 /**
  * Retrieves user information from AsyncStorage.
@@ -224,11 +238,7 @@ const refreshCourseList = async (courseList) => {
 		// Save new courseList for this key and return it.
 		return newCourseList;
 	} catch (error) {
-		if (error?.response?.data != null) {
-			throw new Error('API error in refreshCourseList:' + error.response.data);
-		} else {
-			throw new Error('API error in refreshCourseList:' + error);
-		}
+		handleError(error, 'refreshCourseList');
 	}
 };
 
@@ -254,11 +264,7 @@ export const getSection = async (sectionId) => {
 			section = JSON.parse(await AsyncStorage.getItem('S' + sectionId));
 			throw new Error('JSON parse error in getSection', error);
 		} catch (e){
-			if (e?.response?.data != null) {
-				throw new Error('Error in getSection: ', e.response.data);
-			} else {
-				throw new Error('Error in getSection: ', e);
-			}
+			handleError(e, 'getSection');
 		}
 	} finally {
 		return await refreshSection(section);
@@ -287,11 +293,7 @@ export const refreshSection = async (section) => {
 			throw new Error('Error in refreshSection: Missing field in section');
 		}
 	} catch (error) {
-		if (error?.response?.data != null) {
-			throw new Error('Error in refreshSection: ', error.response.data);
-		} else {
-			throw new Error('Error in refreshSection: ', error);
-		}
+		handleError(error, 'refreshSection');
 	} finally {
 		//Returns new fitted section, or null if there was no data fetched from DB or Storage,
 		return newSection;
@@ -317,11 +319,7 @@ export const getSectionList = async (course_id) => {
 			sectionList = JSON.parse(await AsyncStorage.getItem('S' + course_id));
 			throw new Error('JSON parse error in getSectionList' + error);
 		} catch (e){
-			if (e?.response?.data != null) {
-				throw new Error('Error in getSectionList: ' + e.response.data);
-			} else {
-				throw new Error('Error in getSectionList: ' + e);
-			}
+			handleError(e, 'getSectionList');
 		}
 	} finally {
 		return await refreshSectionList(sectionList);
@@ -351,11 +349,7 @@ export const refreshSectionList = async (sectionList) => {
 			throw new Error('Error in refreshSectionList: Missing field in sectionList');
 		}
 	} catch (error) {
-		if (error?.response?.data != null) {
-			throw new Error('Error in refreshSectionList: ' + error.response.data);
-		} else {
-			throw new Error('Error in refreshSectionList: ' + error);
-		}
+		handleError(error, 'refreshSectionList');
 	} finally {
 		//Returns new fitted section list, or empty list if there was no data fetched from DB or Storage,
 		return newSectionList;
@@ -385,11 +379,7 @@ export const getComponentList = async (sectionID) => {
 				throw new Error('JSON parse error in getComponentsList ' + error);
 			}
 		} catch (e) {
-			if (e?.response?.data != null) {
-				throw new Error('Error in getComponentsList: ' + e.response.data);
-			} else {
-				throw new Error('Error in getComponentsList: ' + e);
-			}
+			handleError(e, 'getComponentList');
 		}
 	} finally {
 		return componentList;
@@ -418,11 +408,7 @@ export const fetchLectureImage = async (imageID, lectureID) => {
 				throw new Error('JSON parse error in fetchLectureImage ' + error);
 			}
 		} catch (e){
-			if (e?.response?.data != null) {
-				throw new Error('Error in fetchLectureImage: ' + e.response.data);
-			} else {
-				throw new Error('Error in fetchLectureImage: ' + e);
-			}
+			handleError(e, 'fetchLectureImage');
 		}
 	} finally {
 		return image;
@@ -451,11 +437,7 @@ export const getVideoURL = async (videoName, resolution) => {
 		try {
 			videoUrl = await FileSystem.readAsStringAsync(lectureVideoPath + videoName + '.json');
 		} catch (e){
-			if (e?.response?.data != null) {
-				throw new Error('Error in getVideoURL: ' + e.response.data);
-			} else {
-				throw new Error('Error in getVideoURL: ' + e);
-			}
+			handleError(e, 'getVideoUrl');
 		}
 	} finally {
 		return videoUrl;
@@ -489,11 +471,7 @@ export const getSubCourseList = async () => {
 		if (courseList !== null) {
 			return courseList;
 		}
-		if (error?.response?.data != null) {
-			throw error.response.data;
-		} else {
-			throw error;
-		}
+		handleError(error, 'getSubCourseList');
 	}
 };
 
@@ -528,11 +506,7 @@ export const refreshSubCourseList = async (userId) => {
 			return newCourseList;
 		})
 		.catch((error) => {
-			if (error?.response?.data != null) {
-				throw new Error('API error in refreshSubCourseList:' + error.response.data);
-			} else {
-				throw new Error('API error in refreshSubCourseList:' + error);
-			}
+			handleError(error, 'refreshSubCourseList');
 		});
 };
 
@@ -553,11 +527,7 @@ export const subscribe = async (courseId) => {
 	try {
 		await api.subscribeToCourse(userId, courseId);
 	} catch (error) {
-		if (error?.response?.data != null) {
-			throw new Error('API error in subscribe:' + error.response.data);
-		} else {
-			throw new Error('API error in subscribe:' + error);
-		}
+		handleError(error, 'subscribe');
 	}
 };
 
@@ -573,11 +543,7 @@ export const addCourseToStudent = async (courseId) => {
 
 		await updateStudentInfo(student);
 	} catch (e) {
-		if (e?.response?.data != null) {
-			throw e.response.data;
-		} else {
-			throw e;
-		}
+		handleError(e, 'addCourseToStudent');
 	}
 };
 
@@ -603,19 +569,15 @@ export const unsubscribe = async (courseId) => {
 		return await api.unSubscribeToCourse(userId, courseId);
 
 	} catch (error) {
-		if (error?.response?.data != null) {
-			throw new Error(error.response.data);
-		} else {
-			throw new Error(error);
-		}
+		handleError(error, 'unsubscribe');
 	}
 };
 
 /** Downloading course **/
 
 //create a new folder to store videos if it does not already exist.
-export const makeDirectory = () => {
-	FileSystem.makeDirectoryAsync(lectureVideoPath, { intermediates: true });
+export const makeDirectory = async () => {
+	await FileSystem.makeDirectoryAsync(lectureVideoPath, { intermediates: true });
 };
 
 /**
@@ -623,55 +585,87 @@ export const makeDirectory = () => {
  * @param {String} courseID - A string with the ID of the course to be stored
  * @returns {Promise<boolean>} A promise that resolves with `true` if the course was stored successfully.
  */
+
+export const getAllCoursesLocally = async () => {
+	let courseList = [];
+	try {
+		const keys = await AsyncStorage.getAllKeys();
+		for (let key of keys) {
+			if (!key.includes(await AsyncStorage.getItem(USER_ID))) continue;
+			courseList.push(JSON.parse(await AsyncStorage.getItem(key)));
+		}
+	} catch (error) {
+		if (error?.response?.data == null) {
+			throw new Error(error);
+		}
+		throw new Error(error.response.data);
+	}
+	return courseList;
+};
+
 export const storeCourseLocally = async (courseID) => {
 	let success = true;
-	if (isOnline) {
-		try {
-			//Stores the course data
-			const course = await api.getCourse(courseID);
-			await AsyncStorage.setItem(courseID + await AsyncStorage.getItem(USER_ID), JSON.stringify(course));
+	if (!isOnline) {
+		return false;
+	}
+	try {
+		//Stores the course data
+		const course = await api.getCourse(courseID);
+		await AsyncStorage.setItem(courseID + await AsyncStorage.getItem(USER_ID), JSON.stringify(course));
 
-			//Stores section data
-			const sectionList = await api.getAllSections(courseID);
-			await AsyncStorage.setItem('S' + courseID, JSON.stringify(sectionList));
-			for (let section of sectionList) {
+		//Stores section data
+		const sectionList = await api.getAllSections(courseID);
+		await AsyncStorage.setItem('S' + courseID, JSON.stringify(sectionList));
+		await storeLectureData(sectionList, course);
+		await AsyncStorage.setItem(courseID + await AsyncStorage.getItem(USER_ID), JSON.stringify(course));
+	} catch (error) {
+		success = false;
+		deleteLocallyStoredCourse(courseID);
+		if (error?.response?.data != null) {
+			throw new Error(error.response.data);
+		} else {
+			throw new Error(error);
+		}
+	} finally {
+		return success;
+	}
 
-				//Stores lecture data
-				let componentList = await api.getComponents(section._id);
-				await AsyncStorage.setItem('C' + section._id, JSON.stringify(componentList));
-				for (let component of componentList) {
-					if (component.type === 'lecture'){
-						if (component.component.image) {
+	async function storeLectureData(sectionList, course) {
+		for (let section of sectionList) {
 
-							//Stores images
-							try {
-								let image = await api.getBucketImage(component.component.image);
-								await AsyncStorage.setItem('I' + component.component._id, JSON.stringify(image));
-							} catch {
-								await AsyncStorage.setItem('I' + component.component._id, defaultImage.base64);
-							}
-						} else if (component.component.video){
-
-							//Stores videos
-							await makeDirectory();
-							await FileSystem.writeAsStringAsync(lectureVideoPath + component.component.video + '.json', await api.getBucketImage(component.component.video));
-						}
+			//Stores lecture data
+			let componentList = await api.getComponents(section._id);
+			await AsyncStorage.setItem('C' + section._id, JSON.stringify(componentList));
+			for (let component of componentList) {
+				if (component.type === 'lecture') { 
+					if (component.component.contentType === 'video') {
+						await makeDirectory();
+						await storeLectureVideo(component.component._id + '_l');
 					}
+					continue; 
+				}
+				if (component.component.image) {
+
+					//Stores images
+					try {
+						let image = await api.getBucketImage(component.component.image);
+						await AsyncStorage.setItem('I' + component.component._id, JSON.stringify(image));
+					} catch {
+						await AsyncStorage.setItem('I' + component.component._id, defaultImage.base64);
+					}
+				} else if (component.component.video) {
+
+					//Stores videos
+					await makeDirectory();
+					await FileSystem.writeAsStringAsync(lectureVideoPath + component.component.video + '.json', await api.getBucketImage(component.component.video));
 				}
 			}
-		} catch (error) {
-			success = false;
-			deleteLocallyStoredCourse(courseID);
-			if (error?.response?.data != null) {
-				throw new Error(error.response.data);
-			} else {
-				throw new Error(error);
+
+			//add a new variable "DateOfDownload" to the course object
+			if (course.dateOfDownload === undefined) {
+				course.dateOfDownload = new Date().toISOString();
 			}
-		} finally {
-			return success;
 		}
-	} else {
-		return false;
 	}
 };
 
@@ -687,29 +681,31 @@ export const deleteLocallyStoredCourse = async (courseID) => {
 
 		const sectionList = JSON.parse(await AsyncStorage.getItem('S' + courseID));
 		await AsyncStorage.removeItem('S' + courseID);
+		await removeComponentsBySection(sectionList);
+	} catch (error) {
+		success = false;
+		handleError(error, 'deleteLocallyStoredCourse');
+	} finally {
+		return success;
+	}
+
+	async function removeComponentsBySection(sectionList) {
 		for (let section of sectionList) {
 			let componentList = JSON.parse(await AsyncStorage.getItem('C' + section._id));
 			await AsyncStorage.removeItem('C' + section._id);
-            
+
 			for (let component of componentList) {
-				if (component.type === 'lecture'){
-					if (component.component.image) {
-						await AsyncStorage.removeItem('I' + component._id);
-					} else if (component.component.video) {
-						await FileSystem.deleteAsync(lectureVideoPath + component.component.video + '.json');
-					}
+				if (component.type !== 'lecture') {
+					continue;
+				}	
+				if (component.lectureType === 'video') {
+					await deleteLectureVideo(component.component._id + '_l');
+				}
+				if (component.component.image) {
+					await AsyncStorage.removeItem('I' + component._id);
 				}
 			}
 		}
-	} catch (error) {
-		success = false;
-		if (error?.response?.data != null) {
-			throw new Error(error.response.data);
-		} else {
-			throw new Error(error);
-		}
-	} finally {
-		return success;
 	}
 };
 
@@ -728,11 +724,7 @@ export const updateStoredCourses = async () => {
 			}
 		}
 	} catch (error) {
-		if (error?.response?.data != null) {
-			throw new Error(error.response.data);
-		} else {
-			throw new Error(error);
-		}
+		handleError(error, 'updateStoredCourses');
 	}
 };
 
@@ -747,11 +739,7 @@ export const checkCourseStoredLocally = async (courseID) => {
 	try {
 		return !!(await AsyncStorage.getItem(courseID + await AsyncStorage.getItem(USER_ID)));
 	} catch (error) {
-		if (error?.response?.data != null) {
-			throw new Error(error.response.data);
-		} else {
-			throw new Error(error);
-		}
+		handleError(error, 'checkCourseStoredLocally');
 	}
 };
 
@@ -763,3 +751,65 @@ export const clearAsyncStorage = async () => {
 	await AsyncStorage.clear();
 	console.log(await AsyncStorage.getAllKeys());
 };
+
+/**
+ * Handles errors.
+ * @param {Error} error - The error to handle.
+ * @param {string} functionName - The name of the function where the error occurred.
+ */
+
+function handleError(error, functionName) {
+	if (error?.response?.data != null) {
+		throw new Error(`Error in ${functionName}: ${error.response.data}`);
+	} else {
+		throw new Error(`Error in ${functionName}: ${error}`);
+	}
+}
+
+export async function getLectureVideo(videoName) {
+	const filePath = `${lectureVideoPath}${videoName}.mp4`;
+
+	try {
+		const fileInfo = await FileSystem.getInfoAsync(filePath);
+
+		if (!fileInfo.exists) {
+			throw new Error('File does not exist');
+		}
+
+		return filePath;
+	} catch (error) {
+		return null;
+	}
+}
+
+export async function storeLectureVideo(videoName) {
+	try {
+		// Get video data from API
+		const videoData = await api.getBucketVideo(videoName);
+
+		if (!videoData) {
+			throw new Error('No video data');
+		}
+
+		const filePath = `${lectureVideoPath}${videoName}.mp4`;
+
+		// Store video in file system
+		await FileSystem.writeAsStringAsync(filePath, videoData, { encoding: FileSystem.EncodingType.Base64 });
+
+		return filePath;
+	} catch (error) {
+		console.log('Error storing video:', error);
+		// Once the new version of transcoding service is deployed this can be uncommented.
+		// handleError(error, 'storeLectureVideo');
+	}
+}
+
+export async function deleteLectureVideo(videoName) {
+	try {
+		const filePath = `${lectureVideoPath}${videoName}.mp4`;
+
+		await FileSystem.deleteAsync(filePath);
+	} catch (error) {
+		handleError(error, 'deleteLectureVideo');
+	}
+}
