@@ -110,7 +110,7 @@ export default function VideoLectureScreen({ lectureObject, courseObject, isLast
 
 			<View className="absolute w-full h-full p-5">
 				<View className="w-full h-full flex-col justify-end items-center bg-opacity-20" >
-					// Not needed as there is a continue button at the end of the video
+                {/* Not needed as there is a continue button at the end of the video */}
 				{/* {isLastSlide ?
 						<View className="px-6 mb-3 w-screen">
 							<StandardButton
