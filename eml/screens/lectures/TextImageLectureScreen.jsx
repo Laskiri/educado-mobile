@@ -111,6 +111,12 @@ const TextImageLectureScreen = ({ lectureObject, courseObject, isLastSlide, onCo
 						<RenderHtml
 							contentWidth={Dimensions.get('window').width}
 							source={{ html: htmlContent }}
+							tagsStyles={{
+								p: { fontSize: 16, color: '#333' },
+								h1: { fontSize: 24, fontWeight: 'bold', color: '#000' },
+								h2: { fontSize: 20, fontWeight: 'bold', color: '#000' },
+								// Add more styles as needed
+							}}
 						/>
 					) : (
 						paragraphs && paragraphs.map((paragraph, index) => (
