@@ -653,6 +653,11 @@ export const storeCourseLocally = async (courseID) => {
 					} catch {
 						await AsyncStorage.setItem('I' + component.component._id, defaultImage.base64);
 					}
+				} else if (component.component.video) {
+
+					//Stores videos
+					await makeDirectory();
+					await FileSystem.writeAsStringAsync(lectureVideoPath + component.component.video + '.json', await api.getBucketImage(component.component.video));
 				}
 			}
 
